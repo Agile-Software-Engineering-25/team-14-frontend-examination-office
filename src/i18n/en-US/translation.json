@@ -11,6 +11,21 @@
       "getWeatherButton": "GET WEATHER",
       "weatherHeader": "Current Weather",
       "temperature": "Temperature"
+    },
+    "exams": {
+      "title": "Exams Overview",
+      "table": {
+        "title": "Title",
+        "module": "Module",
+        "date": "Date",
+        "professor": "Professor",
+        "type": "Exam Type"
+      },
+      "footer": {
+        "itemsPerPage": "Number of items",
+        "page": "Page",
+        "of": "of"
+      }
     }
   }
 }

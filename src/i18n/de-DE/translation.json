@@ -11,6 +11,21 @@
       "getWeatherButton": "WETTER ABRUFEN",
       "weatherHeader": "Aktuelles Wetter",
       "temperature": "Temperatur"
+    },
+    "exams": {
+      "title": "Prüfungsübersicht",
+      "table": {
+        "title": "Titel",
+        "module": "Modul",
+        "date": "Datum",
+        "professor": "Dozent",
+        "type": "Prüfungstyp"
+      },
+      "footer": {
+        "itemsPerPage": "Anzahl der Einträge",
+        "page": "Seite",
+        "of": "von"
+      }
     }
   }
 }
