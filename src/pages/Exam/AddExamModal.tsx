@@ -11,12 +11,17 @@ import {
   FormControl,
   FormLabel,
   Checkbox,
-  Chip
+  Chip,
+  Snackbar,
+  Alert
 } from "@mui/joy";
 import axios from "axios";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const AddExamModal = ({ open, setOpen, onAdd=()=>{} }: { open: boolean, setOpen: CallableFunction, onAdd?: CallableFunction }) => {
+const AddExamModal = ({ open, setOpen, onAdd = () => { } }: { open: boolean; setOpen: CallableFunction; onAdd?: CallableFunction }) => {
+  const { t } = useTranslation();
+
   const [title, setTitle] = useState("");
   const [moduleCode, setModuleCode] = useState("");
   const [examDate, setExamDate] = useState("");
@@ -31,6 +36,10 @@ const AddExamModal = ({ open, setOpen, onAdd=()=>{} }: { open: boolean, setOpen:
   const [tools, setTools] = useState<string[]>([]);
   const [currentTool, setCurrentTool] = useState("");
 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarColor, setSnackbarColor] = useState<"success" | "danger">("success");
+
   const handleAddTool = () => {
     if (currentTool.trim() && !tools.includes(currentTool.trim())) {
       setTools([...tools, currentTool.trim()]);
@@ -42,7 +51,23 @@ const AddExamModal = ({ open, setOpen, onAdd=()=>{} }: { open: boolean, setOpen:
     setTools(tools.filter(t => t !== tool));
   };
 
-  const handleSubmit = () => {
+  const resetForm = () => {
+    setTitle("");
+    setModuleCode("");
+    setExamDate("");
+    setRoom("");
+    setExamType("");
+    setSemester("");
+    setEcts(5);
+    setMaxPoints(100);
+    setDuration(90);
+    setAttemptNumber(1);
+    setFileUploadRequired(false);
+    setTools([]);
+    setCurrentTool("");
+  };
+
+  const handleSubmit = async () => {
     const newExam = {
       title,
       moduleCode,
@@ -57,110 +82,197 @@ const AddExamModal = ({ open, setOpen, onAdd=()=>{} }: { open: boolean, setOpen:
       fileUploadRequired,
       tools,
     };
-    axios.post("/api/exams", newExam).then((res) => {
-      onAdd(res.data)
-    });
-    setOpen(false);
+
+    try {
+      const res = await axios.post("http://localhost:8080/api/exams", newExam);
+      if (res.status === 201) {
+        setSnackbarMessage(t("pages.addExam.success"));
+        setSnackbarColor("success");
+        setSnackbarOpen(true);
+        resetForm();
+        setOpen(false);
+        onAdd(res.data);
+      }
+    } catch (err: any) {
+      let message = err.response?.data?.message || t("pages.addExam.error");
+
+      if (err.response?.data?.errors) {
+        const errorDetails = Object.entries(err.response.data.errors)
+          .map(([field, msg]) => `${field}: ${msg}`)
+          .join(", ");
+        message += ` - ${errorDetails}`;
+      }
+
+      setSnackbarMessage(message);
+      setSnackbarColor("danger");
+      setSnackbarOpen(true);
+    }
   };
 
   return (
-    <Modal open={open} onClose={() => setOpen(false)}>
-      <ModalDialog variant="outlined" sx={{ width: "fit-content", maxWidth: "90%" }}>
-        <ModalClose />
-        <Typography level="h4">Neue Prüfung anlegen</Typography>
+    <>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog variant="outlined" sx={{ minWidth: "45%", maxWidth: "90%" }}>
+          <ModalClose />
+          <Typography level="h4">{t("pages.addExam.title")}</Typography>
 
-        <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
-          <FormControl>
-            <FormLabel>Titel</FormLabel>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Modulcode</FormLabel>
-            <Input value={moduleCode} onChange={(e) => setModuleCode(e.target.value)} />
-          </FormControl>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <FormControl sx={{ flex: 1 }}>
-              <FormLabel>Datum</FormLabel>
-              <Input type="datetime-local" value={examDate} onChange={(e) => setExamDate(e.target.value)} />
-            </FormControl>
-            <FormControl sx={{ flex: 1 }}>
-              <FormLabel>Raum</FormLabel>
-              <Input value={room} onChange={(e) => setRoom(e.target.value)} />
-            </FormControl>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <FormControl sx={{ flex: 1 }}>
-              <FormLabel>Prüfungsart</FormLabel>
-              <Select value={examType} onChange={(_, val) => setExamType(val ?? "")}>
-                <Option value="KLAUSUR">Klausur</Option>
-                <Option value="MUENDLICH">Mündlich</Option>
-                <Option value="PROJEKT">Projekt</Option>
-                <Option value="PRAESENTATION">Präsentation</Option>
-              </Select>
-            </FormControl>
-
-            <FormControl sx={{ flex: 1 }}>
-              <FormLabel>Semester</FormLabel>
-              <Input value={semester} onChange={(e) => setSemester(e.target.value)} />
-            </FormControl>
-          </Box>
-
-          <Box sx={{ display: "flex", gap: 2 }}>
+          <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
             <FormControl>
-              <FormLabel>ECTS</FormLabel>
-              <Input type="number" value={ects} onChange={(e) => setEcts(Number(e.target.value))} />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Max. Punkte</FormLabel>
-              <Input type="number" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Dauer (Minuten)</FormLabel>
-              <Input type="number" value={duration} onChange={(e) => setDuration(Number(e.target.value))} />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Versuch</FormLabel>
-              <Select value={attemptNumber} onChange={(_, val) => setAttemptNumber(Number(val))}>
-                <Option value={1}>1. Versuch</Option>
-                <Option value={2}>2. Versuch</Option>
-                <Option value={3}>3. Versuch</Option>
-              </Select>
-            </FormControl>
-          </Box>
-
-          <FormControl orientation="horizontal">
-            <Checkbox
-              checked={fileUploadRequired}
-              onChange={(e) => setFileUploadRequired(e.target.checked)}
-            />
-            <FormLabel sx={{ ml: 1 }}>Datei-Upload erforderlich</FormLabel>
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Hilfsmittel</FormLabel>
-            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
-              {tools.map((tool) => (
-                <Chip key={tool} onClick={() => handleRemoveTool(tool)}>{tool}</Chip>
-              ))}
-            </Box>
-            <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+              <FormLabel
+                sx={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap"
+                }}
+              >
+                {t("pages.addExam.fields.title")}
+              </FormLabel>
               <Input
-                placeholder="Neues Hilfsmittel"
-                value={currentTool}
-                onChange={(e) => setCurrentTool(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddTool(); } }}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                sx={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap"
+                }}
               />
-              <Button onClick={handleAddTool}>Hinzufügen</Button>
-            </Box>
-          </FormControl>
+            </FormControl>
 
-          <Button onClick={handleSubmit} sx={{ mt: 2 }}>Speichern</Button>
-        </Box>
-      </ModalDialog>
-    </Modal>
+            <FormControl>
+              <FormLabel
+                sx={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap"
+                }}
+              >
+                {t("pages.addExam.fields.moduleCode")}
+              </FormLabel>
+              <Input
+                value={moduleCode}
+                onChange={(e) => setModuleCode(e.target.value)}
+                sx={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap"
+                }}
+              />
+            </FormControl>
+
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <FormControl sx={{ flex: 1 }}>
+                <FormLabel>{t("pages.addExam.fields.examDate")}</FormLabel>
+                <Input type="datetime-local" value={examDate} onChange={(e) => setExamDate(e.target.value)} />
+              </FormControl>
+              <FormControl sx={{ flex: 1 }}>
+                <FormLabel>{t("pages.addExam.fields.room")}</FormLabel>
+                <Input value={room} onChange={(e) => setRoom(e.target.value)} />
+              </FormControl>
+            </Box>
+
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <FormControl sx={{ flex: 1 }}>
+                <FormLabel>{t("pages.addExam.fields.examType")}</FormLabel>
+                <Select value={examType} onChange={(_, val) => setExamType(val ?? "")}>
+                  <Option value="KLAUSUR">{t("pages.addExam.examTypes.klausur")}</Option>
+                  <Option value="MUENDLICH">{t("pages.addExam.examTypes.muendlich")}</Option>
+                  <Option value="PROJEKT">{t("pages.addExam.examTypes.projekt")}</Option>
+                  <Option value="PRAESENTATION">{t("pages.addExam.examTypes.praesentation")}</Option>
+                </Select>
+              </FormControl>
+
+              <FormControl sx={{ flex: 1 }}>
+                <FormLabel>{t("pages.addExam.fields.semester")}</FormLabel>
+                <Input value={semester} onChange={(e) => setSemester(e.target.value)} />
+              </FormControl>
+            </Box>
+
+            <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+              <FormControl>
+                <FormLabel>{t("pages.addExam.fields.ects")}</FormLabel>
+                <Input type="number" value={ects} onChange={(e) => setEcts(Number(e.target.value))} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>{t("pages.addExam.fields.maxPoints")}</FormLabel>
+                <Input type="number" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>{t("pages.addExam.fields.duration")}</FormLabel>
+                <Input type="number" value={duration} onChange={(e) => setDuration(Number(e.target.value))} />
+              </FormControl>
+              <FormControl>
+                <FormLabel>{t("pages.addExam.fields.attempt")}</FormLabel>
+                <Select value={attemptNumber} onChange={(_, val) => setAttemptNumber(Number(val))}>
+                  <Option
+                    value={1}
+                    sx={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                  >
+                    {t("pages.addExam.attempts.1")}
+                  </Option>
+                  <Option
+                    value={2}
+                    sx={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                  >
+                    {t("pages.addExam.attempts.2")}
+                  </Option>
+                  <Option
+                    value={3}
+                    sx={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}
+                  >
+                    {t("pages.addExam.attempts.3")}
+                  </Option>
+                </Select>
+              </FormControl>
+
+            </Box>
+
+            <FormControl orientation="horizontal">
+              <Checkbox
+                checked={fileUploadRequired}
+                onChange={(e) => setFileUploadRequired(e.target.checked)}
+              />
+              <FormLabel sx={{ ml: 1 }}>{t("pages.addExam.fields.fileUploadRequired")}</FormLabel>
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>{t("pages.addExam.fields.tools")}</FormLabel>
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
+                {tools.map((tool) => (
+                  <Chip key={tool} onClick={() => handleRemoveTool(tool)}>{tool}</Chip>
+                ))}
+              </Box>
+              <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
+                <Input
+                  placeholder={t("pages.addExam.fields.addTool")}
+                  value={currentTool}
+                  onChange={(e) => setCurrentTool(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddTool(); } }}
+                />
+                <Button onClick={handleAddTool}>{t("pages.addExam.addButton")}</Button>
+              </Box>
+            </FormControl>
+
+            <Button onClick={handleSubmit} sx={{ mt: 2 }}>{t("pages.addExam.saveButton")}</Button>
+          </Box>
+        </ModalDialog>
+      </Modal>
+
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        sx={{ width: "auto", maxWidth: "600px", padding: 0 }}
+      >
+        <Alert
+          color={snackbarColor}
+          variant="soft"
+          sx={{ width: "100%", borderRadius: 1, m: 0, py: 1, px: 2 }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 
