@@ -56,7 +56,7 @@ const AddExamModal = ({ open, setOpen, onAdd = () => { } }: { open: boolean; set
     setModuleCode("");
     setExamDate("");
     setRoom("");
-    setExamType("");
+    setExamType("KLAUSUR");
     setSemester("");
     setEcts(5);
     setMaxPoints(100);
@@ -178,6 +178,7 @@ const AddExamModal = ({ open, setOpen, onAdd = () => { } }: { open: boolean; set
                   <Option value="MUENDLICH">{t("pages.addExam.examTypes.muendlich")}</Option>
                   <Option value="PROJEKT">{t("pages.addExam.examTypes.projekt")}</Option>
                   <Option value="PRAESENTATION">{t("pages.addExam.examTypes.praesentation")}</Option>
+                  <Option value="ANDERES">{t("pages.addExam.examTypes.other")}</Option>
                 </Select>
               </FormControl>
 

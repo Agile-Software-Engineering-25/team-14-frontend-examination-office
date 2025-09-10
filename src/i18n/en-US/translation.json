@@ -34,7 +34,8 @@
         "klausur": "Exam",
         "muendlich": "Oral",
         "projekt": "Project",
-        "praesentation": "Presentation"
+        "praesentation": "Presentation",
+        "other": "Other"
       },
       "attempts": {
         "1": "1st Attempt",

@@ -172,6 +172,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
                   <Option value="MUENDLICH">{t("pages.addExam.examTypes.muendlich")}</Option>
                   <Option value="PROJEKT">{t("pages.addExam.examTypes.projekt")}</Option>
                   <Option value="PRAESENTATION">{t("pages.addExam.examTypes.praesentation")}</Option>
+                  <Option value="ANDERES">{t("pages.addExam.examTypes.other")}</Option>
                 </Select>
               </FormControl>
 
