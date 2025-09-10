@@ -26,7 +26,7 @@ const AddExamModal = ({ open, setOpen, onAdd = () => { } }: { open: boolean; set
   const [moduleCode, setModuleCode] = useState("");
   const [examDate, setExamDate] = useState("");
   const [room, setRoom] = useState("");
-  const [examType, setExamType] = useState("");
+  const [examType, setExamType] = useState("KLAUSUR");
   const [semester, setSemester] = useState("");
   const [ects, setEcts] = useState(5);
   const [maxPoints, setMaxPoints] = useState(100);

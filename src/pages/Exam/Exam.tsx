@@ -16,7 +16,7 @@ const mockExam = {
   moduleCode: "KFTA23",
   examDate: "2026-01-01T00:01",
   room: "-",
-  examType: "Projekt",
+  examType: "PROJEKT",
   semester: "5",
   ects: 30,
   maxPoints: 1234,
