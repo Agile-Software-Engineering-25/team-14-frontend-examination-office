@@ -7,6 +7,7 @@ import './i18n';
 import { Provider } from 'react-redux';
 import store from '@stores/index.ts';
 import VerticalMenu from './Menu.tsx';
+import './global.css';
 
 const theme = createCustomTheme({
   colorSchemes: {
@@ -48,7 +49,7 @@ function App({ basename }: AppProps) {
               }}
             >
               <VerticalMenu />
-              <div style={{ flex: 1, overflow: 'auto' }}>
+              <div style={{ flex: 1 }}>
                 <RoutingComponent />
               </div>
             </div>
