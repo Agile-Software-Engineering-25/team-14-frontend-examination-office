@@ -1,4 +1,4 @@
-import { Box, Input, Table, Typography } from '@mui/joy';
+import { Box, Input, Table, Typography, Select, Option } from '@mui/joy';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,21 +19,57 @@ type ExamsOverviewProps = {
 const columns = 5;
 
 const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
-
   const { t } = useTranslation();
+
   const [rowsPerPage, setRowsPerPage] = useState<number>(5);
   const [page, setPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>('');
+  const [filterType, setFilterType] = useState<'All' | Exam['examType']>('All');
 
-  const total = exams.length;
+  // Filter + search
+  const filteredExams = exams.filter((exam) => {
+    const matchesSearch =
+      exam.title.toLowerCase().includes(search.toLowerCase()) ||
+      exam.modul.toLowerCase().includes(search.toLowerCase()) ||
+      exam.professor.toLowerCase().includes(search.toLowerCase());
+
+    const matchesFilter =
+      filterType === 'All' ? true : exam.examType === filterType;
+
+    return matchesSearch && matchesFilter;
+  });
+
+  const total = filteredExams.length;
   const totalPages = total === 0 ? 0 : Math.ceil(total / Math.max(1, rowsPerPage));
   const currentPage = totalPages === 0 ? 0 : Math.min(Math.max(1, page), totalPages);
 
   const start = totalPages === 0 ? 0 : (currentPage - 1) * rowsPerPage;
   const end = totalPages === 0 ? 0 : Math.min(start + rowsPerPage, total);
-  const pageItems = exams.slice(start, end);
+  const pageItems = filteredExams.slice(start, end);
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: '100%', p:0, m:0 }}>
+      {/* Search + Filter Controls */}
+      <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+        <Input
+          placeholder="Suche nach Titel, Modul oder Professor..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ flex: 1, minWidth: 200 }}
+        />
+        <Select
+          value={filterType}
+          onChange={(_, value) => setFilterType(value as any)}
+          sx={{ minWidth: 150 }}
+        >
+          <Option value="All">Alle</Option>
+          <Option value="Klausur">Klausur</Option>
+          <Option value="WAB">WAB</Option>
+          <Option value="Präsentation">Präsentation</Option>
+          <Option value="Mündliche Prüfung">Mündliche Prüfung</Option>
+        </Select>
+      </Box>
+
       <Table
         aria-label={'Exams Overview'}
         borderAxis="x"
@@ -45,7 +81,7 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
         hoverRow
         sx={(theme) => ({
           '& tbody tr:hover, & tbody tr:hover > td': {
-            backgroundColor: `rgba(${theme.vars.palette.neutral.mainChannel} / 0.06)`, // 6% opacity
+            backgroundColor: `rgba(${theme.vars.palette.neutral.mainChannel} / 0.06)`,
           },
         })}
       >
@@ -78,9 +114,9 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
               </td>
             </tr>
           ))}
-          {exams.length === 0 && (
+          {filteredExams.length === 0 && (
             <tr>
-              <td colSpan={4}>
+              <td colSpan={columns}>
                 <Box sx={{ p: 2, textAlign: 'center', opacity: 0.7 }}>
                   <Typography level="body-sm">No exams to display.</Typography>
                 </Box>
@@ -111,8 +147,7 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
                     value={rowsPerPage}
                     onChange={(e) => {
                       const n = Number(e.target.value);
-                      const next =
-                        Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
+                      const next = Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
                       setRowsPerPage(next);
                     }}
                     sx={{ width: 50 }}
@@ -124,9 +159,7 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
                   <Input
                     size="sm"
                     type="number"
-                    slotProps={{
-                      input: { min: 0, max: Math.max(0, totalPages) },
-                    }}
+                    slotProps={{ input: { min: 1, max: Math.max(1, totalPages) } }}
                     value={currentPage}
                     disabled={totalPages === 0}
                     onChange={(e) => {
@@ -136,7 +169,9 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
                     }}
                     sx={{ width: 50 }}
                   />
-                  <Typography level="body-sm">{t('pages.exams.footer.of')} {totalPages}</Typography>
+                  <Typography level="body-sm">
+                    {t('pages.exams.footer.of')} {totalPages}
+                  </Typography>
                 </Box>
               </Box>
             </td>
@@ -146,4 +181,5 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
     </Box>
   );
 };
+
 export default ExamsOverview;

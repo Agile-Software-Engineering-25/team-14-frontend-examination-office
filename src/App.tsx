@@ -6,6 +6,7 @@ import { CssVarsProvider as JoyCssVarsProvider } from '@mui/joy';
 import './i18n';
 import { Provider } from 'react-redux';
 import store from '@stores/index.ts';
+import VerticalMenu from './Menu.tsx';
 
 const theme = createCustomTheme({
   colorSchemes: {
@@ -38,7 +39,19 @@ function App({ basename }: AppProps) {
       <ThemeProvider theme={{ [MATERIAL_THEME_ID]: theme }}>
         <JoyCssVarsProvider>
           <BrowserRouter basename={basename}>
-            <RoutingComponent />
+            <div
+              style={{
+                display: 'flex',
+                height: '100vh',
+                margin: 0,
+                padding: 0,
+              }}
+            >
+              <VerticalMenu />
+              <div style={{ flex: 1, overflow: 'auto' }}>
+                <RoutingComponent />
+              </div>
+            </div>
           </BrowserRouter>
         </JoyCssVarsProvider>
       </ThemeProvider>
