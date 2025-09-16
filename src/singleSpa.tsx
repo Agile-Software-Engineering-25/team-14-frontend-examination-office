@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
 import { cssLifecycleFactory } from 'vite-plugin-single-spa/ex';
+import App from './App';
+import { setGlobalUser } from './hooks/useUser';
 
 const lifecycle = singleSpaReact({
   React,
@@ -10,12 +12,15 @@ const lifecycle = singleSpaReact({
     const message = err instanceof Error ? err.message : String(err);
     return <div>Error: {message}</div>;
   },
-  // use loadRootComponent attribute, instead of rootComponent, to ensure preamble code is injected into the root component before mounting.
-  // see vite.config.ts for details on the preamble.
-  // @ts-expect-error weird type bugging
-  loadRootComponent: async () => {
-    const { default: App } = await import('./App');
-    return App;
+  rootComponent: (props: any) => {
+    // Extract user from props and set it globally
+    const { user, ...appProps } = props;
+
+    // Set user data globally for the hook
+    setGlobalUser(user);
+
+    // Pass only non-user props to App
+    return <App {...appProps} />;
   },
 });
 // IMPORTANT:  Because the file is named spa.tsx, the string 'spa'

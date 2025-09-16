@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Typography } from '@mui/joy';
+import { Box, Button, ButtonGroup } from '@mui/joy';
 import { useTranslation } from 'react-i18next';
 
 const LanguageSelectorComponent = () => {
@@ -7,11 +7,19 @@ const LanguageSelectorComponent = () => {
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
       <ButtonGroup>
-        <Button onClick={() => i18n.changeLanguage('en-US')}>
-          <Typography>English</Typography>
+        <Button
+          onClick={() => i18n.changeLanguage('en-US')}
+          variant="solid"
+          color={i18n.language === 'en-US' ? 'primary' : 'neutral'}
+        >
+          English
         </Button>
-        <Button onClick={() => i18n.changeLanguage('de-DE')}>
-          <Typography>Deutsch</Typography>
+        <Button
+          variant="solid"
+          color={i18n.language === 'de-DE' ? 'primary' : 'neutral'}
+          onClick={() => i18n.changeLanguage('de-DE')}
+        >
+          Deutsch
         </Button>
       </ButtonGroup>
     </Box>

@@ -3,7 +3,8 @@
     "home": {
       "title": "Startseite",
       "description": "Das ist das frontend-template Projekt. Hier werden die Technologien und Tools vorgestellt, die in diesem Projekt verwendet werden.",
-      "weatherButton": "WETTER"
+      "weatherButton": "WETTER",
+      "welcomeMessage": "Willkommen, {{name}}!"
     },
     "weather": {
       "title": "Wetter",
