@@ -46,17 +46,6 @@ const Home = () => {
   const [switchChecked, setSwitchChecked] = useState(true);
 
   return (
-<<<<<<< HEAD
-    <Box sx={{ padding: 2, maxWidth: 700, mx: 'auto' }}>
-      <Typography>{t('pages.home.title')}</Typography>
-      <Button onClick={() => navigate('/weather')}>
-        {t('pages.home.weatherButton')}
-      </Button>
-      <Button onClick={() => navigate("/exam/add")}>
-        Prüfungsseite
-      </Button>
-      <LanguageSelectorComponent />
-=======
     <Box sx={{ padding: 2, maxWidth: 1200, mx: 'auto' }}>
       {/* Header Section */}
       <Box sx={{ mb: 4 }}>
@@ -422,7 +411,6 @@ const Home = () => {
           </Stack>
         </ModalDialog>
       </Modal>
->>>>>>> b0dd09f6fc12e3ffc04404f58e0eed20f5bb97ff
     </Box>
   );
 };
