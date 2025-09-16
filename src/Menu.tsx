@@ -10,6 +10,8 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import ContactMailRoundedIcon from "@mui/icons-material/ContactMailRounded";
+import LanguageSelectorComponent from "./components/LanguageSelectorComponent/LanguageSelectorComponent";
+import TmpThemeSelectorComponent from "./components/TmpThemeSelectorComponent/TmpThemeSelectorComponent";
 
 export default function VerticalMenu() {
   const navigate = useNavigate();
@@ -56,6 +58,8 @@ export default function VerticalMenu() {
             </ListItemButton>
           </ListItem>
         ))}
+                  <LanguageSelectorComponent />
+                  <TmpThemeSelectorComponent />
       </List>
     </Box>
   );
