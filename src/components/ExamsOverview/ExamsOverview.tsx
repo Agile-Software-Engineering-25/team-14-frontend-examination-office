@@ -21,7 +21,7 @@ const columns = 5;
 const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
   const { t } = useTranslation();
 
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [filterType, setFilterType] = useState<'All' | Exam['examType']>('All');

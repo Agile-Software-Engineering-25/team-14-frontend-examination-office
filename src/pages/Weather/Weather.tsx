@@ -15,8 +15,8 @@ const Weather = () => {
 
   return (
     <Box sx={{ padding: 2, maxWidth: 700, mx: 'auto' }}>
-      <Typography>{t('pages.weather.title')}</Typography>
-      <Typography>{t('pages.weather.description')}</Typography>
+      <Typography level="h3">{t('pages.weather.title')}</Typography>
+      <Typography level="body-sm">{t('pages.weather.description')}</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
         <Button
           color="neutral"
@@ -32,8 +32,10 @@ const Weather = () => {
           {t('pages.weather.getWeatherButton')}
         </Button>
       </Box>
-      <Typography>{t('pages.weather.weatherHeader')}:</Typography>
-      <Typography>
+      <Typography level="body-md">
+        {t('pages.weather.weatherHeader')}:
+      </Typography>
+      <Typography level="body-md">
         {t('pages.weather.temperature')}: {weather.temperature} °C
       </Typography>
       <LanguageSelectorComponent />
