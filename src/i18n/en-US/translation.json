@@ -3,7 +3,8 @@
     "home": {
       "title": "Home",
       "description": "This is the frontend-template project. Here you can find the technologies and tools used in this project.",
-      "weatherButton": "WEATHER"
+      "weatherButton": "WEATHER",
+      "welcomeMessage": "Welcome, {{name}}!"
     },
     "weather": {
       "title": "Weather",
