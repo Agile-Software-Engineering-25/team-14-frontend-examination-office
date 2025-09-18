@@ -1,18 +1,11 @@
-import { Box, Input, Table, Typography, Select, Option } from '@mui/joy';
+import ExamCreationModal from '@/pages/Exam/Exam';
+import { Box, Input, Table, Typography, } from '@mui/joy';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-export type Exam = {
-  id: string;
-  modul: string;
-  title: string;
-  date: string;
-  professor: string;
-  examType?: 'WAB' | 'Klausur' | 'Präsentation' | 'Mündliche Prüfung';
-};
+import type { Exam } from '@/@types/exam';
 
 type ExamsOverviewProps = {
-  exams: Exam[];
+  exams: Exam[];  
   onSelect?: (exam: Exam) => void;
 };
 
@@ -24,19 +17,17 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
-  const [filterType, setFilterType] = useState<'All' | Exam['examType']>('All');
 
   // Filter + search
   const filteredExams = exams.filter((exam) => {
     const matchesSearch =
       exam.title.toLowerCase().includes(search.toLowerCase()) ||
-      exam.modul.toLowerCase().includes(search.toLowerCase()) ||
-      exam.professor.toLowerCase().includes(search.toLowerCase());
+  exam.moduleCode.toLowerCase().includes(search.toLowerCase()) ||
+  exam.room.toLowerCase().includes(search.toLowerCase()) ||
+  exam.semester.toLowerCase().includes(search.toLowerCase());
 
-    const matchesFilter =
-      filterType === 'All' ? true : exam.examType === filterType;
 
-    return matchesSearch && matchesFilter;
+    return matchesSearch;
   });
 
   const total = filteredExams.length;
@@ -57,17 +48,7 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
           onChange={(e) => setSearch(e.target.value)}
           sx={{ flex: 1, minWidth: 200 }}
         />
-        <Select
-          value={filterType}
-          onChange={(_, value) => setFilterType(value as any)}
-          sx={{ minWidth: 150 }}
-        >
-          <Option value="All">Alle</Option>
-          <Option value="Klausur">Klausur</Option>
-          <Option value="WAB">WAB</Option>
-          <Option value="Präsentation">Präsentation</Option>
-          <Option value="Mündliche Prüfung">Mündliche Prüfung</Option>
-        </Select>
+       <ExamCreationModal />
       </Box>
 
       <Table
@@ -101,13 +82,13 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
                 <Typography level="title-sm">{exam.title}</Typography>
               </td>
               <td>
-                <Typography level="body-sm">{exam.modul}</Typography>
+                <Typography level="body-sm">{exam.moduleCode}</Typography>
               </td>
               <td>
-                <Typography level="body-sm">{exam.date}</Typography>
+                <Typography level="body-sm">{exam.examDate}</Typography>
               </td>
               <td>
-                <Typography level="body-sm">{exam.professor}</Typography>
+                <Typography level="body-sm">{exam.room}</Typography>
               </td>
               <td>
                 <Typography level="body-sm">{exam.examType}</Typography>

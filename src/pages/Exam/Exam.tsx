@@ -1,8 +1,6 @@
-import LanguageSelectorComponent from "@/components/LanguageSelectorComponent/LanguageSelectorComponent";
 import { 
   Box, 
   Button,
-  Typography
 } from "@mui/joy";
 import { useState } from "react";
 import AddExamModal from "./AddExamModal";
@@ -32,19 +30,17 @@ const ExamCreationModal = () => {
   const { t } = useTranslation();
 
   return (
-    <Box sx={{ padding: 2, maxWidth: 700, mx: "auto" }}>
-      <Typography level="h4">Prüfungskomponenten</Typography>
+    <Box sx={{ padding: 1, maxWidth: 700, mx: "auto", gap: 2, display: 'flex', alignItems: 'center' }}>
       <Button onClick={() => setAddModalOpen(true)} sx={{ mt: 2 }}>
-        {t("pages.addExam.button")}
+        {t("pages.exams.addExam.button")}
       </Button>
       <Button onClick={()=> setEditModalOpen(true)} sx={{ mt: 2 }}>
-        {t("pages.editExam.button")}
+        {t("pages.exams.editExam.button")}
       </Button>
 
       <AddExamModal open={addModalOpen} setOpen={setAddModalOpen} onAdd={(url: string)=>{console.log('added', url)}} />
       <EditExamModal open={editModalOpen} setOpen={setEditModalOpen} onSave={(exam)=>{console.log("Saving exam", exam)}} exam={mockExam} />
 
-      <LanguageSelectorComponent />
     </Box>
   );
 };

@@ -59,7 +59,6 @@ function App(props: AppProps) {
               <VerticalMenu />
               <div style={{ flex: 1 }}>
                 <RoutingComponent />
-                <GlobalControls />
               </div>
             </div>
           </BrowserRouter>
