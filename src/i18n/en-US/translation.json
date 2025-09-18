@@ -13,47 +13,62 @@
       "weatherHeader": "Current Weather",
       "temperature": "Temperature"
     },
-    "addExam": {
-      "button": "Add Exam",
-      "title": "Add New Exam",
-      "fields": {
+    "exams": {
+      "title": "Exams Overview",
+      "table": {
         "title": "Title",
-        "moduleCode": "Module Code",
-        "examDate": "Date",
-        "room": "Room",
-        "examType": "Exam Type",
-        "semester": "Semester",
-        "ects": "ECTS",
-        "maxPoints": "Max Points",
-        "duration": "Duration (minutes)",
-        "attempt": "Attempt",
-        "fileUploadRequired": "File Upload Required",
-        "tools": "Tools",
-        "addTool": "New Tool"
+        "module": "Module",
+        "date": "Date",
+        "professor": "Professor",
+        "type": "Exam Type",
+        "actions": "Actions"
       },
-      "examTypes": {
-        "klausur": "Exam",
-        "muendlich": "Oral",
-        "projekt": "Project",
-        "praesentation": "Presentation",
-        "other": "Other"
+      "footer": {
+        "itemsPerPage": "Number of items",
+        "page": "Page",
+        "of": "of"
       },
-      "attempts": {
-        "1": "1st Attempt",
-        "2": "2nd Attempt",
-        "3": "3rd Attempt"
+      "addExam": {
+        "button": "Add Exam",
+        "title": "Add New Exam",
+        "fields": {
+          "title": "Title",
+          "moduleCode": "Module Code",
+          "examDate": "Date",
+          "room": "Room",
+          "examType": "Exam Type",
+          "semester": "Semester",
+          "ects": "ECTS",
+          "maxPoints": "Max Points",
+          "duration": "Duration (minutes)",
+          "attempt": "Attempt",
+          "fileUploadRequired": "File Upload Required",
+          "tools": "Tools",
+          "addTool": "New Tool"
+        },
+        "examTypes": {
+          "klausur": "Exam",
+          "muendlich": "Oral",
+          "projekt": "Project",
+          "praesentation": "Presentation",
+          "other": "Other"
+        },
+        "attempts": {
+          "1": "1st Attempt",
+          "2": "2nd Attempt",
+          "3": "3rd Attempt"
+        },
+        "addButton": "Add",
+        "saveButton": "Save",
+        "success": "Exam added successfully!",
+        "error": "Error adding exam"
       },
-      "addButton": "Add",
-      "saveButton": "Save",
-      "success": "Exam added successfully!",
-      "error": "Error adding exam"
-    }
-    ,
-    "editExam": {
-      "button": "Edit Exam",
-      "title": "Edit exam",
-      "success": "Exam successfully edited!",
-      "error": "Failed to edit exam"
+      "editExam": {
+        "button": "Edit Exam",
+        "title": "Edit exam",
+        "success": "Exam successfully edited!",
+        "error": "Failed to edit exam"
+      }
     }
   }
 }
