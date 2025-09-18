@@ -24,29 +24,35 @@ import {
   Grid,
   Divider,
 } from '@mui/joy';
+import type { ColorPaletteProp } from '@mui/joy/styles';
+
+type ComponentShowcaseProps = {
+  color: ColorPaletteProp;
+};
 
 const JoyColorShowcase = () => {
-  // Joy UI's 5 default color palettes
-  const colors = ['primary', 'neutral', 'danger', 'success', 'warning'];
+  const colors: ColorPaletteProp[] = [
+    'primary',
+    'neutral',
+    'danger',
+    'success',
+    'warning',
+  ];
+  const variants = ['solid', 'soft', 'outlined', 'plain'] as const;
 
-  // Joy UI's 4 global variants
-  const variants = ['solid', 'soft', 'outlined', 'plain'];
-
-  const ComponentShowcase = ({ color }) => (
+  const ComponentShowcase = ({ color }: ComponentShowcaseProps) => (
     <Card sx={{ mb: 3 }}>
       <CardContent>
         <Typography level="h3" sx={{ mb: 2, textTransform: 'capitalize' }}>
           {color} Color Palette
         </Typography>
-
-        {/* Buttons with all variants */}
         <Box sx={{ mb: 3 }}>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Buttons:
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap">
             {variants.map((variant) => (
-              <Button key={variant} color={color} variant={variant}>
+              <Button key={variant} color={color} variant={variant} size="sm">
                 {variant}
               </Button>
             ))}
@@ -58,8 +64,6 @@ const JoyColorShowcase = () => {
             </Button>
           </Stack>
         </Box>
-
-        {/* Chips */}
         <Box sx={{ mb: 3 }}>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Chips:
@@ -72,8 +76,6 @@ const JoyColorShowcase = () => {
             ))}
           </Stack>
         </Box>
-
-        {/* Icon Buttons */}
         <Box sx={{ mb: 3 }}>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Icon Buttons:
@@ -86,8 +88,6 @@ const JoyColorShowcase = () => {
             ))}
           </Stack>
         </Box>
-
-        {/* Alerts */}
         <Box sx={{ mb: 3 }}>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Alerts:
@@ -100,8 +100,6 @@ const JoyColorShowcase = () => {
             ))}
           </Stack>
         </Box>
-
-        {/* Badges */}
         <Box sx={{ mb: 3 }}>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Badges:
@@ -119,8 +117,6 @@ const JoyColorShowcase = () => {
             ))}
           </Stack>
         </Box>
-
-        {/* Progress Indicators */}
         <Box sx={{ mb: 3 }}>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Progress:
@@ -140,8 +136,6 @@ const JoyColorShowcase = () => {
             </Box>
           </Stack>
         </Box>
-
-        {/* Form Elements */}
         <Box sx={{ mb: 3 }}>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Form Elements:
@@ -165,8 +159,6 @@ const JoyColorShowcase = () => {
             </Stack>
           </Stack>
         </Box>
-
-        {/* Links */}
         <Box>
           <Typography level="body-md" sx={{ mb: 1 }}>
             Links:
@@ -188,7 +180,6 @@ const JoyColorShowcase = () => {
       <Typography level="h1" sx={{ mb: 4, textAlign: 'center' }}>
         Joy UI Complete Color System
       </Typography>
-
       <Typography level="body-lg" sx={{ mb: 4, textAlign: 'center' }}>
         Joy UI includes 5 built-in semantic color palettes:{' '}
         <strong>primary</strong>, <strong>neutral</strong>,{' '}
@@ -197,8 +188,6 @@ const JoyColorShowcase = () => {
         <strong>solid</strong>, <strong>soft</strong>, <strong>outlined</strong>
         , and <strong>plain</strong>.
       </Typography>
-
-      {/* Color Palette Overview */}
       <Card sx={{ mb: 4 }}>
         <CardContent>
           <Typography level="h2" sx={{ mb: 3 }}>
@@ -230,10 +219,7 @@ const JoyColorShowcase = () => {
           </Grid>
         </CardContent>
       </Card>
-
       <Divider sx={{ my: 4 }} />
-
-      {/* Detailed showcase for each color */}
       {colors.map((color) => (
         <ComponentShowcase key={color} color={color} />
       ))}
