@@ -6,8 +6,7 @@ import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
 import type { Exam } from '@custom-types/exam';
 
 const useApi = () => {
-  // const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
-  const axiosInstance = useAxiosInstance('http://localhost:8080/');
+  const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
 
   const getCurrentWeather = useCallback(
     async (latitude: number, longitude: number, units: Units) => {

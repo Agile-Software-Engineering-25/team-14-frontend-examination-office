@@ -77,22 +77,6 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
     setTools(tools.filter(t => t !== tool));
   };
 
-  const resetForm = () => {
-    setTitle("");
-    setModuleCode("");
-    setExamDate("");
-    setRoom("");
-    setExamType("");
-    setSemester("");
-    setEcts(5);
-    setMaxPoints(100);
-    setDuration(90);
-    setAttemptNumber(1);
-    setFileUploadRequired(false);
-    setTools([]);
-    setCurrentTool("");
-  };
-
   const handleSave = async () => {
     const updatedExam = {
       ...exam,
@@ -116,7 +100,6 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       setSnackbarMessage(t("pages.editExam.success"));
       setSnackbarColor("success");
       setSnackbarOpen(true);
-      resetForm();
       setOpen(false);
     } catch (err: any) {
       let message = err.response?.data?.message || t("pages.editExam.error");

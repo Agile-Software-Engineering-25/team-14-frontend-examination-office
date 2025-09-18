@@ -1,0 +1,74 @@
+name: Build and Deploy to MinIO
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clear shared components dir
+        run: |
+          rm -rf ./shared-components/*
+          rm -rf ./shared-components/.[!.]* ./shared-components/..?* || true
+
+      - name: Setup Shared Components
+        run: npm run init
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_BACKEND_BASE_URL: ${{ vars.VITE_BACKEND_BASE_URL }}
+
+      - name: Setup MinIO Client
+        run: |
+          curl https://dl.min.io/aistor/mc/release/linux-amd64/mc \
+            --create-dirs \
+            -o $HOME/minio-binaries/mc
+          chmod +x $HOME/minio-binaries/mc
+          export PATH=$PATH:$HOME/minio-binaries/
+
+      - name: Configure MinIO Client
+        run: |
+          $HOME/minio-binaries/mc alias set minio \
+            ${{ secrets.MINIO_ENDPOINT }} \
+            ${{ secrets.MINIO_ACCESS_KEY }} \
+            ${{ secrets.MINIO_SECRET_KEY }}
+
+      - name: Clear existing files in bucket
+        run: |
+          $HOME/minio-binaries/mc rm --recursive --force minio/${{ secrets.BUCKET_NAME }} || echo "No existing files to remove"
+
+      - name: Upload dist files to MinIO
+        run: |
+          $HOME/minio-binaries/mc cp --recursive dist/ minio/${{ secrets.BUCKET_NAME }}
+
+      - name: Set bucket to public (optional)
+        run: |
+          $HOME/minio-binaries/mc anonymous set public minio/${{ secrets.BUCKET_NAME }} || echo "Could not set public access - check permissions"
+
+      - name: List uploaded files
+        run: |
+          echo "Files uploaded to MinIO:"
+          $HOME/minio-binaries/mc ls --recursive minio/${{ secrets.BUCKET_NAME }}
+
+      - name: Deploy Summary
+        run: |
+          echo "🚀 Deployment completed successfully!"
+          echo "📦 Files uploaded from ./dist to minio/${{secrets.BUCKET_NAME}} bucket"
+          echo "🌐 Application should be available at your MinIO endpoint"
