@@ -15,9 +15,9 @@ import {
   Snackbar,
   Alert,
 } from '@mui/joy';
-import axios from 'axios';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useApi from '@/hooks/useApi'; // ✅ import your hook
 
 const AddExamModal = ({
   open,
@@ -29,6 +29,7 @@ const AddExamModal = ({
   onAdd?: CallableFunction;
 }) => {
   const { t } = useTranslation();
+  const { addExam } = useApi(); // ✅ use the hook
 
   const [title, setTitle] = useState('');
   const [moduleCode, setModuleCode] = useState('');
@@ -94,15 +95,13 @@ const AddExamModal = ({
     };
 
     try {
-      const res = await axios.post('http://localhost:8080/api/exams', newExam);
-      if (res.status === 201) {
-        setSnackbarMessage(t('pages.exams.addExam.success'));
-        setSnackbarColor('success');
-        setSnackbarOpen(true);
-        resetForm();
-        setOpen(false);
-        onAdd(res.data);
-      }
+      const res = await addExam(newExam);
+      setSnackbarMessage(t('pages.exams.addExam.success'));
+      setSnackbarColor('success');
+      setSnackbarOpen(true);
+      resetForm();
+      setOpen(false);
+      onAdd(res);
     } catch (err: any) {
       let message =
         err.response?.data?.message || t('pages.exams.addExam.error');
