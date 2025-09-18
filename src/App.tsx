@@ -15,7 +15,6 @@ import { Provider } from 'react-redux';
 import store from '@stores/index.ts';
 import VerticalMenu from './Menu.tsx';
 import './global.css';
-import GlobalControls from '@components/GlobalControls/GlobalControls';
 
 const joyTheme = createCustomJoyTheme();
 const muiTheme = createCustomMuiTheme();

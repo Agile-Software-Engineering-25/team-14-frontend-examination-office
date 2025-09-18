@@ -7,7 +7,7 @@ import type { Exam } from '@/@types/exam';
 
 const useApi = () => {
   // const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
-  const axiosInstance = useAxiosInstance("http://localhost:8080/");
+  const axiosInstance = useAxiosInstance('http://localhost:8080/');
 
   const getCurrentWeather = useCallback(
     async (latitude: number, longitude: number, units: Units) => {

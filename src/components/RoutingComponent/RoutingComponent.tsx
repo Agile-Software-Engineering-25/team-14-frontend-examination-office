@@ -8,7 +8,7 @@ const RoutingComponent = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/weather" element={<Weather />} />
-      <Route path="/exams" element={<Exams/>}/>
+      <Route path="/exams" element={<Exams />} />
     </Routes>
   );
 };

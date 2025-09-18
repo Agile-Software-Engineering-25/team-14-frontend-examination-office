@@ -28,7 +28,7 @@ export const useUser = () => {
 
   const getUserId = (): string => {
     return user?.profile.sub ?? '';
-  }
+  };
 
   const getFirstName = (): string => {
     return user?.profile.given_name ?? '';
