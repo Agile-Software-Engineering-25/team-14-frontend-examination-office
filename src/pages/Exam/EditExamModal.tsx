@@ -18,7 +18,7 @@ import {
 import { useState, useEffect } from "react";
 import type { Exam } from "@custom-types/exam";
 import { useTranslation } from "react-i18next";
-import useApi from "@/hooks/useApi";
+import useApi from "@hooks/useApi";
 
 interface EditExamModalProps {
   open: boolean;

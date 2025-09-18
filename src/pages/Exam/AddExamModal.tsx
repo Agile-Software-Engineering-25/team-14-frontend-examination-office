@@ -17,7 +17,7 @@ import {
 } from '@mui/joy';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useApi from '@/hooks/useApi';
+import useApi from '@hooks/useApi';
 
 const AddExamModal = ({
   open,

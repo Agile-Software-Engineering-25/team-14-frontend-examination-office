@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/joy';
 import { useTranslation } from 'react-i18next';
 import ExamsOverview from '@components/ExamsOverview/ExamsOverview.tsx';
-import useApi from '@/hooks/useApi';
+import useApi from '@hooks/useApi';
 import { useEffect, useState } from 'react';
 import type { Exam } from '@custom-types/exam';
 import LanguageSelectorComponent from '@components/LanguageSelectorComponent/LanguageSelectorComponent';

@@ -4,8 +4,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
-import EditExamModal from '@/pages/Exam/EditExamModal';
-import AddExamModal from '@/pages/Exam/AddExamModal';
+import EditExamModal from '@pages/Exam/EditExamModal';
+import AddExamModal from '@pages/Exam/AddExamModal';
 
 type ExamsOverviewProps = {
   exams: Exam[];
