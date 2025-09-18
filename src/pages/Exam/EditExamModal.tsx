@@ -113,13 +113,13 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
     try {
       const res = await updateExam(updatedExam);
       onSave(res);
-      setSnackbarMessage(t("pages.editExam.success"));
+  setSnackbarMessage(t("pages.exams.editExam.success"));
       setSnackbarColor("success");
       setSnackbarOpen(true);
       resetForm();
       setOpen(false);
     } catch (err: any) {
-      let message = err.response?.data?.message || t("pages.editExam.error");
+  let message = err.response?.data?.message || t("pages.exams.editExam.error");
 
       if (err.response?.data?.errors) {
         const errorDetails = Object.entries(err.response.data.errors)
@@ -139,67 +139,67 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog variant="outlined" sx={{ minWidth: "46%", maxWidth: "90%" }}>
           <ModalClose />
-          <Typography level="h4">{t("pages.editExam.title")}</Typography>
+          <Typography level="h4">{t("pages.exams.editExam.title")}</Typography>
 
           <Box component="form" sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
             <FormControl>
-              <FormLabel>{t("pages.addExam.fields.title")}</FormLabel>
+              <FormLabel>{t("pages.exams.addExam.fields.title")}</FormLabel>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </FormControl>
 
             <FormControl>
-              <FormLabel>{t("pages.addExam.fields.moduleCode")}</FormLabel>
+              <FormLabel>{t("pages.exams.addExam.fields.moduleCode")}</FormLabel>
               <Input value={moduleCode} onChange={(e) => setModuleCode(e.target.value)} />
             </FormControl>
 
             <Box sx={{ display: "flex", gap: 2 }}>
               <FormControl sx={{ flex: 1 }}>
-                <FormLabel>{t("pages.addExam.fields.examDate")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.examDate")}</FormLabel>
                 <Input type="datetime-local" value={examDate} onChange={(e) => setExamDate(e.target.value)} />
               </FormControl>
               <FormControl sx={{ flex: 1 }}>
-                <FormLabel>{t("pages.addExam.fields.room")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.room")}</FormLabel>
                 <Input value={room} onChange={(e) => setRoom(e.target.value)} />
               </FormControl>
             </Box>
 
             <Box sx={{ display: "flex", gap: 2 }}>
               <FormControl sx={{ flex: 1 }}>
-                <FormLabel>{t("pages.addExam.fields.examType")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.examType")}</FormLabel>
                 <Select value={examType} onChange={(_, val) => setExamType(val ?? "")}>
-                  <Option value="KLAUSUR">{t("pages.addExam.examTypes.klausur")}</Option>
-                  <Option value="MUENDLICH">{t("pages.addExam.examTypes.muendlich")}</Option>
-                  <Option value="PROJEKT">{t("pages.addExam.examTypes.projekt")}</Option>
-                  <Option value="PRAESENTATION">{t("pages.addExam.examTypes.praesentation")}</Option>
-                  <Option value="ANDERES">{t("pages.addExam.examTypes.other")}</Option>
+                  <Option value="KLAUSUR">{t("pages.exams.addExam.examTypes.klausur")}</Option>
+                  <Option value="MUENDLICH">{t("pages.exams.addExam.examTypes.muendlich")}</Option>
+                  <Option value="PROJEKT">{t("pages.exams.addExam.examTypes.projekt")}</Option>
+                  <Option value="PRAESENTATION">{t("pages.exams.addExam.examTypes.praesentation")}</Option>
+                  <Option value="ANDERES">{t("pages.exams.addExam.examTypes.other")}</Option>
                 </Select>
               </FormControl>
 
               <FormControl sx={{ flex: 1 }}>
-                <FormLabel>{t("pages.addExam.fields.semester")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.semester")}</FormLabel>
                 <Input value={semester} onChange={(e) => setSemester(e.target.value)} />
               </FormControl>
             </Box>
 
             <Box sx={{ display: "flex", gap: 2 }}>
               <FormControl>
-                <FormLabel>{t("pages.addExam.fields.ects")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.ects")}</FormLabel>
                 <Input type="number" value={ects} onChange={(e) => setEcts(Number(e.target.value))} />
               </FormControl>
               <FormControl>
-                <FormLabel>{t("pages.addExam.fields.maxPoints")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.maxPoints")}</FormLabel>
                 <Input type="number" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} />
               </FormControl>
               <FormControl>
-                <FormLabel>{t("pages.addExam.fields.duration")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.duration")}</FormLabel>
                 <Input type="number" value={duration} onChange={(e) => setDuration(Number(e.target.value))} />
               </FormControl>
               <FormControl>
-                <FormLabel>{t("pages.addExam.fields.attempt")}</FormLabel>
+                <FormLabel>{t("pages.exams.addExam.fields.attempt")}</FormLabel>
                 <Select value={attemptNumber} onChange={(_, val) => setAttemptNumber(Number(val))}>
-                  <Option value={1}>{t("pages.addExam.attempts.1")}</Option>
-                  <Option value={2}>{t("pages.addExam.attempts.2")}</Option>
-                  <Option value={3}>{t("pages.addExam.attempts.3")}</Option>
+                  <Option value={1}>{t("pages.exams.addExam.attempts.1")}</Option>
+                  <Option value={2}>{t("pages.exams.addExam.attempts.2")}</Option>
+                  <Option value={3}>{t("pages.exams.addExam.attempts.3")}</Option>
                 </Select>
               </FormControl>
             </Box>
@@ -209,11 +209,11 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
                 checked={fileUploadRequired} 
                 onChange={(e) => setFileUploadRequired(e.target.checked)} 
               />
-              <FormLabel sx={{ ml: 1 }}>{t("pages.addExam.fields.fileUploadRequired")}</FormLabel>
+              <FormLabel sx={{ ml: 1 }}>{t("pages.exams.addExam.fields.fileUploadRequired")}</FormLabel>
             </FormControl>
 
             <FormControl>
-              <FormLabel>{t("pages.addExam.fields.tools")}</FormLabel>
+              <FormLabel>{t("pages.exams.addExam.fields.tools")}</FormLabel>
               <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}>
                 {tools.map((tool) => (
                   <Chip
@@ -228,16 +228,16 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
               </Box>
               <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
                 <Input
-                  placeholder={t("pages.addExam.fields.addTool")}
+                  placeholder={t("pages.exams.addExam.fields.addTool")}
                   value={currentTool}
                   onChange={(e) => setCurrentTool(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddTool(); }}}
                 />
-                <Button onClick={handleAddTool}>{t("pages.addExam.addButton")}</Button>
+                <Button onClick={handleAddTool}>{t("pages.exams.addExam.addButton")}</Button>
               </Box>
             </FormControl>
 
-            <Button onClick={handleSave} sx={{ mt: 2 }}>{t("pages.addExam.saveButton")}</Button>
+            <Button onClick={handleSave} sx={{ mt: 2 }}>{t("pages.exams.addExam.saveButton")}</Button>
           </Box>
         </ModalDialog>
       </Modal>

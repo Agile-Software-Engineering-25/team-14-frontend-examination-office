@@ -22,9 +22,9 @@ const Exams = () => {
   return (
     <Box
       sx={{
-        maxWidth: '100vw',
+        maxWidth: '100%',
         width: '100%',
-        minHeight: '100vh',
+        minHeight: '100%',
         display: 'flex',
         flexDirection: 'column',
         gap: 3,
