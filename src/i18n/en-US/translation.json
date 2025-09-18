@@ -20,7 +20,8 @@
         "module": "Module",
         "date": "Date",
         "professor": "Professor",
-        "type": "Exam Type"
+        "type": "Exam Type",
+        "actions": "Actions"
       },
       "footer": {
         "itemsPerPage": "Number of items",

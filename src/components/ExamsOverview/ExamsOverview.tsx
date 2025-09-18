@@ -1,15 +1,18 @@
-import ExamCreationModal from '@/pages/Exam/Exam';
-import { Box, Input, Table, Typography, } from '@mui/joy';
+import { Box, Button, Input, Table, Typography } from '@mui/joy';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@/@types/exam';
+import EditExamModal from '@/pages/Exam/EditExamModal';
+import AddExamModal from '@/pages/Exam/AddExamModal';
 
 type ExamsOverviewProps = {
   exams: Exam[];  
   onSelect?: (exam: Exam) => void;
 };
 
-const columns = 5;
+const columns = 6;
 
 const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
   const { t } = useTranslation();
@@ -17,6 +20,8 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [addModalOpen, setAddModalOpen] = useState(false);
 
   // Filter + search
   const filteredExams = exams.filter((exam) => {
@@ -46,9 +51,11 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
           placeholder="Suche nach Titel, Modul oder Professor..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ flex: 1, minWidth: 200 }}
+          sx={{ flex: 1, minWidth: 200, maxHeight: 40 }}
         />
-       <ExamCreationModal />
+      <Button onClick={() => setEditModalOpen(true)} sx={{ height: 40 }}>{t("pages.exams.addExam.button")}</Button>
+      <AddExamModal open={addModalOpen} setOpen={setAddModalOpen} onAdd={(url: string)=>{console.log('added', url)}} />
+
       </Box>
 
       <Table
@@ -70,9 +77,10 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
           <tr>
             <th style={{ width: '35%' }}>{t('pages.exams.table.title')}</th>
             <th style={{ width: '15%' }}>{t('pages.exams.table.module')}</th>
-            <th style={{ width: '15%' }}>{t('pages.exams.table.date')}</th>
+            <th style={{ width: '10%' }}>{t('pages.exams.table.date')}</th>
             <th style={{ width: '20%' }}>{t('pages.exams.table.professor')}</th>
-            <th style={{ width: '15%' }}>{t('pages.exams.table.type')}</th>
+            <th style={{ width: '10%' }}>{t('pages.exams.table.type')}</th>
+            <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -92,6 +100,14 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
               </td>
               <td>
                 <Typography level="body-sm">{exam.examType}</Typography>
+              </td>
+              <td>
+                <Box sx={{ display: 'flex', gap: 1,}}>
+                  <EditIcon onClick={() => setEditModalOpen(true)} sx={{ cursor: 'pointer', color: 'primary.main' }} titleAccess={t('pages.exams.table.edit')} />
+                  <DeleteIcon onClick={() => alert("Sigma Sigma boy")} sx={{ cursor: 'pointer', color: 'darkred' }} titleAccess={t('pages.exams.table.delete')} />
+                   <EditExamModal open={editModalOpen} setOpen={setEditModalOpen} onSave={(exam)=>{console.log("Saving exam", exam)}} exam={exam} />
+
+                </Box>
               </td>
             </tr>
           ))}
@@ -115,9 +131,10 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
                   justifyContent: 'space-between',
                   gap: 2,
                   p: 0.5,
+                  width: '100%',
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, width: 'auto' }}>
                   <Typography level="body-sm">
                     {t('pages.exams.footer.itemsPerPage')}:
                   </Typography>
@@ -160,6 +177,7 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
         </tfoot>
       </Table>
     </Box>
+
   );
 };
 

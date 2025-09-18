@@ -20,7 +20,8 @@
         "module": "Modul",
         "date": "Datum",
         "professor": "Dozent",
-        "type": "Prüfungstyp"
+        "type": "Prüfungstyp",
+        "actions": "Aktionen"
       },
       "footer": {
         "itemsPerPage": "Anzahl der Einträge",
