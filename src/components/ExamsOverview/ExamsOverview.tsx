@@ -54,7 +54,7 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
           onChange={(e) => setSearch(e.target.value)}
           sx={{ flex: 1, minWidth: 200, maxHeight: 40 }}
         />
-        <Button onClick={() => setEditModalOpen(true)} sx={{ height: 40 }}>
+        <Button onClick={() => setAddModalOpen(true)} sx={{ height: 40 }}>
           {t('pages.exams.addExam.button')}
         </Button>
         <AddExamModal
