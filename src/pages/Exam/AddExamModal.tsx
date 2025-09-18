@@ -18,6 +18,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApi from '@hooks/useApi';
+import { isAxiosError } from 'axios';
 
 const AddExamModal = ({
   open,
@@ -102,15 +103,20 @@ const AddExamModal = ({
       resetForm();
       setOpen(false);
       onAdd(res);
-    } catch (err: any) {
-      let message =
-        err.response?.data?.message || t('pages.exams.addExam.error');
+    } catch (err: unknown) {
+      let message = t('pages.exams.addExam.error');
 
-      if (err.response?.data?.errors) {
-        const errorDetails = Object.entries(err.response.data.errors)
-          .map(([field, msg]) => `${field}: ${msg}`)
-          .join(', ');
-        message += ` - ${errorDetails}`;
+      if (isAxiosError(err)) {
+        message = err.response?.data?.message || message;
+
+        if (err.response?.data?.errors) {
+          const errorDetails = Object.entries(err.response.data.errors)
+            .map(([field, msg]) => `${field}: ${msg}`)
+            .join(', ');
+          message += ` - ${errorDetails}`;
+        } else {
+          message += ` - ${String(err)}`;
+        }
       }
 
       setSnackbarMessage(message);

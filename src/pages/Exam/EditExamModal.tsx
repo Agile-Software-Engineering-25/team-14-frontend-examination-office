@@ -19,6 +19,7 @@ import { useState, useEffect } from 'react';
 import type { Exam } from '@custom-types/exam';
 import { useTranslation } from 'react-i18next';
 import useApi from '@hooks/useApi';
+import { isAxiosError } from 'axios';
 
 interface EditExamModalProps {
   open: boolean;
@@ -103,15 +104,19 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       setSnackbarColor('success');
       setSnackbarOpen(true);
       setOpen(false);
-    } catch (err: any) {
-      let message =
-        err.response?.data?.message || t('pages.exams.editExam.error');
+    } catch (err: unknown) {
+      let message = t('pages.exams.editExam.error');
+      if (isAxiosError(err)) {
+        message =
+          (err as any).response?.data?.message ||
+          t('pages.exams.editExam.error');
 
-      if (err.response?.data?.errors) {
-        const errorDetails = Object.entries(err.response.data.errors)
-          .map(([field, msg]) => `${field}: ${msg}`)
-          .join(', ');
-        message += ` - ${errorDetails}`;
+        if ((err as any).response?.data?.errors) {
+          const errorDetails = Object.entries((err as any).response.data.errors)
+            .map(([field, msg]) => `${field}: ${msg}`)
+            .join(', ');
+          message += ` - ${errorDetails}`;
+        }
       }
 
       setSnackbarMessage(message);
