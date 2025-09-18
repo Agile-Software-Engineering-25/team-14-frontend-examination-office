@@ -29,7 +29,6 @@ const useApi = () => {
       const response = await axiosInstance.post('api/exams', newExam);
       return response.data as Exam;
     } catch (err: any) {
-      // rethrow full error so consumer can inspect details (status, response.data.errors, etc.)
       throw err;
     }
   }, [axiosInstance]);

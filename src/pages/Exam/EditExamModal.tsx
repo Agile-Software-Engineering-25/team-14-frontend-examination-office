@@ -17,8 +17,8 @@ import {
 } from "@mui/joy";
 import { useState, useEffect } from "react";
 import type { Exam } from "@custom-types/exam";
-import axios from "axios";
 import { useTranslation } from "react-i18next";
+import useApi from "@/hooks/useApi";
 
 interface EditExamModalProps {
   open: boolean;
@@ -29,6 +29,7 @@ interface EditExamModalProps {
 
 const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   const { t } = useTranslation();
+  const { updateExam } = useApi();
 
   const [title, setTitle] = useState("");
   const [moduleCode, setModuleCode] = useState("");
@@ -110,15 +111,13 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
     };
 
     try {
-      const res = await axios.put(`http://localhost:8080/api/exams/${exam.id}`, updatedExam);
-      if (res.status === 200) {
-        onSave(res.data);
-        setSnackbarMessage(t("pages.editExam.success"));
-        setSnackbarColor("success");
-        setSnackbarOpen(true);
-        resetForm();
-        setOpen(false);
-      }
+      const res = await updateExam(updatedExam);
+      onSave(res);
+      setSnackbarMessage(t("pages.editExam.success"));
+      setSnackbarColor("success");
+      setSnackbarOpen(true);
+      resetForm();
+      setOpen(false);
     } catch (err: any) {
       let message = err.response?.data?.message || t("pages.editExam.error");
 

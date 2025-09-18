@@ -17,7 +17,7 @@ import {
 } from '@mui/joy';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useApi from '@/hooks/useApi'; // ✅ import your hook
+import useApi from '@/hooks/useApi';
 
 const AddExamModal = ({
   open,
@@ -29,7 +29,7 @@ const AddExamModal = ({
   onAdd?: CallableFunction;
 }) => {
   const { t } = useTranslation();
-  const { addExam } = useApi(); // ✅ use the hook
+  const { addExam } = useApi();
 
   const [title, setTitle] = useState('');
   const [moduleCode, setModuleCode] = useState('');
