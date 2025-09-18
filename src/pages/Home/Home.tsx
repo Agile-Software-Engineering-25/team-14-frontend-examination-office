@@ -40,7 +40,7 @@ import { useState } from 'react';
 
 const Home = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [sliderValue, setSliderValue] = useState(30);
+  const [sliderValue, setSliderValue] = useState<number>(30);
   const [checkboxChecked, setCheckboxChecked] = useState(false);
   const [radioValue, setRadioValue] = useState('option1');
   const [switchChecked, setSwitchChecked] = useState(true);
@@ -74,7 +74,7 @@ const Home = () => {
             Note
           </Typography>
           <Typography color="warning" level="body-md">
-            Make sure to use i18n in you real project. For Sample check{' '}
+            Make sure to use i18n in your real project. For Sample check{' '}
             <Link href="/weather">Weather</Link> page.
           </Typography>
         </Alert>
@@ -180,7 +180,11 @@ const Home = () => {
                   </Typography>
                   <Slider
                     value={sliderValue}
-                    onChange={(_, value) => setSliderValue(value)}
+                    onChange={(_, value) =>
+                      setSliderValue(
+                        Array.isArray(value) ? value[0] : (value ?? 0)
+                      )
+                    }
                     min={0}
                     max={100}
                   />
@@ -219,10 +223,18 @@ const Home = () => {
                 Chips
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap">
-                <Chip color="primary">Primary</Chip>
-                <Chip color="success">Success</Chip>
-                <Chip color="warning">Warning</Chip>
-                <Chip color="danger">Danger</Chip>
+                <Chip color="primary" variant="solid">
+                  Primary
+                </Chip>
+                <Chip color="success" variant="solid">
+                  Success
+                </Chip>
+                <Chip color="warning" variant="solid">
+                  Warning
+                </Chip>
+                <Chip color="danger" variant="solid">
+                  Danger
+                </Chip>
                 <Chip color="neutral" variant="soft">
                   Neutral
                 </Chip>
@@ -387,8 +399,12 @@ const Home = () => {
             Breadcrumbs
           </Typography>
           <Breadcrumbs>
-            <Link href="#">Home</Link>
-            <Link href="#">Components</Link>
+            <Link href="#" variant="soft">
+              Home
+            </Link>
+            <Link href="#" variant="soft">
+              Components
+            </Link>
             <Typography>Demo</Typography>
           </Breadcrumbs>
         </CardContent>
