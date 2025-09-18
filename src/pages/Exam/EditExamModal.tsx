@@ -108,11 +108,10 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       let message = t('pages.exams.editExam.error');
       if (isAxiosError(err)) {
         message =
-          (err as any).response?.data?.message ||
-          t('pages.exams.editExam.error');
+          err.response?.data?.message || t('pages.exams.editExam.error');
 
-        if ((err as any).response?.data?.errors) {
-          const errorDetails = Object.entries((err as any).response.data.errors)
+        if (err.response?.data?.errors) {
+          const errorDetails = Object.entries(err.response.data.errors)
             .map(([field, msg]) => `${field}: ${msg}`)
             .join(', ');
           message += ` - ${errorDetails}`;

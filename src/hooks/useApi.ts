@@ -25,12 +25,8 @@ const useApi = () => {
 
   const addExam = useCallback(
     async (newExam: Exam) => {
-      try {
-        const response = await axiosInstance.post('api/exams', newExam);
-        return response.data as Exam;
-      } catch (err: any) {
-        throw err;
-      }
+      const response = await axiosInstance.post('api/exams', newExam);
+      return response.data as Exam;
     },
     [axiosInstance]
   );
@@ -40,15 +36,11 @@ const useApi = () => {
       if (!updatedExam.id) {
         throw new Error('Exam ID is required for update');
       }
-      try {
-        const response = await axiosInstance.put(
-          `api/exams/${updatedExam.id}`,
-          updatedExam
-        );
-        return response.data as Exam;
-      } catch (err: any) {
-        throw err;
-      }
+      const response = await axiosInstance.put(
+        `api/exams/${updatedExam.id}`,
+        updatedExam
+      );
+      return response.data as Exam;
     },
     [axiosInstance]
   );
