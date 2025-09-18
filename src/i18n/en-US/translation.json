@@ -28,48 +28,47 @@
         "page": "Page",
         "of": "of"
       },
-    "addExam": {
-      "button": "Add Exam",
-      "title": "Add New Exam",
-      "fields": {
-        "title": "Title",
-        "moduleCode": "Module Code",
-        "examDate": "Date",
-        "room": "Room",
-        "examType": "Exam Type",
-        "semester": "Semester",
-        "ects": "ECTS",
-        "maxPoints": "Max Points",
-        "duration": "Duration (minutes)",
-        "attempt": "Attempt",
-        "fileUploadRequired": "File Upload Required",
-        "tools": "Tools",
-        "addTool": "New Tool"
+      "addExam": {
+        "button": "Add Exam",
+        "title": "Add New Exam",
+        "fields": {
+          "title": "Title",
+          "moduleCode": "Module Code",
+          "examDate": "Date",
+          "room": "Room",
+          "examType": "Exam Type",
+          "semester": "Semester",
+          "ects": "ECTS",
+          "maxPoints": "Max Points",
+          "duration": "Duration (minutes)",
+          "attempt": "Attempt",
+          "fileUploadRequired": "File Upload Required",
+          "tools": "Tools",
+          "addTool": "New Tool"
+        },
+        "examTypes": {
+          "klausur": "Exam",
+          "muendlich": "Oral",
+          "projekt": "Project",
+          "praesentation": "Presentation",
+          "other": "Other"
+        },
+        "attempts": {
+          "1": "1st Attempt",
+          "2": "2nd Attempt",
+          "3": "3rd Attempt"
+        },
+        "addButton": "Add",
+        "saveButton": "Save",
+        "success": "Exam added successfully!",
+        "error": "Error adding exam"
       },
-      "examTypes": {
-        "klausur": "Exam",
-        "muendlich": "Oral",
-        "projekt": "Project",
-        "praesentation": "Presentation",
-        "other": "Other"
-      },
-      "attempts": {
-        "1": "1st Attempt",
-        "2": "2nd Attempt",
-        "3": "3rd Attempt"
-      },
-      "addButton": "Add",
-      "saveButton": "Save",
-      "success": "Exam added successfully!",
-      "error": "Error adding exam"
-    }
-    ,
-    "editExam": {
-      "button": "Edit Exam",
-      "title": "Edit exam",
-      "success": "Exam successfully edited!",
-      "error": "Failed to edit exam"
+      "editExam": {
+        "button": "Edit Exam",
+        "title": "Edit exam",
+        "success": "Exam successfully edited!",
+        "error": "Failed to edit exam"
+      }
     }
   }
-}
 }
