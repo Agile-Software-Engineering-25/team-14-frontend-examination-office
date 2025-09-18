@@ -56,6 +56,7 @@ export const useUser = () => {
     if (!token) return false;
 
     // Decode JWT to extract roles
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decoded: any = jwtDecode(token);
     const roles: string[] = decoded?.realm_access?.roles || [];
 
