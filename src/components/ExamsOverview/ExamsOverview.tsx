@@ -4,17 +4,26 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
-import EditExamModal from '@pages/Exam/EditExamModal';
-import AddExamModal from '@pages/Exam/AddExamModal';
+import EditExamModal from '@components/Exam/EditExamModal';
+import AddExamModal from '@components/Exam/AddExamModal';
 
 type ExamsOverviewProps = {
   exams: Exam[];
   onSelect?: (exam: Exam) => void;
+  onAdd?: (exam: Exam) => void;
+  onEdit?: (exam: Exam) => void;
+  onDelete?: (exam: Exam) => void;
 };
 
 const columns = 6;
 
-const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
+const ExamsOverview = ({
+  exams,
+  onSelect,
+  onDelete,
+  onAdd,
+  onEdit,
+}: ExamsOverviewProps) => {
   const { t } = useTranslation();
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -60,9 +69,7 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
         <AddExamModal
           open={addModalOpen}
           setOpen={setAddModalOpen}
-          onAdd={(url: string) => {
-            console.log('added', url);
-          }}
+          onAdd={onAdd}
         />
       </Box>
 
@@ -117,16 +124,22 @@ const ExamsOverview = ({ exams, onSelect }: ExamsOverviewProps) => {
                     titleAccess={t('pages.exams.table.edit')}
                   />
                   <DeleteIcon
-                    onClick={() => alert('Sigma Sigma boy')}
+                    onClick={(e: React.MouseEvent<SVGSVGElement>) => {
+                      onDelete?.(exam);
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
                     sx={{ cursor: 'pointer', color: 'darkred' }}
                     titleAccess={t('pages.exams.table.delete')}
                   />
                   <EditExamModal
                     open={editModalOpen}
                     setOpen={setEditModalOpen}
-                    onSave={(exam) => {
-                      console.log('Saving exam', exam);
-                    }}
+                    onSave={
+                      onEdit
+                        ? (updatedExam: Exam) => onEdit(updatedExam)
+                        : () => {}
+                    }
                     exam={exam}
                   />
                 </Box>

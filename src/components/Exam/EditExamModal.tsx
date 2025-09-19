@@ -12,14 +12,10 @@ import {
   FormLabel,
   Checkbox,
   Chip,
-  Snackbar,
-  Alert,
 } from '@mui/joy';
 import { useState, useEffect } from 'react';
 import type { Exam } from '@custom-types/exam';
 import { useTranslation } from 'react-i18next';
-import useApi from '@hooks/useApi';
-import { isAxiosError } from 'axios';
 
 interface EditExamModalProps {
   open: boolean;
@@ -30,8 +26,6 @@ interface EditExamModalProps {
 
 const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   const { t } = useTranslation();
-  const { updateExam } = useApi();
-
   const [title, setTitle] = useState('');
   const [moduleCode, setModuleCode] = useState('');
   const [examDate, setExamDate] = useState('');
@@ -45,12 +39,6 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   const [fileUploadRequired, setFileUploadRequired] = useState(false);
   const [tools, setTools] = useState<string[]>([]);
   const [currentTool, setCurrentTool] = useState('');
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarColor, setSnackbarColor] = useState<'success' | 'danger'>(
-    'success'
-  );
 
   useEffect(() => {
     if (exam) {
@@ -97,31 +85,8 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       tools,
     };
 
-    try {
-      const res = await updateExam(updatedExam);
-      onSave(res);
-      setSnackbarMessage(t('pages.exams.editExam.success'));
-      setSnackbarColor('success');
-      setSnackbarOpen(true);
-      setOpen(false);
-    } catch (err: unknown) {
-      let message = t('pages.exams.editExam.error');
-      if (isAxiosError(err)) {
-        message =
-          err.response?.data?.message || t('pages.exams.editExam.error');
-
-        if (err.response?.data?.errors) {
-          const errorDetails = Object.entries(err.response.data.errors)
-            .map(([field, msg]) => `${field}: ${msg}`)
-            .join(', ');
-          message += ` - ${errorDetails}`;
-        }
-      }
-
-      setSnackbarMessage(message);
-      setSnackbarColor('danger');
-      setSnackbarOpen(true);
-    }
+    onSave(updatedExam);
+    setOpen(false);
   };
 
   return (
@@ -304,22 +269,6 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
           </Box>
         </ModalDialog>
       </Modal>
-
-      <Snackbar
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        sx={{ width: 'auto', maxWidth: '600px', padding: 0 }}
-      >
-        <Alert
-          color={snackbarColor}
-          variant="soft"
-          sx={{ width: '100%', borderRadius: 1, m: 0, py: 1, px: 2 }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 };
