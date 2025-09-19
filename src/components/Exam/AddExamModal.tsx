@@ -15,28 +15,30 @@ import {
   Snackbar,
   Alert,
 } from '@mui/joy';
-import { useState, useEffect } from 'react';
-import type { Exam } from '@custom-types/exam';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApi from '@hooks/useApi';
 import { isAxiosError } from 'axios';
 
-interface EditExamModalProps {
+const AddExamModal = ({
+  open,
+  setOpen,
+  onAdd = () => {},
+  onRefresh,
+}: {
   open: boolean;
   setOpen: CallableFunction;
-  exam: Exam;
-  onSave: (updatedExam: Exam) => void;
-}
-
-const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
+  onAdd?: CallableFunction;
+  onRefresh?: CallableFunction;
+}) => {
   const { t } = useTranslation();
-  const { updateExam } = useApi();
+  const { addExam } = useApi();
 
   const [title, setTitle] = useState('');
   const [moduleCode, setModuleCode] = useState('');
   const [examDate, setExamDate] = useState('');
   const [room, setRoom] = useState('');
-  const [examType, setExamType] = useState('');
+  const [examType, setExamType] = useState('KLAUSUR');
   const [semester, setSemester] = useState('');
   const [ects, setEcts] = useState(5);
   const [maxPoints, setMaxPoints] = useState(100);
@@ -52,23 +54,6 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
     'success'
   );
 
-  useEffect(() => {
-    if (exam) {
-      setTitle(exam.title);
-      setModuleCode(exam.moduleCode);
-      setExamDate(exam.examDate);
-      setRoom(exam.room);
-      setExamType(exam.examType);
-      setSemester(exam.semester);
-      setEcts(exam.ects);
-      setMaxPoints(exam.maxPoints);
-      setDuration(exam.duration);
-      setAttemptNumber(exam.attemptNumber);
-      setFileUploadRequired(exam.fileUploadRequired);
-      setTools(exam.tools || []);
-    }
-  }, [exam]);
-
   const handleAddTool = () => {
     if (currentTool.trim() && !tools.includes(currentTool.trim())) {
       setTools([...tools, currentTool.trim()]);
@@ -80,9 +65,24 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
     setTools(tools.filter((t) => t !== tool));
   };
 
-  const handleSave = async () => {
-    const updatedExam = {
-      ...exam,
+  const resetForm = () => {
+    setTitle('');
+    setModuleCode('');
+    setExamDate('');
+    setRoom('');
+    setExamType('KLAUSUR');
+    setSemester('');
+    setEcts(5);
+    setMaxPoints(100);
+    setDuration(90);
+    setAttemptNumber(1);
+    setFileUploadRequired(false);
+    setTools([]);
+    setCurrentTool('');
+  };
+
+  const handleSubmit = async () => {
+    const newExam = {
       title,
       moduleCode,
       examDate,
@@ -98,23 +98,27 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
     };
 
     try {
-      const res = await updateExam(updatedExam);
-      onSave(res);
-      setSnackbarMessage(t('pages.exams.editExam.success'));
+      const res = await addExam(newExam);
+      setSnackbarMessage(t('pages.exams.addExam.success'));
       setSnackbarColor('success');
       setSnackbarOpen(true);
+      resetForm();
       setOpen(false);
+      onAdd(res);
+      onRefresh?.();
     } catch (err: unknown) {
-      let message = t('pages.exams.editExam.error');
+      let message = t('pages.exams.addExam.error');
+
       if (isAxiosError(err)) {
-        message =
-          err.response?.data?.message || t('pages.exams.editExam.error');
+        message = err.response?.data?.message || message;
 
         if (err.response?.data?.errors) {
           const errorDetails = Object.entries(err.response.data.errors)
             .map(([field, msg]) => `${field}: ${msg}`)
             .join(', ');
           message += ` - ${errorDetails}`;
+        } else {
+          message += ` - ${String(err)}`;
         }
       }
 
@@ -129,27 +133,54 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog
           variant="outlined"
-          sx={{ minWidth: '46%', maxWidth: '90%' }}
+          sx={{ minWidth: '45%', maxWidth: '90%' }}
         >
           <ModalClose />
-          <Typography level="h4">{t('pages.exams.editExam.title')}</Typography>
+          <Typography level="h4">{t('pages.exams.addExam.title')}</Typography>
 
           <Box
             component="form"
             sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}
           >
             <FormControl>
-              <FormLabel>{t('pages.exams.addExam.fields.title')}</FormLabel>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+              <FormLabel
+                sx={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t('pages.exams.addExam.fields.title')}
+              </FormLabel>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                sx={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                }}
+              />
             </FormControl>
 
             <FormControl>
-              <FormLabel>
+              <FormLabel
+                sx={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                }}
+              >
                 {t('pages.exams.addExam.fields.moduleCode')}
               </FormLabel>
               <Input
                 value={moduleCode}
                 onChange={(e) => setModuleCode(e.target.value)}
+                sx={{
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                }}
               />
             </FormControl>
 
@@ -208,7 +239,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
               </FormControl>
             </Box>
 
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <FormControl>
                 <FormLabel>{t('pages.exams.addExam.fields.ects')}</FormLabel>
                 <Input
@@ -243,13 +274,34 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
                   value={attemptNumber}
                   onChange={(_, val) => setAttemptNumber(Number(val))}
                 >
-                  <Option value={1}>
+                  <Option
+                    value={1}
+                    sx={{
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {t('pages.exams.addExam.attempts.1')}
                   </Option>
-                  <Option value={2}>
+                  <Option
+                    value={2}
+                    sx={{
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {t('pages.exams.addExam.attempts.2')}
                   </Option>
-                  <Option value={3}>
+                  <Option
+                    value={3}
+                    sx={{
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
                     {t('pages.exams.addExam.attempts.3')}
                   </Option>
                 </Select>
@@ -270,12 +322,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
               <FormLabel>{t('pages.exams.addExam.fields.tools')}</FormLabel>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
                 {tools.map((tool) => (
-                  <Chip
-                    key={tool}
-                    variant="outlined"
-                    size="sm"
-                    onClick={() => handleRemoveTool(tool)}
-                  >
+                  <Chip key={tool} onClick={() => handleRemoveTool(tool)}>
                     {tool}
                   </Chip>
                 ))}
@@ -298,7 +345,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
               </Box>
             </FormControl>
 
-            <Button onClick={handleSave} sx={{ mt: 2 }}>
+            <Button onClick={handleSubmit} sx={{ mt: 2 }}>
               {t('pages.exams.addExam.saveButton')}
             </Button>
           </Box>
@@ -324,4 +371,4 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   );
 };
 
-export default EditExamModal;
+export default AddExamModal;

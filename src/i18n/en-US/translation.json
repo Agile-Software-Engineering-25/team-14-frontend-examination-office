@@ -21,7 +21,12 @@
         "date": "Date",
         "professor": "Professor",
         "type": "Exam Type",
-        "actions": "Actions"
+        "actions": "Actions",
+        "deleteError": {
+          "idMissing": "Error deleting exam: ID is missing",
+          "unknown": "Error deleting exam: Unknown error"
+        },
+        "deleteSuccess": "Exam deleted successfully!"
       },
       "footer": {
         "itemsPerPage": "Number of items",

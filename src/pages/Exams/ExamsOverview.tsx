@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/joy';
 import { useTranslation } from 'react-i18next';
 import ExamsOverview from '@components/ExamsOverview/ExamsOverview.tsx';
 import useApi from '@hooks/useApi';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Exam } from '@custom-types/exam';
 import LanguageSelectorComponent from '@components/LanguageSelectorComponent/LanguageSelectorComponent';
 
@@ -12,12 +12,21 @@ const Exams = () => {
   const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getExams()
-      .then((data) => setExams(data))
-      .catch((err) => console.error('Error fetching exams:', err))
-      .finally(() => setLoading(false));
+  const refreshExams = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getExams();
+      setExams(data);
+    } catch (err) {
+      console.error('Error refreshing exams:', err);
+    } finally {
+      setLoading(false);
+    }
   }, [getExams]);
+
+  useEffect(() => {
+    refreshExams();
+  }, [refreshExams]);
 
   return (
     <Box
@@ -48,6 +57,7 @@ const Exams = () => {
             onSelect={(exam) => {
               console.log('Selected exam', exam);
             }}
+            onRefresh={refreshExams}
           />
         )}
       </Box>

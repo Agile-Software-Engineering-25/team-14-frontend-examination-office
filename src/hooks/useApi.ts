@@ -45,7 +45,15 @@ const useApi = () => {
     [axiosInstance]
   );
 
-  return { getCurrentWeather, getExams, addExam, updateExam };
+  const deleteExam = useCallback(
+    async (examId: number) => {
+      await axiosInstance.delete(`api/exams/${examId}`);
+      return;
+    },
+    [axiosInstance]
+  );
+
+  return { getCurrentWeather, getExams, addExam, updateExam, deleteExam };
 };
 
 export default useApi;

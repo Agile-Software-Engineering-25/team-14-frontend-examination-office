@@ -21,7 +21,12 @@
         "date": "Datum",
         "professor": "Dozent",
         "type": "Prüfungstyp",
-        "actions": "Aktionen"
+        "actions": "Aktionen",
+        "deleteError": {
+          "idMissing": "Fehler beim Löschen der Prüfung: ID fehlt",
+          "unknown": "Fehler beim Löschen der Prüfung: Unbekannter Fehler"
+        },
+        "deleteSuccess": "Prüfung erfolgreich gelöscht!"
       },
       "footer": {
         "itemsPerPage": "Anzahl der Einträge",
