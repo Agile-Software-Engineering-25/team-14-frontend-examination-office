@@ -26,16 +26,9 @@ interface EditExamModalProps {
   setOpen: CallableFunction;
   exam: Exam;
   onSave: (updatedExam: Exam) => void;
-  onRefresh?: () => void;
 }
 
-const EditExamModal = ({
-  open,
-  exam,
-  onSave,
-  setOpen,
-  onRefresh,
-}: EditExamModalProps) => {
+const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   const { t } = useTranslation();
   const { updateExam } = useApi();
 
@@ -104,32 +97,8 @@ const EditExamModal = ({
       tools,
     };
 
-    try {
-      const res = await updateExam(updatedExam);
-      onSave(res);
-      setSnackbarMessage(t('pages.exams.editExam.success'));
-      setSnackbarColor('success');
-      setSnackbarOpen(true);
-      onRefresh?.();
-      setOpen(false);
-    } catch (err: unknown) {
-      let message = t('pages.exams.editExam.error');
-      if (isAxiosError(err)) {
-        message =
-          err.response?.data?.message || t('pages.exams.editExam.error');
-
-        if (err.response?.data?.errors) {
-          const errorDetails = Object.entries(err.response.data.errors)
-            .map(([field, msg]) => `${field}: ${msg}`)
-            .join(', ');
-          message += ` - ${errorDetails}`;
-        }
-      }
-
-      setSnackbarMessage(message);
-      setSnackbarColor('danger');
-      setSnackbarOpen(true);
-    }
+    onSave(updatedExam);
+    setOpen(false);
   };
 
   return (
@@ -312,22 +281,6 @@ const EditExamModal = ({
           </Box>
         </ModalDialog>
       </Modal>
-
-      <Snackbar
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        sx={{ width: 'auto', maxWidth: '600px', padding: 0 }}
-      >
-        <Alert
-          color={snackbarColor}
-          variant="soft"
-          sx={{ width: '100%', borderRadius: 1, m: 0, py: 1, px: 2 }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

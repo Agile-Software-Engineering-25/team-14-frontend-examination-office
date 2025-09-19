@@ -32,8 +32,7 @@ const AddExamModal = ({
   onRefresh?: CallableFunction;
 }) => {
   const { t } = useTranslation();
-  const { addExam } = useApi();
-
+  
   const [title, setTitle] = useState('');
   const [moduleCode, setModuleCode] = useState('');
   const [examDate, setExamDate] = useState('');
@@ -47,12 +46,6 @@ const AddExamModal = ({
   const [fileUploadRequired, setFileUploadRequired] = useState(false);
   const [tools, setTools] = useState<string[]>([]);
   const [currentTool, setCurrentTool] = useState('');
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarColor, setSnackbarColor] = useState<'success' | 'danger'>(
-    'success'
-  );
 
   const handleAddTool = () => {
     if (currentTool.trim() && !tools.includes(currentTool.trim())) {
@@ -97,35 +90,9 @@ const AddExamModal = ({
       tools,
     };
 
-    try {
-      const res = await addExam(newExam);
-      setSnackbarMessage(t('pages.exams.addExam.success'));
-      setSnackbarColor('success');
-      setSnackbarOpen(true);
-      resetForm();
-      setOpen(false);
-      onAdd(res);
-      onRefresh?.();
-    } catch (err: unknown) {
-      let message = t('pages.exams.addExam.error');
-
-      if (isAxiosError(err)) {
-        message = err.response?.data?.message || message;
-
-        if (err.response?.data?.errors) {
-          const errorDetails = Object.entries(err.response.data.errors)
-            .map(([field, msg]) => `${field}: ${msg}`)
-            .join(', ');
-          message += ` - ${errorDetails}`;
-        } else {
-          message += ` - ${String(err)}`;
-        }
-      }
-
-      setSnackbarMessage(message);
-      setSnackbarColor('danger');
-      setSnackbarOpen(true);
-    }
+    onAdd(newExam);
+    resetForm();
+    setOpen(false);
   };
 
   return (
@@ -351,22 +318,6 @@ const AddExamModal = ({
           </Box>
         </ModalDialog>
       </Modal>
-
-      <Snackbar
-        open={snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        autoHideDuration={3000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        sx={{ width: 'auto', maxWidth: '600px', padding: 0 }}
-      >
-        <Alert
-          color={snackbarColor}
-          variant="soft"
-          sx={{ width: '100%', borderRadius: 1, m: 0, py: 1, px: 2 }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

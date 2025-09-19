@@ -33,9 +33,6 @@ const useApi = () => {
 
   const updateExam = useCallback(
     async (updatedExam: Exam) => {
-      if (!updatedExam.id) {
-        throw new Error('Exam ID is required for update');
-      }
       const response = await axiosInstance.put(
         `api/exams/${updatedExam.id}`,
         updatedExam
