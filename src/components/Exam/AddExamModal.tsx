@@ -12,27 +12,20 @@ import {
   FormLabel,
   Checkbox,
   Chip,
-  Snackbar,
-  Alert,
 } from '@mui/joy';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useApi from '@hooks/useApi';
-import { isAxiosError } from 'axios';
-
 const AddExamModal = ({
   open,
   setOpen,
   onAdd = () => {},
-  onRefresh,
 }: {
   open: boolean;
   setOpen: CallableFunction;
   onAdd?: CallableFunction;
-  onRefresh?: CallableFunction;
 }) => {
   const { t } = useTranslation();
-  
+
   const [title, setTitle] = useState('');
   const [moduleCode, setModuleCode] = useState('');
   const [examDate, setExamDate] = useState('');

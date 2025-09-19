@@ -12,14 +12,10 @@ import {
   FormLabel,
   Checkbox,
   Chip,
-  Snackbar,
-  Alert,
 } from '@mui/joy';
 import { useState, useEffect } from 'react';
 import type { Exam } from '@custom-types/exam';
 import { useTranslation } from 'react-i18next';
-import useApi from '@hooks/useApi';
-import { isAxiosError } from 'axios';
 
 interface EditExamModalProps {
   open: boolean;
@@ -30,8 +26,6 @@ interface EditExamModalProps {
 
 const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   const { t } = useTranslation();
-  const { updateExam } = useApi();
-
   const [title, setTitle] = useState('');
   const [moduleCode, setModuleCode] = useState('');
   const [examDate, setExamDate] = useState('');
@@ -45,12 +39,6 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   const [fileUploadRequired, setFileUploadRequired] = useState(false);
   const [tools, setTools] = useState<string[]>([]);
   const [currentTool, setCurrentTool] = useState('');
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarColor, setSnackbarColor] = useState<'success' | 'danger'>(
-    'success'
-  );
 
   useEffect(() => {
     if (exam) {
