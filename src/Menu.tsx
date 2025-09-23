@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import Box from '@mui/joy/Box';
 import List from '@mui/joy/List';

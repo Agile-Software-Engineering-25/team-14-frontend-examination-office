@@ -23,28 +23,34 @@ const useApi = () => {
     return response.data as Exam[];
   }, [axiosInstance]);
 
-  const addExam = useCallback(async (newExam: Exam) => {
-    try {
+  const addExam = useCallback(
+    async (newExam: Exam) => {
       const response = await axiosInstance.post('api/exams', newExam);
       return response.data as Exam;
-    } catch (err: any) {
-      throw err;
-    }
-  }, [axiosInstance]);
+    },
+    [axiosInstance]
+  );
 
-  const updateExam = useCallback(async (updatedExam: Exam) => {
-    if (!updatedExam.id) {
-      throw new Error('Exam ID is required for update');
-    }
-    try {
-      const response = await axiosInstance.put(`api/exams/${updatedExam.id}`, updatedExam);
+  const updateExam = useCallback(
+    async (updatedExam: Exam) => {
+      const response = await axiosInstance.put(
+        `api/exams/${updatedExam.id}`,
+        updatedExam
+      );
       return response.data as Exam;
-    } catch (err: any) {
-      throw err;
-    }
-  }, [axiosInstance]);
+    },
+    [axiosInstance]
+  );
 
-  return { getCurrentWeather, getExams, addExam, updateExam };
+  const deleteExam = useCallback(
+    async (examId: number) => {
+      await axiosInstance.delete(`api/exams/${examId}`);
+      return;
+    },
+    [axiosInstance]
+  );
+
+  return { getCurrentWeather, getExams, addExam, updateExam, deleteExam };
 };
 
 export default useApi;

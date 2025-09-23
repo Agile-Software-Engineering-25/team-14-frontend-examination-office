@@ -12,6 +12,7 @@ const lifecycle = singleSpaReact({
     const message = err instanceof Error ? err.message : String(err);
     return <div>Error: {message}</div>;
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rootComponent: (props: any) => {
     // Extract user from props and set it globally
     const { user, ...appProps } = props;
