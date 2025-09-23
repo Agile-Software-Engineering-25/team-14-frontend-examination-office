@@ -1,32 +1,3 @@
-<<<<<<< HEAD
-import { Box, Typography } from '@mui/joy';
-import { useTranslation } from 'react-i18next';
-import ExamsOverview from '@components/ExamsOverview/ExamsOverview.tsx';
-import useApi from '@hooks/useApi';
-import { useEffect, useState } from 'react';
-import type { Exam } from '@custom-types/exam';
-import LanguageSelectorComponent from '@components/LanguageSelectorComponent/LanguageSelectorComponent';
-
-const Exams = () => {
-  const { t } = useTranslation();
-  const { getExams } = useApi();
-  const [exams, setExams] = useState<Exam[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getExams()
-      .then((data) => setExams(data))
-      .catch((err) => console.error('Error fetching exams:', err))
-      .finally(() => setLoading(false));
-  }, [getExams]);
-
-  return (
-    <Box
-      sx={{
-        maxWidth: '100%',
-        width: '100%',
-        minHeight: '100%',
-=======
 import { Alert, Box, Snackbar, Typography } from '@mui/joy';
 import { useTranslation } from 'react-i18next';
 import ExamsOverview from '@components/ExamsOverview/ExamsOverview.tsx';
@@ -143,7 +114,6 @@ const Exams = () => {
         maxWidth: '100vw',
         width: '100%',
         minHeight: '100vh',
->>>>>>> 8035d8a02dd5a9f34898337624afea29bfe79a20
         display: 'flex',
         flexDirection: 'column',
         gap: 3,
@@ -167,12 +137,9 @@ const Exams = () => {
             onSelect={(exam) => {
               console.log('Selected exam', exam);
             }}
-<<<<<<< HEAD
-=======
             onDelete={deleteExamFn}
             onAdd={addExamFn}
             onEdit={editExamFn}
->>>>>>> 8035d8a02dd5a9f34898337624afea29bfe79a20
           />
         )}
       </Box>
@@ -181,8 +148,6 @@ const Exams = () => {
       <Box sx={{ alignSelf: 'flex-end' }}>
         <LanguageSelectorComponent />
       </Box>
-<<<<<<< HEAD
-=======
 
       <Snackbar
         open={snackbarOpen}
@@ -199,7 +164,6 @@ const Exams = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
->>>>>>> 8035d8a02dd5a9f34898337624afea29bfe79a20
     </Box>
   );
 };
