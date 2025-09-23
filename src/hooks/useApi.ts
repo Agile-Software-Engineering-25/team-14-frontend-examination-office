@@ -1,5 +1,4 @@
 import useAxiosInstance from '@hooks/useAxiosInstance';
-import { BACKEND_BASE_URL } from '@/config';
 import { useCallback } from 'react';
 import type { Units } from '@custom-types/weather';
 import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
