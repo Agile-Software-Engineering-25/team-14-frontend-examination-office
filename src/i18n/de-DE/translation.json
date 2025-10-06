@@ -13,46 +13,67 @@
       "weatherHeader": "Aktuelles Wetter",
       "temperature": "Temperatur"
     },
-    "addExam": {
-      "button": "Prüfung Hinzufügen",
-      "title": "Neue Prüfung anlegen",
-      "fields": {
+    "exams": {
+      "title": "Prüfungsübersicht",
+      "table": {
         "title": "Titel",
-        "moduleCode": "Modulcode",
-        "examDate": "Datum",
-        "room": "Raum",
-        "examType": "Prüfungsart",
-        "semester": "Semester",
-        "ects": "ECTS",
-        "maxPoints": "Max. Punkte",
-        "duration": "Dauer (Minuten)",
-        "attempt": "Versuch",
-        "fileUploadRequired": "Datei-Upload erforderlich",
-        "tools": "Hilfsmittel",
-        "addTool": "Neues Hilfsmittel"
+        "module": "Modul",
+        "date": "Datum",
+        "professor": "Dozent",
+        "type": "Prüfungstyp",
+        "actions": "Aktionen",
+        "deleteError": {
+          "idMissing": "Fehler beim Löschen der Prüfung: ID fehlt",
+          "unknown": "Fehler beim Löschen der Prüfung: Unbekannter Fehler"
+        },
+        "deleteSuccess": "Prüfung erfolgreich gelöscht!"
       },
-      "examTypes": {
-        "klausur": "Klausur",
-        "muendlich": "Mündlich",
-        "projekt": "Projekt",
-        "praesentation": "Präsentation",
-        "other": "Anderes"
+      "footer": {
+        "itemsPerPage": "Anzahl der Einträge",
+        "page": "Seite",
+        "of": "von"
       },
-      "attempts": {
-        "1": "1. Versuch",
-        "2": "2. Versuch",
-        "3": "3. Versuch"
+      "addExam": {
+        "button": "Prüfung Hinzufügen",
+        "title": "Neue Prüfung anlegen",
+        "fields": {
+          "title": "Titel",
+          "moduleCode": "Modulcode",
+          "examDate": "Datum",
+          "room": "Raum",
+          "examType": "Prüfungsart",
+          "semester": "Semester",
+          "ects": "ECTS",
+          "maxPoints": "Max. Punkte",
+          "duration": "Dauer (Minuten)",
+          "attempt": "Versuch",
+          "fileUploadRequired": "Datei-Upload erforderlich",
+          "tools": "Hilfsmittel",
+          "addTool": "Neues Hilfsmittel"
+        },
+        "examTypes": {
+          "klausur": "Klausur",
+          "muendlich": "Mündlich",
+          "projekt": "Projekt",
+          "praesentation": "Präsentation",
+          "other": "Anderes"
+        },
+        "attempts": {
+          "1": "1. Versuch",
+          "2": "2. Versuch",
+          "3": "3. Versuch"
+        },
+        "addButton": "Hinzufügen",
+        "saveButton": "Speichern",
+        "success": "Prüfung erfolgreich hinzugefügt!",
+        "error": "Fehler beim Hinzufügen der Prüfung"
       },
-      "addButton": "Hinzufügen",
-      "saveButton": "Speichern",
-      "success": "Prüfung erfolgreich hinzugefügt!",
-      "error": "Fehler beim Hinzufügen der Prüfung"
-    },
-    "editExam": {
-      "button": "Prüfung Bearbeiten",
-      "title": "Prüfung bearbeiten",
-      "success": "Prüfung erfolgreich bearbeitet!",
-      "error": "Fehler beim Bearbeiten der Prüfung"
+      "editExam": {
+        "button": "Prüfung Bearbeiten",
+        "title": "Prüfung bearbeiten",
+        "success": "Prüfung erfolgreich bearbeitet!",
+        "error": "Fehler beim Bearbeiten der Prüfung"
+      }
     }
   }
 }
