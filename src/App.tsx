@@ -14,7 +14,6 @@ import './i18n';
 import { Provider } from 'react-redux';
 import store from '@stores/index.ts';
 import VerticalMenu from './Menu.tsx';
-import './global.css';
 
 const joyTheme = createCustomJoyTheme();
 const muiTheme = createCustomMuiTheme();
