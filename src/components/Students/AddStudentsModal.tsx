@@ -1,4 +1,12 @@
-import { Modal, ModalClose, ModalDialog, Typography } from '@mui/joy';
+import {
+  Modal,
+  ModalClose,
+  ModalDialog,
+  Typography,
+  Button,
+  Checkbox,
+  Box,
+} from '@mui/joy';
 import { Accordion } from '@agile-software/shared-components';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
@@ -10,9 +18,15 @@ interface AddStudentsModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   exam?: Exam | null;
+  onSaveSelected?: (ids: number[]) => void;
 }
 
-const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
+const AddStudentsModal = ({
+  open,
+  setOpen,
+  exam,
+  onSaveSelected,
+}: AddStudentsModalProps) => {
   const { t } = useTranslation();
   const groups = [
     { id: 1, label: 'BIN-T23-F-1' },
@@ -32,6 +46,33 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
   const [errorByGroup, setErrorByGroup] = useState<
     Record<string, string | null>
   >({});
+
+  const [selectedByGroup, setSelectedByGroup] = useState<
+    Record<string, number[]>
+  >({});
+
+  const areAllSelected = (gid: string) => {
+    const total = studentsByGroup[gid]?.length ?? 0;
+    const selected = selectedByGroup[gid]?.length ?? 0;
+    return total > 0 && selected === total;
+  };
+
+  const toggleSelectAll = (gid: string) => {
+    const allIds = (studentsByGroup[gid] ?? []).map((s) => s.id);
+    setSelectedByGroup((prev) => ({
+      ...prev,
+      [gid]: areAllSelected(gid) ? [] : allIds,
+    }));
+  };
+
+  const toggleStudent = (gid: string, sid: number) => {
+    setSelectedByGroup((prev) => {
+      const set = new Set(prev[gid] ?? []);
+      if (set.has(sid)) set.delete(sid);
+      else set.add(sid);
+      return { ...prev, [gid]: Array.from(set) };
+    });
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -73,14 +114,44 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
         {!loadingByGroup[String(group.id)] &&
           !errorByGroup[String(group.id)] &&
           (studentsByGroup[String(group.id)]?.length ? (
-            <ul>
-              {studentsByGroup[String(group.id)].map((s) => (
-                <li key={s.id}>
-                  {s.firstName} {s.lastName}
-                  {s.matriculationNumber ? ` — ${s.matriculationNumber}` : ''}
-                </li>
-              ))}
-            </ul>
+            <>
+              <Box sx={{ mb: 1, display: 'flex', gap: 1 }}>
+                <Button
+                  size="sm"
+                  onClick={() => toggleSelectAll(String(group.id))}
+                >
+                  {areAllSelected(String(group.id))
+                    ? 'Alle abwählen'
+                    : 'Alle auswählen'}
+                </Button>
+              </Box>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {studentsByGroup[String(group.id)].map((s) => {
+                  const selected = (
+                    selectedByGroup[String(group.id)] ?? []
+                  ).includes(s.id);
+                  return (
+                    <li
+                      key={s.id}
+                      style={{
+                        padding: '6px 8px',
+                        borderRadius: 6,
+                        marginBottom: 4,
+                        backgroundColor: selected
+                          ? 'rgba(66, 165, 245, 0.18)'
+                          : 'transparent',
+                      }}
+                    >
+                      <Checkbox
+                        checked={selected}
+                        onChange={() => toggleStudent(String(group.id), s.id)}
+                        label={`${s.firstName} ${s.lastName}${s.matriculationNumber ? ` — ${s.matriculationNumber}` : ''}`}
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
           ) : (
             <p>Keine Studierenden in dieser Gruppe.</p>
           ))}
@@ -90,6 +161,9 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
     onChange: (isExpanded: boolean) =>
       setExpanded(isExpanded ? String(group.id) : null),
   }));
+
+  // Helper to get all selected IDs as a flat array
+  const getSelectedIds = () => Object.values(selectedByGroup).flat();
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
@@ -113,6 +187,24 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
           multiple={true}
           defaultExpanded={[String(groups[0].id)]}
         />
+        <Box
+          sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}
+        >
+          <Button
+            variant="solid"
+            onClick={() => {
+              const ids = getSelectedIds();
+              if (onSaveSelected) {
+                onSaveSelected(ids);
+              } else {
+                console.log('[AddStudentsModal] savedSelectedIds', ids);
+              }
+            }}
+            disabled={getSelectedIds().length === 0}
+          >
+            Speichern
+          </Button>
+        </Box>
       </ModalDialog>
     </Modal>
   );
