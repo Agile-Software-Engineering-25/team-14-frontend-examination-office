@@ -23,9 +23,15 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
   const [expanded, setExpanded] = useState<string | null>(String(groups[0].id));
 
   const { getStudentsByStudyGroup } = useApi();
-  const [studentsByGroup, setStudentsByGroup] = useState<Record<string, Student[]>>({});
-  const [loadingByGroup, setLoadingByGroup] = useState<Record<string, boolean>>({});
-  const [errorByGroup, setErrorByGroup] = useState<Record<string, string | null>>({});
+  const [studentsByGroup, setStudentsByGroup] = useState<
+    Record<string, Student[]>
+  >({});
+  const [loadingByGroup, setLoadingByGroup] = useState<Record<string, boolean>>(
+    {}
+  );
+  const [errorByGroup, setErrorByGroup] = useState<
+    Record<string, string | null>
+  >({});
 
   useEffect(() => {
     if (!open) return;
@@ -41,7 +47,10 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
           setStudentsByGroup((s) => ({ ...s, [key]: data }));
         })
         .catch((err: any) => {
-          setErrorByGroup((s) => ({ ...s, [key]: err?.message ?? 'Fehler beim Laden' }));
+          setErrorByGroup((s) => ({
+            ...s,
+            [key]: err?.message ?? 'Fehler beim Laden',
+          }));
         })
         .finally(() => {
           setLoadingByGroup((s) => ({ ...s, [key]: false }));
@@ -55,13 +64,15 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
     children: (
       <div>
         {loadingByGroup[String(group.id)] && <p>Lade Studierende…</p>}
-        {errorByGroup[String(group.id)] && !loadingByGroup[String(group.id)] && (
-          <p style={{ color: 'var(--joy-palette-danger-600, #b71c1c)' }}>
-            {errorByGroup[String(group.id)]}
-          </p>
-        )}
-        {!loadingByGroup[String(group.id)] && !errorByGroup[String(group.id)] && (
-          studentsByGroup[String(group.id)]?.length ? (
+        {errorByGroup[String(group.id)] &&
+          !loadingByGroup[String(group.id)] && (
+            <p style={{ color: 'var(--joy-palette-danger-600, #b71c1c)' }}>
+              {errorByGroup[String(group.id)]}
+            </p>
+          )}
+        {!loadingByGroup[String(group.id)] &&
+          !errorByGroup[String(group.id)] &&
+          (studentsByGroup[String(group.id)]?.length ? (
             <ul>
               {studentsByGroup[String(group.id)].map((s) => (
                 <li key={s.id}>
@@ -72,12 +83,12 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
             </ul>
           ) : (
             <p>Keine Studierenden in dieser Gruppe.</p>
-          )
-        )}
+          ))}
       </div>
     ),
     expanded: expanded === String(group.id),
-    onChange: (isExpanded: boolean) => setExpanded(isExpanded ? String(group.id) : null),
+    onChange: (isExpanded: boolean) =>
+      setExpanded(isExpanded ? String(group.id) : null),
   }));
 
   return (
