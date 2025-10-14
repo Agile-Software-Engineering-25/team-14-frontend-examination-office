@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import type { Units } from '@custom-types/weather';
 import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
 import type { Exam } from '@custom-types/exam';
+import type { Student } from '@custom-types/student';
 
 const useApi = () => {
   const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
@@ -50,7 +51,14 @@ const useApi = () => {
     [axiosInstance]
   );
 
-  return { getCurrentWeather, getExams, addExam, updateExam, deleteExam };
+  const getStudentsByStudyGroup = useCallback(async (studyGroup: string) => {
+    const response = await axiosInstance.get(
+      `api/students/study-group/${encodeURIComponent(studyGroup)}`
+    );
+    return response.data as Student[];
+  }, [axiosInstance]);
+
+  return { getCurrentWeather, getExams, addExam, updateExam, deleteExam, getStudentsByStudyGroup };
 };
 
 export default useApi;

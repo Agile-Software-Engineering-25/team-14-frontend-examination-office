@@ -1,11 +1,13 @@
 import { Box, Button, Input, Table, Typography } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
 import EditExamModal from '@components/Exam/EditExamModal';
 import AddExamModal from '@components/Exam/AddExamModal';
+import AddStudentsModal from '@components/Students/AddStudentsModal';
 
 type ExamsOverviewProps = {
   exams: Exam[];
@@ -31,6 +33,8 @@ const ExamsOverview = ({
   const [search, setSearch] = useState<string>('');
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [addStudentsModalOpen, setAddStudentsModalOpen] = useState(false);
+  const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
 
   // Filter + search
   const filteredExams = exams.filter((exam) => {
@@ -132,6 +136,15 @@ const ExamsOverview = ({
                     sx={{ cursor: 'pointer', color: 'darkred' }}
                     titleAccess={t('pages.exams.table.delete')}
                   />
+                  <AddIcon
+                    onClick={(e: React.MouseEvent<SVGSVGElement>) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setSelectedExam(exam);
+                      setAddStudentsModalOpen(true);
+                    }}
+                    sx={{ cursor: 'pointer', color: 'success.main' }}
+                  />
                   <EditExamModal
                     open={editModalOpen}
                     setOpen={setEditModalOpen}
@@ -223,6 +236,11 @@ const ExamsOverview = ({
           </tr>
         </tfoot>
       </Table>
+      <AddStudentsModal
+        open={addStudentsModalOpen}
+        setOpen={setAddStudentsModalOpen}
+        exam={selectedExam}
+      />
     </Box>
   );
 };
