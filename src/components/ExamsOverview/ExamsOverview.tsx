@@ -128,7 +128,7 @@ const ExamsOverview = ({
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <EditIcon
                     onClick={(e) => {
-                      e.stopPropagation(); // ✅ prevent row select
+                      e.stopPropagation();
                       setEditModalExam(exam);
                     }}
                     sx={{ cursor: 'pointer', color: 'primary.main' }}
@@ -136,7 +136,7 @@ const ExamsOverview = ({
                   />
                   <DeleteIcon
                     onClick={(e) => {
-                      e.stopPropagation(); // ✅ prevent row select
+                      e.stopPropagation();
                       e.preventDefault();
                       onDelete?.(exam);
                     }}
