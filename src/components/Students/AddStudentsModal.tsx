@@ -36,7 +36,7 @@ const AddStudentsModal = ({
   ];
   const [expanded, setExpanded] = useState<string | null>(String(groups[0].id));
 
-  const { getStudentsByStudyGroup } = useApi();
+  const { getStudentsByStudyGroup, addStudentToExam } = useApi();
   const [studentsByGroup, setStudentsByGroup] = useState<
     Record<string, Student[]>
   >({});
@@ -50,6 +50,7 @@ const AddStudentsModal = ({
   const [selectedByGroup, setSelectedByGroup] = useState<
     Record<string, number[]>
   >({});
+  const [saving, setSaving] = useState(false);
 
   const areAllSelected = (gid: string) => {
     const total = studentsByGroup[gid]?.length ?? 0;
@@ -161,7 +162,7 @@ const AddStudentsModal = ({
     onChange: (isExpanded: boolean) =>
       setExpanded(isExpanded ? String(group.id) : null),
   }));
-
+  console.log('ExamID', exam?.id);
   // Helper to get all selected IDs as a flat array
   const getSelectedIds = () => Object.values(selectedByGroup).flat();
 
@@ -192,15 +193,33 @@ const AddStudentsModal = ({
         >
           <Button
             variant="solid"
-            onClick={() => {
+            onClick={async () => {
               const ids = getSelectedIds();
-              if (onSaveSelected) {
-                onSaveSelected(ids);
-              } else {
-                console.log('[AddStudentsModal] savedSelectedIds', ids);
+              if (!exam?.id || ids.length === 0) return;
+              try {
+                setSaving(true);
+                const results = await Promise.allSettled(
+                  ids.map((sid) => addStudentToExam(sid, exam.id as number))
+                );
+                const failed = results
+                  .map((r, idx) => (r.status === 'rejected' ? ids[idx] : null))
+                  .filter((v): v is number => v !== null);
+                if (failed.length > 0) {
+                  console.error('[AddStudentsModal] Fehler bei IDs:', failed);
+                } else {
+                  console.log(
+                    '[AddStudentsModal] Erfolgreich hinzugefügt:',
+                    ids
+                  );
+                }
+              } catch (err) {
+                console.error('[AddStudentsModal] addStudentToExam error', err);
+              } finally {
+                setSaving(false);
+                setOpen(false);
               }
             }}
-            disabled={getSelectedIds().length === 0}
+            disabled={saving || !exam?.id || getSelectedIds().length === 0}
           >
             Speichern
           </Button>
