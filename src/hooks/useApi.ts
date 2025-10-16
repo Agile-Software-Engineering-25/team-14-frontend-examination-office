@@ -70,6 +70,16 @@ const useApi = () => {
     [axiosInstance]
   );
 
+  const removeStudentFromExam = useCallback(
+    async (studentId: number, examId: number) => {
+      const response = await axiosInstance.delete(
+        `api/students/${studentId}/exams/${examId}`
+      );
+      return response.data as string;
+    },
+    [axiosInstance]
+  );
+
   const getStudentsByExamId = useCallback(
     async (examId: number) => {
       const response = await axiosInstance.get(`api/students/exam/${examId}`);
@@ -77,7 +87,6 @@ const useApi = () => {
     },
     [axiosInstance]
   );
-
   return {
     getCurrentWeather,
     getExams,
@@ -86,6 +95,7 @@ const useApi = () => {
     deleteExam,
     getStudentsByStudyGroup,
     addStudentToExam,
+    removeStudentFromExam,
     getStudentsByExamId,
   };
 };

@@ -9,7 +9,7 @@ import {
 } from '@mui/joy';
 import { Accordion } from '@agile-software/shared-components';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import type { Exam } from '@custom-types/exam';
 import useApi from '@hooks/useApi';
 import type { Student } from '@custom-types/student';
@@ -28,15 +28,23 @@ const AddStudentsModal = ({
   onSaveSelected,
 }: AddStudentsModalProps) => {
   const { t } = useTranslation();
-  const groups = [
-    { id: 1, label: 'BIN-T23-F-1' },
-    { id: 2, label: 'BIN-T23-F-2' },
-    { id: 3, label: 'BIN-T23-F-3' },
-    { id: 4, label: 'BIN-T23-F-4' },
-  ];
+  const groups = useMemo(
+    () => [
+      { id: 1, label: 'BIN-T23-F-1' },
+      { id: 2, label: 'BIN-T23-F-2' },
+      { id: 3, label: 'BIN-T23-F-3' },
+      { id: 4, label: 'BIN-T23-F-4' },
+    ],
+    []
+  );
   const [expanded, setExpanded] = useState<string | null>(String(groups[0].id));
 
-  const { getStudentsByStudyGroup, addStudentToExam } = useApi();
+  const {
+    getStudentsByStudyGroup,
+    addStudentToExam,
+    removeStudentFromExam,
+    getStudentsByExamId,
+  } = useApi();
   const [studentsByGroup, setStudentsByGroup] = useState<
     Record<string, Student[]>
   >({});
@@ -51,6 +59,28 @@ const AddStudentsModal = ({
     Record<string, number[]>
   >({});
   const [saving, setSaving] = useState(false);
+  const initialSelectedIdsRef = useRef<Set<number>>(new Set());
+  useEffect(() => {
+    if (!open || !exam?.id) return;
+    (async () => {
+      try {
+        const enrolled = await getStudentsByExamId(exam.id);
+        // build selection map per group id
+        const next: Record<string, number[]> = {};
+        groups.forEach(({ id }) => (next[String(id)] = []));
+        const flatIds: number[] = [];
+        (enrolled || []).forEach((s: any) => {
+          const gid = String(s.studyGroup ?? s.studyGroupId ?? '');
+          if (gid && next[gid]) next[gid].push(s.id);
+          flatIds.push(s.id);
+        });
+        initialSelectedIdsRef.current = new Set(flatIds);
+        setSelectedByGroup(next);
+      } catch (e) {
+        console.error('[AddStudentsModal] getStudentsByExamId failed', e);
+      }
+    })();
+  }, [open, exam?.id, getStudentsByExamId, groups]);
 
   const areAllSelected = (gid: string) => {
     const total = studentsByGroup[gid]?.length ?? 0;
@@ -98,7 +128,7 @@ const AddStudentsModal = ({
           setLoadingByGroup((s) => ({ ...s, [key]: false }));
         });
     });
-  }, [open, groups, getStudentsByStudyGroup, studentsByGroup, loadingByGroup]);
+  }, [open, groups, getStudentsByStudyGroup]);
 
   const accordionItems = groups.map((group) => ({
     id: String(group.id),
@@ -194,32 +224,47 @@ const AddStudentsModal = ({
           <Button
             variant="solid"
             onClick={async () => {
-              const ids = getSelectedIds();
-              if (!exam?.id || ids.length === 0) return;
+              const currentIds = getSelectedIds();
+              if (!exam?.id) return;
+              const initial = initialSelectedIdsRef.current;
+              const toAdd = currentIds.filter((id) => !initial.has(id));
+              const toRemove = Array.from(initial).filter(
+                (id) => !currentIds.includes(id)
+              );
               try {
                 setSaving(true);
-                const results = await Promise.allSettled(
-                  ids.map((sid) => addStudentToExam(sid, exam.id as number))
+                const tasks: Promise<any>[] = [];
+                toAdd.forEach((sid) =>
+                  tasks.push(addStudentToExam(sid, exam.id as number))
                 );
-                const failed = results
-                  .map((r, idx) => (r.status === 'rejected' ? ids[idx] : null))
-                  .filter((v): v is number => v !== null);
-                if (failed.length > 0) {
-                  console.error('[AddStudentsModal] Fehler bei IDs:', failed);
+                toRemove.forEach((sid) =>
+                  tasks.push(removeStudentFromExam(sid, exam.id as number))
+                );
+                const results = await Promise.allSettled(tasks);
+                const hasError = results.some((r) => r.status === 'rejected');
+                if (hasError) {
+                  console.error('[AddStudentsModal] Fehler bei Speichern', {
+                    toAdd,
+                    toRemove,
+                    results,
+                  });
                 } else {
-                  console.log(
-                    '[AddStudentsModal] Erfolgreich hinzugefügt:',
-                    ids
-                  );
+                  console.log('[AddStudentsModal] Aktualisiert', {
+                    toAdd,
+                    toRemove,
+                  });
                 }
               } catch (err) {
-                console.error('[AddStudentsModal] addStudentToExam error', err);
+                console.error(
+                  '[AddStudentsModal] Speichern fehlgeschlagen',
+                  err
+                );
               } finally {
                 setSaving(false);
                 setOpen(false);
               }
             }}
-            disabled={saving || !exam?.id || getSelectedIds().length === 0}
+            disabled={saving || !exam?.id}
           >
             Speichern
           </Button>
