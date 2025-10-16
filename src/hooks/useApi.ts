@@ -52,13 +52,22 @@ const useApi = () => {
   );
 
   const getStudentsByStudyGroup = useCallback(async (studyGroup: string) => {
-    const response = await axiosInstance.get(
-      `api/students/study-group/${encodeURIComponent(studyGroup)}`
-    );
-    return response.data as Student[];
-  }, [axiosInstance]);
+      const response = await axiosInstance.get(
+        `api/students/study-group/${encodeURIComponent(studyGroup)}`
+      );
+      return response.data as Student[];
+    },
+    [axiosInstance]
+  );
 
-  return { getCurrentWeather, getExams, addExam, updateExam, deleteExam, getStudentsByStudyGroup };
+  return {
+    getCurrentWeather,
+    getExams,
+    addExam,
+    updateExam,
+    deleteExam,
+    getStudentsByStudyGroup,
+  };
 };
 
 export default useApi;
