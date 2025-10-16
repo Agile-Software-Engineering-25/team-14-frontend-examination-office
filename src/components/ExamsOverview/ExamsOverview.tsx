@@ -44,8 +44,10 @@ const ExamsOverview = ({
   });
 
   const total = filteredExams.length;
-  const totalPages = total === 0 ? 0 : Math.ceil(total / Math.max(1, rowsPerPage));
-  const currentPage = totalPages === 0 ? 0 : Math.min(Math.max(1, page), totalPages);
+  const totalPages =
+    total === 0 ? 0 : Math.ceil(total / Math.max(1, rowsPerPage));
+  const currentPage =
+    totalPages === 0 ? 0 : Math.min(Math.max(1, page), totalPages);
 
   const start = totalPages === 0 ? 0 : (currentPage - 1) * rowsPerPage;
   const end = totalPages === 0 ? 0 : Math.min(start + rowsPerPage, total);
@@ -104,7 +106,12 @@ const ExamsOverview = ({
               key={exam.id}
               onClick={(e) => {
                 // prevent clicks on icons/buttons from selecting
-                if ((e.target as HTMLElement).closest('svg, button, [role="button"]')) return;
+                if (
+                  (e.target as HTMLElement).closest(
+                    'svg, button, [role="button"]'
+                  )
+                )
+                  return;
                 onSelect?.(exam);
               }}
               style={{ cursor: 'pointer' }}
@@ -184,7 +191,9 @@ const ExamsOverview = ({
                     value={rowsPerPage}
                     onChange={(e) => {
                       const n = Number(e.target.value);
-                      setRowsPerPage(Number.isFinite(n) && n > 0 ? Math.floor(n) : 1);
+                      setRowsPerPage(
+                        Number.isFinite(n) && n > 0 ? Math.floor(n) : 1
+                      );
                     }}
                     sx={{ width: 50 }}
                   />

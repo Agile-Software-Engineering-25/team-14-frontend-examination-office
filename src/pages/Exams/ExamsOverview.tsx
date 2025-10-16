@@ -169,7 +169,11 @@ const Exams = () => {
         </Alert>
       </Snackbar>
 
-      <ExamDetail isVisible={isDetailVisible} setVisible={setIsDetailVisible} exam={selectedExam!} />
+      <ExamDetail
+        isVisible={isDetailVisible}
+        setVisible={setIsDetailVisible}
+        exam={selectedExam!}
+      />
     </Box>
   );
 };
