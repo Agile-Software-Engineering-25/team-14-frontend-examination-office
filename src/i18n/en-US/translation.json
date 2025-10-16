@@ -19,8 +19,10 @@
         "title": "Title",
         "module": "Module",
         "date": "Date",
-        "professor": "Professor",
+        "professor": "Lecturer",
+        "submissions": "Submissions",
         "type": "Exam Type",
+        "zeroExams": "No exams to display.",
         "actions": "Actions",
         "deleteError": {
           "idMissing": "Error deleting exam: ID is missing",
@@ -36,6 +38,7 @@
       "addExam": {
         "button": "Add Exam",
         "title": "Add New Exam",
+        "search": "Search for Exam title, module or lecturer...",
         "fields": {
           "title": "Title",
           "moduleCode": "Module Code",

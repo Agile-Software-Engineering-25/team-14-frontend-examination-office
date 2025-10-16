@@ -15,7 +15,7 @@ type ExamsOverviewProps = {
   onDelete?: (exam: Exam) => void;
 };
 
-const columns = 6;
+const columns = 7;
 
 const ExamsOverview = ({
   exams,
@@ -55,10 +55,9 @@ const ExamsOverview = ({
 
   return (
     <Box sx={{ width: '100%', p: 0, m: 0 }}>
-      {/* Search + Filter Controls */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
         <Input
-          placeholder="Suche nach Titel, Modul oder Professor..."
+          placeholder={t('pages.exams.addExam.search')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           sx={{ flex: 1, minWidth: 200, maxHeight: 40 }}
@@ -93,7 +92,8 @@ const ExamsOverview = ({
             <th style={{ width: '35%' }}>{t('pages.exams.table.title')}</th>
             <th style={{ width: '15%' }}>{t('pages.exams.table.module')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.date')}</th>
-            <th style={{ width: '20%' }}>{t('pages.exams.table.professor')}</th>
+            <th style={{ width: '10%' }}>{t('pages.exams.table.professor')}</th>
+            <th style={{ width: '10%' }}>{t('pages.exams.table.submissions')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.type')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
@@ -111,7 +111,10 @@ const ExamsOverview = ({
                 <Typography level="body-sm">{exam.examDate}</Typography>
               </td>
               <td>
-                <Typography level="body-sm">{exam.room}</Typography>
+                <Typography level="body-sm">-</Typography>
+              </td>
+              <td>
+                <Typography level="body-sm">-</Typography>
               </td>
               <td>
                 <Typography level="body-sm">{exam.examType}</Typography>
@@ -150,7 +153,7 @@ const ExamsOverview = ({
             <tr>
               <td colSpan={columns}>
                 <Box sx={{ p: 2, textAlign: 'center', opacity: 0.7 }}>
-                  <Typography level="body-sm">No exams to display.</Typography>
+                  <Typography level="body-sm">{t('pages.exams.table.zeroExams')}</Typography>
                 </Box>
               </td>
             </tr>

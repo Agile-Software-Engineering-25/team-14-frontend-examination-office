@@ -20,6 +20,8 @@
         "module": "Modul",
         "date": "Datum",
         "professor": "Dozent",
+        "submissions": "Abgaben",
+        "zeroExams": "Keine Prüfungen zur Anzeige verfügbar.",
         "type": "Prüfungstyp",
         "actions": "Aktionen",
         "deleteError": {
@@ -36,6 +38,7 @@
       "addExam": {
         "button": "Prüfung Hinzufügen",
         "title": "Neue Prüfung anlegen",
+        "search": "Suche nach Titel, Modul oder Dozent...",
         "fields": {
           "title": "Titel",
           "moduleCode": "Modulcode",
