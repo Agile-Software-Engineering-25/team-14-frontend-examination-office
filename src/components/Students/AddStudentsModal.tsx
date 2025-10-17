@@ -41,7 +41,6 @@ const AddStudentsModal = ({
   const {
     getStudentsByStudyGroup,
     addStudentToExam,
-    removeStudentFromExam,
     getStudentsByExamId,
   } = useApi();
   const [studentsByGroup, setStudentsByGroup] = useState<
@@ -148,11 +147,16 @@ const AddStudentsModal = ({
               <Box sx={{ mb: 1, display: 'flex', gap: 1 }}>
                 <Button
                   size="sm"
-                  onClick={() => toggleSelectAll(String(group.id))}
+                  onClick={() => {
+                    const gid = String(group.id);
+                    const allIds = (studentsByGroup[gid] ?? []).map((s) => s.id);
+                    setSelectedByGroup((prev) => ({
+                      ...prev,
+                      [gid]: allIds,
+                    }));
+                  }}
                 >
-                  {areAllSelected(String(group.id))
-                    ? 'Alle abwählen'
-                    : 'Alle auswählen'}
+                  Alle auswählen
                 </Button>
               </Box>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -194,7 +198,7 @@ const AddStudentsModal = ({
   console.log('ExamID', exam?.id);
   // Helper to get all selected IDs as a flat, deduplicated array
   const getSelectedIds = () => Array.from(new Set(Object.values(selectedByGroup).flat()));
-  const angemeldetCount = getSelectedIds().length;
+  const addedToExamCount = getSelectedIds().length;
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
@@ -220,7 +224,7 @@ const AddStudentsModal = ({
         />
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
           <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-            {`Angemeldet: ${angemeldetCount}`}
+            {`Hinzugefügt: ${addedToExamCount}`}
           </Typography>
           <Button
             variant="solid"
@@ -231,25 +235,16 @@ const AddStudentsModal = ({
               const initialSet = new Set(initialSelectedIdsRef.current);
 
               const toAdd: number[] = [];
-              const toRemove: number[] = [];
-
               currentSet.forEach((id) => {
                 if (!initialSet.has(id)) toAdd.push(id);
-              });
-              initialSet.forEach((id) => {
-                if (!currentSet.has(id)) toRemove.push(id);
               });
 
               try {
                 setSaving(true);
                 const tasks: Promise<any>[] = [];
 
-                // Stelle sicher, dass jede ID genau einmal gesendet wird
                 toAdd.forEach((sid) =>
                   tasks.push(addStudentToExam(sid, exam.id as number))
-                );
-                toRemove.forEach((sid) =>
-                  tasks.push(removeStudentFromExam(sid, exam.id as number))
                 );
 
                 const results = await Promise.allSettled(tasks);
@@ -257,13 +252,11 @@ const AddStudentsModal = ({
                 if (hasError) {
                   console.error('[AddStudentsModal] Fehler bei Speichern', {
                     toAdd,
-                    toRemove,
                     results,
                   });
                 } else {
                   console.log('[AddStudentsModal] Aktualisiert', {
                     toAdd,
-                    toRemove,
                   });
                 }
               } catch (err) {
