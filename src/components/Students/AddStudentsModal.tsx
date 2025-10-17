@@ -25,7 +25,6 @@ const AddStudentsModal = ({
   open,
   setOpen,
   exam,
-  onSaveSelected,
 }: AddStudentsModalProps) => {
   const { t } = useTranslation();
   const groups = useMemo(
@@ -193,8 +192,9 @@ const AddStudentsModal = ({
       setExpanded(isExpanded ? String(group.id) : null),
   }));
   console.log('ExamID', exam?.id);
-  // Helper to get all selected IDs as a flat array
-  const getSelectedIds = () => Object.values(selectedByGroup).flat();
+  // Helper to get all selected IDs as a flat, deduplicated array
+  const getSelectedIds = () => Array.from(new Set(Object.values(selectedByGroup).flat()));
+  const angemeldetCount = getSelectedIds().length;
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
@@ -218,28 +218,40 @@ const AddStudentsModal = ({
           multiple={true}
           defaultExpanded={[String(groups[0].id)]}
         />
-        <Box
-          sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}
-        >
+        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+          <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
+            {`Angemeldet: ${angemeldetCount}`}
+          </Typography>
           <Button
             variant="solid"
             onClick={async () => {
-              const currentIds = getSelectedIds();
               if (!exam?.id) return;
-              const initial = initialSelectedIdsRef.current;
-              const toAdd = currentIds.filter((id) => !initial.has(id));
-              const toRemove = Array.from(initial).filter(
-                (id) => !currentIds.includes(id)
-              );
+
+              const currentSet = new Set(getSelectedIds());
+              const initialSet = new Set(initialSelectedIdsRef.current);
+
+              const toAdd: number[] = [];
+              const toRemove: number[] = [];
+
+              currentSet.forEach((id) => {
+                if (!initialSet.has(id)) toAdd.push(id);
+              });
+              initialSet.forEach((id) => {
+                if (!currentSet.has(id)) toRemove.push(id);
+              });
+
               try {
                 setSaving(true);
                 const tasks: Promise<any>[] = [];
+
+                // Stelle sicher, dass jede ID genau einmal gesendet wird
                 toAdd.forEach((sid) =>
                   tasks.push(addStudentToExam(sid, exam.id as number))
                 );
                 toRemove.forEach((sid) =>
                   tasks.push(removeStudentFromExam(sid, exam.id as number))
                 );
+
                 const results = await Promise.allSettled(tasks);
                 const hasError = results.some((r) => r.status === 'rejected');
                 if (hasError) {
