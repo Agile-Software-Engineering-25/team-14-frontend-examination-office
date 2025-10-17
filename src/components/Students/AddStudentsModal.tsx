@@ -38,11 +38,8 @@ const AddStudentsModal = ({
   );
   const [expanded, setExpanded] = useState<string | null>(String(groups[0].id));
 
-  const {
-    getStudentsByStudyGroup,
-    addStudentToExam,
-    getStudentsByExamId,
-  } = useApi();
+  const { getStudentsByStudyGroup, addStudentToExam, getStudentsByExamId } =
+    useApi();
   const [studentsByGroup, setStudentsByGroup] = useState<
     Record<string, Student[]>
   >({});
@@ -149,7 +146,9 @@ const AddStudentsModal = ({
                   size="sm"
                   onClick={() => {
                     const gid = String(group.id);
-                    const allIds = (studentsByGroup[gid] ?? []).map((s) => s.id);
+                    const allIds = (studentsByGroup[gid] ?? []).map(
+                      (s) => s.id
+                    );
                     setSelectedByGroup((prev) => ({
                       ...prev,
                       [gid]: allIds,
@@ -222,24 +221,43 @@ const AddStudentsModal = ({
           multiple={true}
           defaultExpanded={[String(groups[0].id)]}
         />
-        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+        <Box
+          sx={{
+            mt: 2,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
           <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
             {`Hinzugefügt: ${addedToExamCount}`}
           </Typography>
           <Button
             variant="solid"
             onClick={async () => {
-              if (!exam?.id) return;
-
               const currentSet = new Set(getSelectedIds());
-              const initialSet = new Set(initialSelectedIdsRef.current);
+              if (!exam?.id) return;
+              const latestEnrolled = await getStudentsByExamId(exam.id);
+              console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
+              const initialSet = new Set<number>((latestEnrolled ?? []).map((s: any) => s.id));
+              console.log(
+                '[AddStudentsModal] initialSet IDs:',
+                Array.from(initialSet)
+              );
+              console.log(
+                '[AddStudentsModal] currentSet IDs:',
+                Array.from(currentSet)
+              );
 
               const toAdd: number[] = [];
               currentSet.forEach((id) => {
                 if (!initialSet.has(id)) toAdd.push(id);
               });
+              console.log('[AddStudentsModal] toAdd (nach Vergleich):', toAdd);
 
               try {
+                console.log('[AddStudentsModal] Starte Speichern...', { toAdd, examId: exam.id });
                 setSaving(true);
                 const tasks: Promise<any>[] = [];
 
@@ -258,18 +276,40 @@ const AddStudentsModal = ({
                   console.log('[AddStudentsModal] Aktualisiert', {
                     toAdd,
                   });
+                  console.log(
+                    '[AddStudentsModal] Speichern erfolgreich abgeschlossen.'
+                  );
+                }
+                if (!hasError) {
+                  initialSelectedIdsRef.current = new Set<number>([
+                    ...Array.from(initialSet),
+                    ...toAdd,
+                  ]);
                 }
               } catch (err) {
                 console.error(
                   '[AddStudentsModal] Speichern fehlgeschlagen',
                   err
                 );
+                console.log('[AddStudentsModal] Fehlerdetails:', err);
               } finally {
                 setSaving(false);
                 setOpen(false);
               }
             }}
-            disabled={saving || !exam?.id}
+            disabled={
+              saving ||
+              !exam?.id ||
+              (function () {
+                const selected = new Set(getSelectedIds());
+                const initial = initialSelectedIdsRef.current;
+                if (selected.size === 0) return true;
+                for (const id of selected) {
+                  if (!initial.has(id)) return false;
+                }
+                return true;
+              })()
+            }
           >
             Speichern
           </Button>
