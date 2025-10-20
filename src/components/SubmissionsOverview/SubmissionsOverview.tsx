@@ -1,4 +1,4 @@
-import { Box, Button, Input, Table, Typography, Switch, Checkbox } from '@mui/joy';
+import { Box, Button, Input, Table, Typography, Switch } from '@mui/joy';
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApi from '@/hooks/useApi';

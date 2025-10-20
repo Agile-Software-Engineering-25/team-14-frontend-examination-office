@@ -33,6 +33,7 @@ const ExamsOverview = ({
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [editModalExam, setEditModalExam] = useState<Exam | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
 
   // Filter + search
