@@ -61,7 +61,8 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
       })
       .catch((err: unknown) => {
         console.error('[AddStudentsModal] load all students failed', err);
-        const message = err instanceof Error ? err.message : 'Fehler beim Laden';
+        const message =
+          err instanceof Error ? err.message : 'Fehler beim Laden';
         setError(message);
       })
       .finally(() => setLoading(false));
