@@ -8,7 +8,7 @@ import {
   Modal,
   List,
   ListItem,
-  ListItemButton
+  ListItemButton,
 } from '@mui/joy';
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,9 +34,15 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
   const [page] = useState<number>(1);
   const [search, setSearch] = useState('');
 
-  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
+  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(
+    null
+  );
 
-  const { getFeedbacksForExam, acceptFeedbackForExamStudent, rejectFeedbackForExamStudent } = useApi();
+  const {
+    getFeedbacksForExam,
+    acceptFeedbackForExamStudent,
+    rejectFeedbackForExamStudent,
+  } = useApi();
 
   // Fetch feedbacks
   useEffect(() => {
@@ -98,7 +104,9 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
       setFeedbacks(refreshed);
 
       const refreshedStates: Record<string, ExamState> = {};
-      refreshed.forEach((fb) => (refreshedStates[fb.studentUuid] = fb.examState));
+      refreshed.forEach(
+        (fb) => (refreshedStates[fb.studentUuid] = fb.examState)
+      );
       setRowStates(refreshedStates);
 
       setSelectedRows({});
@@ -129,7 +137,15 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
 
   return (
     <Box sx={{ width: '100%', p: 0, m: 0 }}>
-      <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 2,
+          mb: 2,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+        }}
+      >
         <Input
           placeholder={t('pages.submissions.search')}
           value={search}
@@ -140,7 +156,9 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
           checked={onlyUnapproved}
           onChange={(e) => setOnlyUnapproved(e.target.checked)}
           color="neutral"
-          endDecorator={t('pages.submissions.showOnlyUnapproved', { defaultValue: 'Show only unapproved' })}
+          endDecorator={t('pages.submissions.showOnlyUnapproved', {
+            defaultValue: 'Show only unapproved',
+          })}
         />
         <Button disabled={!changesMade || loading} onClick={saveChanges}>
           {t('pages.submissions.saveChanges', { defaultValue: 'Save Changes' })}
@@ -151,25 +169,41 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
         <thead>
           <tr>
             <th style={{ width: '5%' }}></th>
-            <th style={{ width: '20%' }}>{t('pages.submissions.table.student')}</th>
-            <th style={{ width: '20%' }}>{t('pages.submissions.table.lecturer')}</th>
-            <th style={{ width: '10%' }}>{t('pages.submissions.table.gradedAt')}</th>
-            <th style={{ width: '10%' }}>{t('pages.submissions.table.points')}</th>
-            <th style={{ width: '10%' }}>{t('pages.submissions.table.grade')}</th>
-            <th style={{ width: '25%' }}>{t('pages.submissions.table.status')}</th>
+            <th style={{ width: '20%' }}>
+              {t('pages.submissions.table.student')}
+            </th>
+            <th style={{ width: '20%' }}>
+              {t('pages.submissions.table.lecturer')}
+            </th>
+            <th style={{ width: '10%' }}>
+              {t('pages.submissions.table.gradedAt')}
+            </th>
+            <th style={{ width: '10%' }}>
+              {t('pages.submissions.table.points')}
+            </th>
+            <th style={{ width: '10%' }}>
+              {t('pages.submissions.table.grade')}
+            </th>
+            <th style={{ width: '25%' }}>
+              {t('pages.submissions.table.status')}
+            </th>
           </tr>
         </thead>
         <tbody>
           {loading ? (
             <tr>
               <td colSpan={7}>
-                <Typography textAlign="center">{t('pages.submissions.loading')}</Typography>
+                <Typography textAlign="center">
+                  {t('pages.submissions.loading')}
+                </Typography>
               </td>
             </tr>
           ) : pageItems.length === 0 ? (
             <tr>
               <td colSpan={7}>
-                <Typography textAlign="center">{t('pages.submissions.zeroFeedbacks')}</Typography>
+                <Typography textAlign="center">
+                  {t('pages.submissions.zeroFeedbacks')}
+                </Typography>
               </td>
             </tr>
           ) : (
@@ -180,7 +214,11 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               const rejectActive = currentState === 'EXAM_REJECTED';
               const isGraded = originalState === 'EXAM_GRADED';
               return (
-                <tr key={fb.studentUuid} onClick={() => setSelectedFeedback(fb)} style={{ cursor: 'pointer' }}>
+                <tr
+                  key={fb.studentUuid}
+                  onClick={() => setSelectedFeedback(fb)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td></td>
                   <td>{fb.studentUuid}</td>
                   <td>{fb.lecturerUuid}</td>
@@ -196,10 +234,15 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                         disabled={!isGraded && !acceptActive && !rejectActive}
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleStatus(fb.studentUuid, 'EXAM_ACCEPTED' as ExamState);
+                          toggleStatus(
+                            fb.studentUuid,
+                            'EXAM_ACCEPTED' as ExamState
+                          );
                         }}
                       >
-                        {t('pages.submissions.accept', { defaultValue: 'Accept' })}
+                        {t('pages.submissions.accept', {
+                          defaultValue: 'Accept',
+                        })}
                       </Button>
                       <Button
                         variant={rejectActive ? 'solid' : 'outlined'}
@@ -208,10 +251,15 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                         disabled={!isGraded && !acceptActive && !rejectActive}
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleStatus(fb.studentUuid, 'EXAM_REJECTED' as ExamState);
+                          toggleStatus(
+                            fb.studentUuid,
+                            'EXAM_REJECTED' as ExamState
+                          );
                         }}
                       >
-                        {t('pages.submissions.reject', { defaultValue: 'Reject' })}
+                        {t('pages.submissions.reject', {
+                          defaultValue: 'Reject',
+                        })}
                       </Button>
                     </Box>
                   </td>
@@ -222,7 +270,10 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
         </tbody>
       </Table>
 
-      <Modal open={!!selectedFeedback} onClose={() => setSelectedFeedback(null)}>
+      <Modal
+        open={!!selectedFeedback}
+        onClose={() => setSelectedFeedback(null)}
+      >
         <Box
           sx={{
             position: 'absolute',
@@ -240,7 +291,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
         >
           {selectedFeedback && (
             <>
-              <Typography level='h4' mb={2}>
+              <Typography level="h4" mb={2}>
                 Feedback Details
               </Typography>
               <Typography>
@@ -261,7 +312,9 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               <Typography mt={2}>
                 <strong>Comment:</strong>
               </Typography>
-              <Typography mb={2}>{selectedFeedback.comment || 'No comment'}</Typography>
+              <Typography mb={2}>
+                {selectedFeedback.comment || 'No comment'}
+              </Typography>
 
               <Typography>
                 <strong>Files:</strong>
