@@ -1,11 +1,13 @@
 import { Box, Button, Input, Table, Typography } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FilePresentIcon from '@mui/icons-material/FilePresent';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
 import EditExamModal from '@components/Exam/EditExamModal';
 import AddExamModal from '@components/Exam/AddExamModal';
+import { useNavigate } from 'react-router';
 
 type ExamsOverviewProps = {
   exams: Exam[];
@@ -25,6 +27,7 @@ const ExamsOverview = ({
   onEdit,
 }: ExamsOverviewProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
@@ -108,13 +111,13 @@ const ExamsOverview = ({
                 <Typography level="body-sm">{exam.moduleCode}</Typography>
               </td>
               <td>
-                <Typography level="body-sm">{exam.examDate}</Typography>
+                <Typography level="body-sm">{new Date(exam.examDate).toLocaleString()}</Typography>
               </td>
               <td>
                 <Typography level="body-sm">-</Typography>
               </td>
               <td>
-                <Typography level="body-sm">-</Typography>
+                <Typography level="body-sm">{exam.submissions}</Typography>
               </td>
               <td>
                 <Typography level="body-sm">{exam.examType}</Typography>
@@ -134,6 +137,15 @@ const ExamsOverview = ({
                     }}
                     sx={{ cursor: 'pointer', color: 'darkred' }}
                     titleAccess={t('pages.exams.table.delete')}
+                  />
+                  <FilePresentIcon
+                    onClick={(e: React.MouseEvent<SVGSVGElement>) => {
+                      navigate(`/submissions${exam.id ? '/'+exam.id : ''}`)
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                    sx={{ cursor: 'pointer', color: 'var(--joy-palette-text-tertiary, var(--joy-palette-neutral-600, #555E68))'}}
+                    titleAccess={t('pages.exams.table.file')}
                   />
                   <EditExamModal
                     open={editModalOpen}
