@@ -6,12 +6,15 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Exam } from '@custom-types/exam';
 import LanguageSelectorComponent from '@components/LanguageSelectorComponent/LanguageSelectorComponent';
 import { isAxiosError } from 'axios';
+import ExamDetail from '@/components/Exam/ExamDetail';
 
 const Exams = () => {
   const { t } = useTranslation();
   const { addExam, getExams, updateExam, deleteExam } = useApi();
   const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const [selectedExam, setSelectedExam] = useState<Exam | undefined>(undefined);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -135,7 +138,8 @@ const Exams = () => {
           <ExamsOverview
             exams={exams}
             onSelect={(exam) => {
-              console.log('Selected exam', exam);
+              setSelectedExam(exam);
+              setIsDetailVisible(true);
             }}
             onDelete={deleteExamFn}
             onAdd={addExamFn}
@@ -164,6 +168,12 @@ const Exams = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
+
+      <ExamDetail
+        isVisible={isDetailVisible}
+        setVisible={setIsDetailVisible}
+        exam={selectedExam!}
+      />
     </Box>
   );
 };
