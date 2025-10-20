@@ -32,18 +32,18 @@ const ExamsOverview = ({
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editModalExam, setEditModalExam] = useState<Exam | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
 
   // Filter + search
   const filteredExams = exams.filter((exam) => {
-    const matchesSearch =
-      exam.title.toLowerCase().includes(search.toLowerCase()) ||
-      exam.moduleCode.toLowerCase().includes(search.toLowerCase()) ||
-      exam.room.toLowerCase().includes(search.toLowerCase()) ||
-      exam.semester.toLowerCase().includes(search.toLowerCase());
-
-    return matchesSearch;
+    const searchTerm = search.toLowerCase();
+    return (
+      exam.title.toLowerCase().includes(searchTerm) ||
+      exam.moduleCode.toLowerCase().includes(searchTerm) ||
+      exam.room.toLowerCase().includes(searchTerm) ||
+      exam.semester.toLowerCase().includes(searchTerm)
+    );
   });
 
   const total = filteredExams.length;
@@ -75,8 +75,9 @@ const ExamsOverview = ({
         />
       </Box>
 
+      {/* Exams Table */}
       <Table
-        aria-label={'Exams Overview'}
+        aria-label="Exams Overview"
         borderAxis="x"
         color="neutral"
         size="md"
@@ -101,9 +102,23 @@ const ExamsOverview = ({
             <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
         </thead>
+
         <tbody>
           {pageItems.map((exam: Exam) => (
-            <tr key={exam.id} onClick={() => onSelect?.(exam)}>
+            <tr
+              key={exam.id}
+              onClick={(e) => {
+                // prevent clicks on icons/buttons from selecting
+                if (
+                  (e.target as HTMLElement).closest(
+                    'svg, button, [role="button"]'
+                  )
+                )
+                  return;
+                onSelect?.(exam);
+              }}
+              style={{ cursor: 'pointer' }}
+            >
               <td>
                 <Typography level="title-sm">{exam.title}</Typography>
               </td>
@@ -125,15 +140,18 @@ const ExamsOverview = ({
               <td>
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <EditIcon
-                    onClick={() => setEditModalOpen(true)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditModalExam(exam);
+                    }}
                     sx={{ cursor: 'pointer', color: 'primary.main' }}
                     titleAccess={t('pages.exams.table.edit')}
                   />
                   <DeleteIcon
-                    onClick={(e: React.MouseEvent<SVGSVGElement>) => {
-                      onDelete?.(exam);
+                    onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
+                      onDelete?.(exam);
                     }}
                     sx={{ cursor: 'pointer', color: 'darkred' }}
                     titleAccess={t('pages.exams.table.delete')}
@@ -161,6 +179,7 @@ const ExamsOverview = ({
               </td>
             </tr>
           ))}
+
           {filteredExams.length === 0 && (
             <tr>
               <td colSpan={columns}>
@@ -171,6 +190,7 @@ const ExamsOverview = ({
             </tr>
           )}
         </tbody>
+
         <tfoot>
           <tr>
             <td colSpan={columns}>
@@ -184,14 +204,8 @@ const ExamsOverview = ({
                   width: '100%',
                 }}
               >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.75,
-                    width: 'auto',
-                  }}
-                >
+                {/* Rows per page */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                   <Typography level="body-sm">
                     {t('pages.exams.footer.itemsPerPage')}:
                   </Typography>
@@ -202,14 +216,15 @@ const ExamsOverview = ({
                     value={rowsPerPage}
                     onChange={(e) => {
                       const n = Number(e.target.value);
-                      const next =
-                        Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
-                      setRowsPerPage(next);
+                      setRowsPerPage(
+                        Number.isFinite(n) && n > 0 ? Math.floor(n) : 1
+                      );
                     }}
                     sx={{ width: 50 }}
                   />
                 </Box>
 
+                {/* Pagination */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography level="body-sm">
                     {t('pages.exams.footer.page')}:
@@ -238,6 +253,19 @@ const ExamsOverview = ({
           </tr>
         </tfoot>
       </Table>
+
+      {/* Edit Modal */}
+      {editModalExam && (
+        <EditExamModal
+          open={Boolean(editModalExam)}
+          setOpen={() => setEditModalExam(null)}
+          onSave={(updatedExam: Exam) => {
+            onEdit?.(updatedExam);
+            setEditModalExam(null);
+          }}
+          exam={editModalExam}
+        />
+      )}
     </Box>
   );
 };

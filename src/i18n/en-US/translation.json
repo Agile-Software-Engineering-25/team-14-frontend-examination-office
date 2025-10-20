@@ -15,6 +15,9 @@
     },
     "exams": {
       "title": "Exams Overview",
+      "examDetail": {
+        "title": "Exam Details"
+      },
       "table": {
         "title": "Title",
         "module": "Module",
