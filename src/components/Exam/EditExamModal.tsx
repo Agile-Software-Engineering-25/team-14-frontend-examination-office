@@ -121,8 +121,13 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </FormControl>
             <FormControl sx={{ flex: 1, minWidth: 150 }}>
-              <FormLabel>{t('pages.exams.addExam.fields.moduleCode')}</FormLabel>
-              <Input value={moduleCode} onChange={(e) => setModuleCode(e.target.value)} />
+              <FormLabel>
+                {t('pages.exams.addExam.fields.moduleCode')}
+              </FormLabel>
+              <Input
+                value={moduleCode}
+                onChange={(e) => setModuleCode(e.target.value)}
+              />
             </FormControl>
           </Box>
 
@@ -146,18 +151,34 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             <FormControl sx={{ flex: 1, minWidth: 150 }}>
               <FormLabel>{t('pages.exams.addExam.fields.examType')}</FormLabel>
-              <Select value={examType} onChange={(_, val) => setExamType(val ?? '')}>
-                <Option value="KLAUSUR">{t('pages.exams.addExam.examTypes.klausur')}</Option>
-                <Option value="MUENDLICH">{t('pages.exams.addExam.examTypes.muendlich')}</Option>
-                <Option value="PROJEKT">{t('pages.exams.addExam.examTypes.projekt')}</Option>
-                <Option value="PRAESENTATION">{t('pages.exams.addExam.examTypes.praesentation')}</Option>
-                <Option value="ANDERES">{t('pages.exams.addExam.examTypes.other')}</Option>
+              <Select
+                value={examType}
+                onChange={(_, val) => setExamType(val ?? '')}
+              >
+                <Option value="KLAUSUR">
+                  {t('pages.exams.addExam.examTypes.klausur')}
+                </Option>
+                <Option value="MUENDLICH">
+                  {t('pages.exams.addExam.examTypes.muendlich')}
+                </Option>
+                <Option value="PROJEKT">
+                  {t('pages.exams.addExam.examTypes.projekt')}
+                </Option>
+                <Option value="PRAESENTATION">
+                  {t('pages.exams.addExam.examTypes.praesentation')}
+                </Option>
+                <Option value="ANDERES">
+                  {t('pages.exams.addExam.examTypes.other')}
+                </Option>
               </Select>
             </FormControl>
 
             <FormControl sx={{ flex: 1, minWidth: 150 }}>
               <FormLabel>{t('pages.exams.addExam.fields.semester')}</FormLabel>
-              <Input value={semester} onChange={(e) => setSemester(e.target.value)} />
+              <Input
+                value={semester}
+                onChange={(e) => setSemester(e.target.value)}
+              />
             </FormControl>
           </Box>
 
@@ -201,12 +222,17 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
           </Box>
 
           {/* File upload checkbox */}
-          <FormControl orientation="horizontal" sx={{ alignItems: 'center', gap: 1 }}>
+          <FormControl
+            orientation="horizontal"
+            sx={{ alignItems: 'center', gap: 1 }}
+          >
             <Checkbox
               checked={fileUploadRequired}
               onChange={(e) => setFileUploadRequired(e.target.checked)}
             />
-            <FormLabel>{t('pages.exams.addExam.fields.fileUploadRequired')}</FormLabel>
+            <FormLabel>
+              {t('pages.exams.addExam.fields.fileUploadRequired')}
+            </FormLabel>
           </FormControl>
 
           {/* Tools */}

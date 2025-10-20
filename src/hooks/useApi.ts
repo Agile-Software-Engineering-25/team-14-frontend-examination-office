@@ -63,17 +63,34 @@ const useApi = () => {
 
   const acceptFeedbackForExamStudent = useCallback(
     async (examUuid: string, studentUuid: string) => {
-      const response = await axiosInstance.put(`api/feedback/exam/${examUuid}/student/${studentUuid}/accept`);
+      const response = await axiosInstance.put(
+        `api/feedback/exam/${examUuid}/student/${studentUuid}/accept`
+      );
       return response.status === 200;
-    }, [axiosInstance])
+    },
+    [axiosInstance]
+  );
 
   const rejectFeedbackForExamStudent = useCallback(
     async (examUuid: string, studentUuid: string) => {
-      const response = await axiosInstance.put(`api/feedback/exam/${examUuid}/student/${studentUuid}/reject`);
+      const response = await axiosInstance.put(
+        `api/feedback/exam/${examUuid}/student/${studentUuid}/reject`
+      );
       return response.status === 200;
-    }, [axiosInstance])
+    },
+    [axiosInstance]
+  );
 
-  return { getCurrentWeather, getExams, addExam, updateExam, deleteExam, getFeedbacksForExam, acceptFeedbackForExamStudent, rejectFeedbackForExamStudent };
+  return {
+    getCurrentWeather,
+    getExams,
+    addExam,
+    updateExam,
+    deleteExam,
+    getFeedbacksForExam,
+    acceptFeedbackForExamStudent,
+    rejectFeedbackForExamStudent,
+  };
 };
 
 export default useApi;

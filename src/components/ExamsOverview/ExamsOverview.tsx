@@ -98,7 +98,9 @@ const ExamsOverview = ({
             <th style={{ width: '15%' }}>{t('pages.exams.table.module')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.date')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.professor')}</th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.submissions')}</th>
+            <th style={{ width: '10%' }}>
+              {t('pages.exams.table.submissions')}
+            </th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.type')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
@@ -127,7 +129,9 @@ const ExamsOverview = ({
                 <Typography level="body-sm">{exam.moduleCode}</Typography>
               </td>
               <td>
-                <Typography level="body-sm">{new Date(exam.examDate).toLocaleString()}</Typography>
+                <Typography level="body-sm">
+                  {new Date(exam.examDate).toLocaleString()}
+                </Typography>
               </td>
               <td>
                 <Typography level="body-sm">-</Typography>
@@ -159,11 +163,15 @@ const ExamsOverview = ({
                   />
                   <FilePresentIcon
                     onClick={(e: React.MouseEvent<SVGSVGElement>) => {
-                      navigate(`/submissions${exam.id ? '/'+exam.id : ''}`)
+                      navigate(`/submissions${exam.id ? '/' + exam.id : ''}`);
                       e.stopPropagation();
                       e.preventDefault();
                     }}
-                    sx={{ cursor: 'pointer', color: 'var(--joy-palette-text-tertiary, var(--joy-palette-neutral-600, #555E68))'}}
+                    sx={{
+                      cursor: 'pointer',
+                      color:
+                        'var(--joy-palette-text-tertiary, var(--joy-palette-neutral-600, #555E68))',
+                    }}
                     titleAccess={t('pages.exams.table.file')}
                   />
                   <EditExamModal
@@ -185,7 +193,9 @@ const ExamsOverview = ({
             <tr>
               <td colSpan={columns}>
                 <Box sx={{ p: 2, textAlign: 'center', opacity: 0.7 }}>
-                  <Typography level="body-sm">{t('pages.exams.table.zeroExams')}</Typography>
+                  <Typography level="body-sm">
+                    {t('pages.exams.table.zeroExams')}
+                  </Typography>
                 </Box>
               </td>
             </tr>
