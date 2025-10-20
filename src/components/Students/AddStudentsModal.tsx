@@ -36,7 +36,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
     (async () => {
       try {
         const enrolled = await getStudentsByExamId(exam.id);
-        const ids = (enrolled || []).map((s: any) => String(s.id));
+        const ids = (enrolled || []).map((s: Student) => String(s.id));
         initialSelectedIdsRef.current = new Set(ids);
         setSelectedIds([]);
       } catch (e) {
@@ -59,9 +59,10 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
         );
         setStudents(arr);
       })
-      .catch((err: any) => {
+      .catch((err: unknown) => {
         console.error('[AddStudentsModal] load all students failed', err);
-        setError(err?.message ?? 'Fehler beim Laden');
+        const message = err instanceof Error ? err.message : 'Fehler beim Laden';
+        setError(message);
       })
       .finally(() => setLoading(false));
   }, [open, getAllStudents]);
@@ -86,10 +87,15 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
   const accordionItems = [
     {
       id: 'all',
-      header: 'Studierende zur Prüfung anmelden',
+      header: t(
+        'pages.exams.addStudents.header',
+        'Studierende zur Prüfung anmelden'
+      ),
       children: (
         <div>
-          {loading && <p>Lade Studierende…</p>}
+          {loading && (
+            <p>{t('pages.exams.addStudents.loading', 'Lade Studierende…')}</p>
+          )}
           {error && !loading && (
             <p style={{ color: 'var(--joy-palette-danger-600, #b71c1c)' }}>
               {error}
@@ -99,7 +105,9 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
             <>
               <Box sx={{ mb: 1, display: 'flex', gap: 1 }}>
                 <Button size="sm" onClick={toggleSelectAll}>
-                  {areAllSelected() ? 'Alle abwählen' : 'Alle auswählen'}
+                  {areAllSelected()
+                    ? t('pages.exams.addStudents.deselectAll', 'Alle abwählen')
+                    : t('pages.exams.addStudents.selectAll', 'Alle auswählen')}
                 </Button>
               </Box>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -128,7 +136,8 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
                       <Checkbox
                         checked={selected}
                         onChange={() => toggleStudent(String(s.id))}
-                        label={`${s.firstName} ${s.lastName}${s.studentId ? ` — ${s.studentId}` : ''}${alreadyEnrolled ? '  (bereits eingeschrieben)' : ''}`}
+                        label={`${s.firstName} ${s.lastName}${s.studentId ? ` — ${s.studentId}` : ''}
+                        ${alreadyEnrolled ? t('pages.exams.addStudents.alreadyEnrolled', ' (bereits eingeschrieben)') : ''}`}
                       />
                     </li>
                   );
@@ -163,7 +172,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
         <Typography level="h4">
           {exam
             ? `${t('pages.exams.addStudents.title', 'Prüfung: ')}  ${exam.title}`
-            : t('pages.exams.addStudents.title', 'Studierende hinzufügen')}
+            : t('pages.exams.addStudents.title', 'Prüfungsanmeldung')}
         </Typography>
         <Accordion
           items={accordionItems}
@@ -180,7 +189,9 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
           }}
         >
           <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-            {`Angemeldet: ${addedToExamCount}`}
+            {t('pages.exams.addStudents.registeredCount', {
+              count: addedToExamCount,
+            })}
           </Typography>
           <Button
             variant="solid"
@@ -190,7 +201,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
               const latestEnrolled = await getStudentsByExamId(exam.id);
               console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
               const initialSet = new Set<string>(
-                (latestEnrolled ?? []).map((s: any) => String(s.id))
+                (latestEnrolled ?? []).map((s: Student) => String(s.id))
               );
               console.log(
                 '[AddStudentsModal] initialSet IDs:',
@@ -213,7 +224,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
                   examId: exam.id,
                 });
                 setSaving(true);
-                const tasks: Promise<any>[] = [];
+                const tasks: Promise<unknown>[] = [];
 
                 toAdd.forEach((sid) =>
                   tasks.push(addStudentToExam(sid, String(exam.id)))
@@ -265,7 +276,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
               })()
             }
           >
-            Speichern
+            {t('pages.exams.addStudents.save', 'Speichern')}
           </Button>
         </Box>
       </ModalDialog>
