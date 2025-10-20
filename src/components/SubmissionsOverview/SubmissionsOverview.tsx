@@ -1,9 +1,21 @@
-import { Box, Button, Input, Table, Typography, Switch } from '@mui/joy';
+import {
+  Box,
+  Button,
+  Input,
+  Table,
+  Typography,
+  Switch,
+  Modal,
+  List,
+  ListItem,
+  ListItemButton
+} from '@mui/joy';
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApi from '@/hooks/useApi';
 import type { Feedback } from '@custom-types/feedback';
 import type { ExamState } from '@custom-types/exam';
+import { ListItemText } from '@mui/material';
 
 type SubmissionOverviewProps = {
   examUuid: string;
@@ -22,11 +34,9 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
   const [page] = useState<number>(1);
   const [search, setSearch] = useState('');
 
-  const {
-    getFeedbacksForExam,
-    acceptFeedbackForExamStudent,
-    rejectFeedbackForExamStudent,
-  } = useApi();
+  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null);
+
+  const { getFeedbacksForExam, acceptFeedbackForExamStudent, rejectFeedbackForExamStudent } = useApi();
 
   // Fetch feedbacks
   useEffect(() => {
@@ -69,10 +79,8 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
 
   const saveChanges = async () => {
     setLoading(true);
-    console.log(selectedRows);
     try {
       for (const [studentUuid, selected] of Object.entries(selectedRows)) {
-        console.log('iter');
         if (!selected) continue;
         const fb = feedbacks.find((f) => f.studentUuid === studentUuid);
         if (!fb) continue;
@@ -80,10 +88,8 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
         if (newState === fb.examState) continue;
 
         if (newState === 'EXAM_ACCEPTED') {
-          console.log('accepting');
           await acceptFeedbackForExamStudent(fb.examUuid, fb.studentUuid);
         } else if (newState === 'EXAM_REJECTED') {
-          console.log('rejecting');
           await rejectFeedbackForExamStudent(fb.examUuid, fb.studentUuid);
         }
       }
@@ -92,9 +98,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
       setFeedbacks(refreshed);
 
       const refreshedStates: Record<string, ExamState> = {};
-      refreshed.forEach(
-        (fb) => (refreshedStates[fb.studentUuid] = fb.examState)
-      );
+      refreshed.forEach((fb) => (refreshedStates[fb.studentUuid] = fb.examState));
       setRowStates(refreshedStates);
 
       setSelectedRows({});
@@ -125,15 +129,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
 
   return (
     <Box sx={{ width: '100%', p: 0, m: 0 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          gap: 2,
-          mb: 2,
-          flexWrap: 'wrap',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
         <Input
           placeholder={t('pages.submissions.search')}
           value={search}
@@ -144,9 +140,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
           checked={onlyUnapproved}
           onChange={(e) => setOnlyUnapproved(e.target.checked)}
           color="neutral"
-          endDecorator={t('pages.submissions.showOnlyUnapproved', {
-            defaultValue: 'Show only unapproved',
-          })}
+          endDecorator={t('pages.submissions.showOnlyUnapproved', { defaultValue: 'Show only unapproved' })}
         />
         <Button disabled={!changesMade || loading} onClick={saveChanges}>
           {t('pages.submissions.saveChanges', { defaultValue: 'Save Changes' })}
@@ -157,41 +151,25 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
         <thead>
           <tr>
             <th style={{ width: '5%' }}></th>
-            <th style={{ width: '20%' }}>
-              {t('pages.submissions.table.student')}
-            </th>
-            <th style={{ width: '20%' }}>
-              {t('pages.submissions.table.lecturer')}
-            </th>
-            <th style={{ width: '10%' }}>
-              {t('pages.submissions.table.gradedAt')}
-            </th>
-            <th style={{ width: '10%' }}>
-              {t('pages.submissions.table.points')}
-            </th>
-            <th style={{ width: '10%' }}>
-              {t('pages.submissions.table.grade')}
-            </th>
-            <th style={{ width: '25%' }}>
-              {t('pages.submissions.table.status')}
-            </th>
+            <th style={{ width: '20%' }}>{t('pages.submissions.table.student')}</th>
+            <th style={{ width: '20%' }}>{t('pages.submissions.table.lecturer')}</th>
+            <th style={{ width: '10%' }}>{t('pages.submissions.table.gradedAt')}</th>
+            <th style={{ width: '10%' }}>{t('pages.submissions.table.points')}</th>
+            <th style={{ width: '10%' }}>{t('pages.submissions.table.grade')}</th>
+            <th style={{ width: '25%' }}>{t('pages.submissions.table.status')}</th>
           </tr>
         </thead>
         <tbody>
           {loading ? (
             <tr>
               <td colSpan={7}>
-                <Typography textAlign="center">
-                  {t('pages.submissions.loading')}
-                </Typography>
+                <Typography textAlign="center">{t('pages.submissions.loading')}</Typography>
               </td>
             </tr>
           ) : pageItems.length === 0 ? (
             <tr>
               <td colSpan={7}>
-                <Typography textAlign="center">
-                  {t('pages.submissions.zeroFeedbacks')}
-                </Typography>
+                <Typography textAlign="center">{t('pages.submissions.zeroFeedbacks')}</Typography>
               </td>
             </tr>
           ) : (
@@ -202,7 +180,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               const rejectActive = currentState === 'EXAM_REJECTED';
               const isGraded = originalState === 'EXAM_GRADED';
               return (
-                <tr key={fb.studentUuid}>
+                <tr key={fb.studentUuid} onClick={() => setSelectedFeedback(fb)} style={{ cursor: 'pointer' }}>
                   <td></td>
                   <td>{fb.studentUuid}</td>
                   <td>{fb.lecturerUuid}</td>
@@ -216,32 +194,24 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                         color="success"
                         size="sm"
                         disabled={!isGraded && !acceptActive && !rejectActive}
-                        onClick={() =>
-                          toggleStatus(
-                            fb.studentUuid,
-                            'EXAM_ACCEPTED' as ExamState
-                          )
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleStatus(fb.studentUuid, 'EXAM_ACCEPTED' as ExamState);
+                        }}
                       >
-                        {t('pages.submissions.accept', {
-                          defaultValue: 'Accept',
-                        })}
+                        {t('pages.submissions.accept', { defaultValue: 'Accept' })}
                       </Button>
                       <Button
                         variant={rejectActive ? 'solid' : 'outlined'}
                         color="danger"
                         size="sm"
                         disabled={!isGraded && !acceptActive && !rejectActive}
-                        onClick={() =>
-                          toggleStatus(
-                            fb.studentUuid,
-                            'EXAM_REJECTED' as ExamState
-                          )
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleStatus(fb.studentUuid, 'EXAM_REJECTED' as ExamState);
+                        }}
                       >
-                        {t('pages.submissions.reject', {
-                          defaultValue: 'Reject',
-                        })}
+                        {t('pages.submissions.reject', { defaultValue: 'Reject' })}
                       </Button>
                     </Box>
                   </td>
@@ -251,6 +221,78 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
           )}
         </tbody>
       </Table>
+
+      <Modal open={!!selectedFeedback} onClose={() => setSelectedFeedback(null)}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 500,
+            bgcolor: 'background.body',
+            borderRadius: 2,
+            p: 3,
+            boxShadow: 24,
+            maxHeight: '80vh',
+            overflowY: 'auto',
+          }}
+        >
+          {selectedFeedback && (
+            <>
+              <Typography level='h4' mb={2}>
+                Feedback Details
+              </Typography>
+              <Typography>
+                <strong>Student:</strong> {selectedFeedback.studentUuid}
+              </Typography>
+              <Typography>
+                <strong>Lecturer:</strong> {selectedFeedback.lecturerUuid}
+              </Typography>
+              <Typography>
+                <strong>Graded At:</strong> {selectedFeedback.gradedAt}
+              </Typography>
+              <Typography>
+                <strong>Points:</strong> {selectedFeedback.points}
+              </Typography>
+              <Typography>
+                <strong>Grade:</strong> {selectedFeedback.grade}
+              </Typography>
+              <Typography mt={2}>
+                <strong>Comment:</strong>
+              </Typography>
+              <Typography mb={2}>{selectedFeedback.comment || 'No comment'}</Typography>
+
+              <Typography>
+                <strong>Files:</strong>
+              </Typography>
+              {selectedFeedback.fileReference.length > 0 ? (
+                <List>
+                  {selectedFeedback.fileReference.map((file) => (
+                    <ListItem key={file.fileUuid}>
+                      <ListItemButton
+                        component="a"
+                        href={file.downloadLink ?? '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        disabled={!file.downloadLink}
+                      >
+                        <ListItemText primary={file.filename} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography>No files attached.</Typography>
+              )}
+
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <Button onClick={() => setSelectedFeedback(null)}>Close</Button>
+              </Box>
+            </>
+          )}
+        </Box>
+      </Modal>
     </Box>
   );
 };
