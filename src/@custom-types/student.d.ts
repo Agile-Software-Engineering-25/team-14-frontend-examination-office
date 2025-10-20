@@ -3,6 +3,6 @@ export interface Student {
   firstName: string;
   lastName: string;
   email?: string;
-  matriculationNumber?: string;
+  studentId?: string;
   studyGroup?: string;
 }

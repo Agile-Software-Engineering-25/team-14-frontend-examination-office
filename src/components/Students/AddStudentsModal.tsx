@@ -174,7 +174,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
                       <Checkbox
                         checked={selected}
                         onChange={() => toggleStudent(String(group.id), s.id)}
-                        label={`${s.firstName} ${s.lastName}${s.matriculationNumber ? ` — ${s.matriculationNumber}` : ''}`}
+                        label={`${s.firstName} ${s.lastName}${s.studentId ? ` — ${s.studentId}` : ''}`}
                       />
                     </li>
                   );
