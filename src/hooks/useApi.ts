@@ -51,7 +51,8 @@ const useApi = () => {
     [axiosInstance]
   );
 
-  const getStudentsByStudyGroup = useCallback(async (studyGroup: string) => {
+  const getStudentsByStudyGroup = useCallback(
+    async (studyGroup: string) => {
       const response = await axiosInstance.get(
         `api/students/study-group/${encodeURIComponent(studyGroup)}`
       );
@@ -61,7 +62,7 @@ const useApi = () => {
   );
 
   const addStudentToExam = useCallback(
-    async (studentId: number, examId: number) => {
+    async (studentId: string, examId: string) => {
       const response = await axiosInstance.post(
         `api/students/${studentId}/exams/${examId}`
       );
@@ -71,7 +72,7 @@ const useApi = () => {
   );
 
   const removeStudentFromExam = useCallback(
-    async (studentId: number, examId: number) => {
+    async (studentId: string, examId: string) => {
       const response = await axiosInstance.delete(
         `api/students/${studentId}/exams/${examId}`
       );
@@ -81,12 +82,17 @@ const useApi = () => {
   );
 
   const getStudentsByExamId = useCallback(
-    async (examId: number) => {
+    async (examId: string) => {
       const response = await axiosInstance.get(`api/students/exam/${examId}`);
       return response.data as Student[];
     },
     [axiosInstance]
   );
+
+  const getAllStudents = useCallback(async () => {
+    const response = await axiosInstance.get('api/students');
+    return response.data as Student[];
+  }, [axiosInstance]);
   return {
     getCurrentWeather,
     getExams,
@@ -97,6 +103,7 @@ const useApi = () => {
     addStudentToExam,
     removeStudentFromExam,
     getStudentsByExamId,
+    getAllStudents,
   };
 };
 

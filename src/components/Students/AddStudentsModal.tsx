@@ -9,7 +9,7 @@ import {
 } from '@mui/joy';
 import { Accordion } from '@agile-software/shared-components';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Exam } from '@custom-types/exam';
 import useApi from '@hooks/useApi';
 import type { Student } from '@custom-types/student';
@@ -18,163 +18,117 @@ interface AddStudentsModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   exam?: Exam | null;
-  onSaveSelected?: (ids: number[]) => void;
 }
 
 const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
   const { t } = useTranslation();
-  const groups = useMemo(
-    () => [
-      { id: 1, label: 'BIN-T23-F-1' },
-      { id: 2, label: 'BIN-T23-F-2' },
-      { id: 3, label: 'BIN-T23-F-3' },
-      { id: 4, label: 'BIN-T23-F-4' },
-    ],
-    []
-  );
-  const [expanded, setExpanded] = useState<string | null>(String(groups[0].id));
+  const [expanded, setExpanded] = useState<string | null>('all');
 
-  const { getStudentsByStudyGroup, addStudentToExam, getStudentsByExamId } =
-    useApi();
-  const [studentsByGroup, setStudentsByGroup] = useState<
-    Record<string, Student[]>
-  >({});
-  const [loadingByGroup, setLoadingByGroup] = useState<Record<string, boolean>>(
-    {}
-  );
-  const [errorByGroup, setErrorByGroup] = useState<
-    Record<string, string | null>
-  >({});
-
-  const [selectedByGroup, setSelectedByGroup] = useState<
-    Record<string, number[]>
-  >({});
+  const { addStudentToExam, getStudentsByExamId, getAllStudents } = useApi();
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-  const initialSelectedIdsRef = useRef<Set<number>>(new Set());
+  const initialSelectedIdsRef = useRef<Set<string>>(new Set());
   useEffect(() => {
     if (!open || !exam?.id) return;
     (async () => {
       try {
         const enrolled = await getStudentsByExamId(exam.id);
-        // build selection map per group id
-        const next: Record<string, number[]> = {};
-        groups.forEach(({ id }) => (next[String(id)] = []));
-        const flatIds: number[] = [];
-        (enrolled || []).forEach((s: any) => {
-          const gid = String(s.studyGroup ?? s.studyGroupId ?? '');
-          if (gid && next[gid]) next[gid].push(s.id);
-          flatIds.push(s.id);
-        });
-        initialSelectedIdsRef.current = new Set(flatIds);
-        setSelectedByGroup(next);
+        const ids = (enrolled || []).map((s: any) => String(s.id));
+        initialSelectedIdsRef.current = new Set(ids);
+        setSelectedIds([]);
       } catch (e) {
         console.error('[AddStudentsModal] getStudentsByExamId failed', e);
       }
     })();
-  }, [open, exam?.id, getStudentsByExamId, groups]);
-
-  const areAllSelected = (gid: string) => {
-    const total = studentsByGroup[gid]?.length ?? 0;
-    const selected = selectedByGroup[gid]?.length ?? 0;
-    return total > 0 && selected === total;
-  };
-
-  const toggleSelectAll = (gid: string) => {
-    const allIds = (studentsByGroup[gid] ?? []).map((s) => s.id);
-    setSelectedByGroup((prev) => ({
-      ...prev,
-      [gid]: areAllSelected(gid) ? [] : allIds,
-    }));
-  };
-
-  const toggleStudent = (gid: string, sid: number) => {
-    setSelectedByGroup((prev) => {
-      const set = new Set(prev[gid] ?? []);
-      if (set.has(sid)) set.delete(sid);
-      else set.add(sid);
-      return { ...prev, [gid]: Array.from(set) };
-    });
-  };
+  }, [open, exam?.id, getStudentsByExamId]);
 
   useEffect(() => {
     if (!open) return;
-    groups.forEach(({ id }) => {
-      const key = String(id);
-      if (studentsByGroup[key] || loadingByGroup[key]) return;
+    setLoading(true);
+    setError(null);
+    getAllStudents()
+      .then((list) => {
+        const arr = Array.isArray(list) ? (list as Student[]) : [];
+        arr.sort((a, b) =>
+          `${a.lastName ?? ''} ${a.firstName ?? ''}`.localeCompare(
+            `${b.lastName ?? ''} ${b.firstName ?? ''}`
+          )
+        );
+        setStudents(arr);
+      })
+      .catch((err: any) => {
+        console.error('[AddStudentsModal] load all students failed', err);
+        setError(err?.message ?? 'Fehler beim Laden');
+      })
+      .finally(() => setLoading(false));
+  }, [open, getAllStudents]);
 
-      setLoadingByGroup((s) => ({ ...s, [key]: true }));
-      setErrorByGroup((s) => ({ ...s, [key]: null }));
+  const areAllSelected = () =>
+    students.length > 0 && selectedIds.length === students.length;
 
-      getStudentsByStudyGroup(key)
-        .then((data) => {
-          setStudentsByGroup((s) => ({ ...s, [key]: data }));
-        })
-        .catch((err: any) => {
-          setErrorByGroup((s) => ({
-            ...s,
-            [key]: err?.message ?? 'Fehler beim Laden',
-          }));
-        })
-        .finally(() => {
-          setLoadingByGroup((s) => ({ ...s, [key]: false }));
-        });
+  const toggleSelectAll = () => {
+    if (areAllSelected()) setSelectedIds([]);
+    else setSelectedIds(students.map((s) => String(s.id)));
+  };
+
+  const toggleStudent = (sid: string) => {
+    setSelectedIds((prev) => {
+      const set = new Set(prev);
+      if (set.has(sid)) set.delete(sid);
+      else set.add(sid);
+      return Array.from(set);
     });
-  }, [open, groups, getStudentsByStudyGroup]);
+  };
 
-  const accordionItems = groups.map((group) => ({
-    id: String(group.id),
-    header: `Gruppe: ${group.label}`,
-    children: (
-      <div>
-        {loadingByGroup[String(group.id)] && <p>Lade Studierende…</p>}
-        {errorByGroup[String(group.id)] &&
-          !loadingByGroup[String(group.id)] && (
+  const accordionItems = [
+    {
+      id: 'all',
+      header: 'Studierende zur Prüfung anmelden',
+      children: (
+        <div>
+          {loading && <p>Lade Studierende…</p>}
+          {error && !loading && (
             <p style={{ color: 'var(--joy-palette-danger-600, #b71c1c)' }}>
-              {errorByGroup[String(group.id)]}
+              {error}
             </p>
           )}
-        {!loadingByGroup[String(group.id)] &&
-          !errorByGroup[String(group.id)] &&
-          (studentsByGroup[String(group.id)]?.length ? (
+          {!loading && !error && students.length ? (
             <>
               <Box sx={{ mb: 1, display: 'flex', gap: 1 }}>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const gid = String(group.id);
-                    const allIds = (studentsByGroup[gid] ?? []).map(
-                      (s) => s.id
-                    );
-                    setSelectedByGroup((prev) => ({
-                      ...prev,
-                      [gid]: allIds,
-                    }));
-                  }}
-                >
-                  Alle auswählen
+                <Button size="sm" onClick={toggleSelectAll}>
+                  {areAllSelected() ? 'Alle abwählen' : 'Alle auswählen'}
                 </Button>
               </Box>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {studentsByGroup[String(group.id)].map((s) => {
-                  const selected = (
-                    selectedByGroup[String(group.id)] ?? []
-                  ).includes(s.id);
+                {students.map((s) => {
+                  const selected = selectedIds.includes(String(s.id));
+                  const alreadyEnrolled = initialSelectedIdsRef.current.has(
+                    String(s.id)
+                  );
                   return (
                     <li
-                      key={s.id}
+                      key={String(s.id)}
                       style={{
                         padding: '6px 8px',
                         borderRadius: 6,
                         marginBottom: 4,
                         backgroundColor: selected
                           ? 'rgba(66, 165, 245, 0.18)'
-                          : 'transparent',
+                          : alreadyEnrolled
+                            ? 'rgba(76, 175, 80, 0.12)'
+                            : 'transparent',
+                        border: alreadyEnrolled
+                          ? '1px solid rgba(76, 175, 80, 0.35)'
+                          : '1px solid transparent',
                       }}
                     >
                       <Checkbox
                         checked={selected}
-                        onChange={() => toggleStudent(String(group.id), s.id)}
-                        label={`${s.firstName} ${s.lastName}${s.studentId ? ` — ${s.studentId}` : ''}`}
+                        onChange={() => toggleStudent(String(s.id))}
+                        label={`${s.firstName} ${s.lastName}${s.studentId ? ` — ${s.studentId}` : ''}${alreadyEnrolled ? '  (bereits eingeschrieben)' : ''}`}
                       />
                     </li>
                   );
@@ -182,19 +136,17 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
               </ul>
             </>
           ) : (
-            <p>Keine Studierenden in dieser Gruppe.</p>
-          ))}
-      </div>
-    ),
-    expanded: expanded === String(group.id),
-    onChange: (isExpanded: boolean) =>
-      setExpanded(isExpanded ? String(group.id) : null),
-  }));
-  console.log('ExamID', exam?.id);
+            <p>Keine Studierenden für diese Prüfung vorhanden.</p>
+          )}
+        </div>
+      ),
+      expanded: expanded === 'all',
+      onChange: (isExpanded: boolean) => setExpanded(isExpanded ? 'all' : null),
+    },
+  ];
   // Helper to get all selected IDs as a flat, deduplicated array
-  const getSelectedIds = () =>
-    Array.from(new Set(Object.values(selectedByGroup).flat()));
-  const addedToExamCount = getSelectedIds().length;
+  const getSelectedIds = () => Array.from(new Set(selectedIds));
+  const addedToExamCount = initialSelectedIdsRef.current.size;
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
@@ -210,13 +162,13 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
         <ModalClose />
         <Typography level="h4">
           {exam
-            ? `${t('pages.exams.addStudents.title', 'Studierende hinzufügen')} — ${exam.title}`
+            ? `${t('pages.exams.addStudents.title', 'Prüfung: ')}  ${exam.title}`
             : t('pages.exams.addStudents.title', 'Studierende hinzufügen')}
         </Typography>
         <Accordion
           items={accordionItems}
           multiple={true}
-          defaultExpanded={[String(groups[0].id)]}
+          defaultExpanded={['all']}
         />
         <Box
           sx={{
@@ -228,7 +180,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
           }}
         >
           <Typography level="body-sm" sx={{ color: 'text.secondary' }}>
-            {`Hinzugefügt: ${addedToExamCount}`}
+            {`Angemeldet: ${addedToExamCount}`}
           </Typography>
           <Button
             variant="solid"
@@ -237,8 +189,8 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
               if (!exam?.id) return;
               const latestEnrolled = await getStudentsByExamId(exam.id);
               console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
-              const initialSet = new Set<number>(
-                (latestEnrolled ?? []).map((s: any) => s.id)
+              const initialSet = new Set<string>(
+                (latestEnrolled ?? []).map((s: any) => String(s.id))
               );
               console.log(
                 '[AddStudentsModal] initialSet IDs:',
@@ -249,7 +201,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
                 Array.from(currentSet)
               );
 
-              const toAdd: number[] = [];
+              const toAdd: string[] = [];
               currentSet.forEach((id) => {
                 if (!initialSet.has(id)) toAdd.push(id);
               });
@@ -264,7 +216,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
                 const tasks: Promise<any>[] = [];
 
                 toAdd.forEach((sid) =>
-                  tasks.push(addStudentToExam(sid, exam.id as number))
+                  tasks.push(addStudentToExam(sid, String(exam.id)))
                 );
 
                 const results = await Promise.allSettled(tasks);
@@ -283,7 +235,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
                   );
                 }
                 if (!hasError) {
-                  initialSelectedIdsRef.current = new Set<number>([
+                  initialSelectedIdsRef.current = new Set<string>([
                     ...Array.from(initialSet),
                     ...toAdd,
                   ]);
