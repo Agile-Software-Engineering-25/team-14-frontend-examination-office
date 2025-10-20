@@ -21,11 +21,7 @@ interface AddStudentsModalProps {
   onSaveSelected?: (ids: number[]) => void;
 }
 
-const AddStudentsModal = ({
-  open,
-  setOpen,
-  exam,
-}: AddStudentsModalProps) => {
+const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
   const { t } = useTranslation();
   const groups = useMemo(
     () => [
@@ -196,7 +192,8 @@ const AddStudentsModal = ({
   }));
   console.log('ExamID', exam?.id);
   // Helper to get all selected IDs as a flat, deduplicated array
-  const getSelectedIds = () => Array.from(new Set(Object.values(selectedByGroup).flat()));
+  const getSelectedIds = () =>
+    Array.from(new Set(Object.values(selectedByGroup).flat()));
   const addedToExamCount = getSelectedIds().length;
 
   return (
@@ -240,7 +237,9 @@ const AddStudentsModal = ({
               if (!exam?.id) return;
               const latestEnrolled = await getStudentsByExamId(exam.id);
               console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
-              const initialSet = new Set<number>((latestEnrolled ?? []).map((s: any) => s.id));
+              const initialSet = new Set<number>(
+                (latestEnrolled ?? []).map((s: any) => s.id)
+              );
               console.log(
                 '[AddStudentsModal] initialSet IDs:',
                 Array.from(initialSet)
@@ -257,7 +256,10 @@ const AddStudentsModal = ({
               console.log('[AddStudentsModal] toAdd (nach Vergleich):', toAdd);
 
               try {
-                console.log('[AddStudentsModal] Starte Speichern...', { toAdd, examId: exam.id });
+                console.log('[AddStudentsModal] Starte Speichern...', {
+                  toAdd,
+                  examId: exam.id,
+                });
                 setSaving(true);
                 const tasks: Promise<any>[] = [];
 
