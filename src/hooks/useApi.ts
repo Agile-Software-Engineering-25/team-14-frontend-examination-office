@@ -45,8 +45,8 @@ const useApi = () => {
   );
 
   const deleteExam = useCallback(
-    async (examId: number) => {
-      await axiosInstance.delete(`api/exams/${examId}`);
+    async (examUuid: string) => {
+      await axiosInstance.delete(`api/exams/${examUuid}`);
       return;
     },
     [axiosInstance]
