@@ -7,6 +7,7 @@ import type { Exam } from '@custom-types/exam';
 import LanguageSelectorComponent from '@components/LanguageSelectorComponent/LanguageSelectorComponent';
 import { isAxiosError } from 'axios';
 import ExamDetail from '@/components/Exam/ExamDetail';
+import AddStudentsModal from '@components/Students/AddStudentsModal';
 
 const Exams = () => {
   const { t } = useTranslation();
@@ -15,6 +16,7 @@ const Exams = () => {
   const [loading, setLoading] = useState(true);
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [selectedExam, setSelectedExam] = useState<Exam | undefined>(undefined);
+  const [addStudentsOpen, setAddStudentsOpen] = useState(false);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -109,6 +111,25 @@ const Exams = () => {
       });
   };
 
+  const openAddStudentsForExam = (exam: Exam) => {
+    setSelectedExam(exam);
+    setAddStudentsOpen(true);
+  };
+
+  const handleAddStudentsSaved = (success: boolean, message?: string) => {
+    setSnackbarMessage(
+      message ??
+        (success
+          ? t('pages.exams.addStudents.saveSuccess')
+          : t('pages.exams.addStudents.saveError'))
+    );
+    setSnackbarColor(success ? 'success' : 'danger');
+    setSnackbarOpen(true);
+    if (success) {
+      refreshExams();
+    }
+  };
+
   useEffect(() => {
     refreshExams();
   }, [refreshExams]);
@@ -146,6 +167,7 @@ const Exams = () => {
             onDelete={deleteExamFn}
             onAdd={addExamFn}
             onEdit={editExamFn}
+            onOpenAddStudents={openAddStudentsForExam}
           />
         )}
       </Box>
@@ -177,6 +199,13 @@ const Exams = () => {
         isVisible={isDetailVisible}
         setVisible={setIsDetailVisible}
         exam={selectedExam!}
+      />
+
+      <AddStudentsModal
+        open={addStudentsOpen}
+        setOpen={setAddStudentsOpen}
+        exam={selectedExam}
+        onSaved={handleAddStudentsSaved}
       />
     </Box>
   );

@@ -2,6 +2,7 @@ import { Box, Button, Input, Table, Typography } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
@@ -15,6 +16,7 @@ type ExamsOverviewProps = {
   onAdd?: (exam: Exam) => void;
   onEdit?: (exam: Exam) => void;
   onDelete?: (exam: Exam) => void;
+  onOpenAddStudents?: (exam: Exam) => void;
 };
 
 const columns = 7;
@@ -25,6 +27,7 @@ const ExamsOverview = ({
   onDelete,
   onAdd,
   onEdit,
+  onOpenAddStudents,
 }: ExamsOverviewProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -101,8 +104,8 @@ const ExamsOverview = ({
             <th style={{ width: '10%' }}>
               {t('pages.exams.table.submissions')}
             </th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.type')}</th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
+            <th style={{ width: '9%' }}>{t('pages.exams.table.type')}</th>
+            <th style={{ width: '11%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
         </thead>
 
@@ -184,6 +187,14 @@ const ExamsOverview = ({
                     }
                     exam={exam}
                   />
+                  <PeopleAltIcon
+                    onClick={(e: React.MouseEvent<SVGSVGElement>) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onOpenAddStudents?.(exam);
+                    }}
+                    sx={{ cursor: 'pointer', color: 'black' }}
+                  />
                 </Box>
               </td>
             </tr>
@@ -264,7 +275,6 @@ const ExamsOverview = ({
           </tr>
         </tfoot>
       </Table>
-
       {/* Edit Modal */}
       {editModalExam && (
         <EditExamModal

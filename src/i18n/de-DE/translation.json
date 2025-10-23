@@ -80,6 +80,21 @@
         "title": "Prüfung bearbeiten",
         "success": "Prüfung erfolgreich bearbeitet!",
         "error": "Fehler beim Bearbeiten der Prüfung"
+      },
+      "addStudents": {
+        "title": "Prüfung:",
+        "modalTitle": "Studierende hinzufügen",
+        "header": "Studierende zur Prüfung anmelden",
+        "loading": "Lade Studierende…",
+        "noStudents": "Keine Studierenden für diese Prüfung vorhanden.",
+        "selectAll": "Alle auswählen",
+        "deselectAll": "Alle abwählen",
+        "alreadyEnrolled": " (bereits eingeschrieben)",
+        "registeredCount": "Angemeldet: {{count}}",
+        "save": "Speichern",
+        "saving": "Speichert…",
+        "saveSuccess": "Studierende erfolgreich hinzugefügt",
+        "saveError": "Fehler beim Speichern"
       }
     },
     "submissions": {
