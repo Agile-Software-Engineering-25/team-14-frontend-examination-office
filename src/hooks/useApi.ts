@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import type { Units } from '@custom-types/weather';
 import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
 import type { Exam } from '@custom-types/exam';
+import type { Feedback } from '@custom-types/feedback';
 import type { Student } from '@custom-types/student';
 
 const useApi = () => {
@@ -51,6 +52,36 @@ const useApi = () => {
     [axiosInstance]
   );
 
+  const getFeedbacksForExam = useCallback(
+    async (examUuid: string) => {
+      const response = await axiosInstance.get<Feedback[]>(
+        `api/feedback/exam/${examUuid}`
+      );
+      return response.data;
+    },
+    [axiosInstance]
+  );
+
+  const acceptFeedbackForExamStudent = useCallback(
+    async (examUuid: string, studentUuid: string) => {
+      const response = await axiosInstance.put(
+        `api/feedback/exam/${examUuid}/student/${studentUuid}/accept`
+      );
+      return response.status === 200;
+    },
+    [axiosInstance]
+  );
+
+  const rejectFeedbackForExamStudent = useCallback(
+    async (examUuid: string, studentUuid: string) => {
+      const response = await axiosInstance.put(
+        `api/feedback/exam/${examUuid}/student/${studentUuid}/reject`
+      );
+      return response.status === 200;
+    },
+    [axiosInstance]
+  );
+
   const getStudentsByStudyGroup = useCallback(
     async (studyGroup: string) => {
       const response = await axiosInstance.get(
@@ -93,12 +124,16 @@ const useApi = () => {
     const response = await axiosInstance.get('api/students');
     return response.data as Student[];
   }, [axiosInstance]);
+
   return {
     getCurrentWeather,
     getExams,
     addExam,
     updateExam,
     deleteExam,
+    getFeedbacksForExam,
+    acceptFeedbackForExamStudent,
+    rejectFeedbackForExamStudent,
     getStudentsByStudyGroup,
     addStudentToExam,
     removeStudentFromExam,
