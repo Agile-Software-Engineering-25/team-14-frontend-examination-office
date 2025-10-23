@@ -23,7 +23,10 @@
         "module": "Modul",
         "date": "Datum",
         "professor": "Dozent",
+        "submissions": "Abgaben",
+        "zeroExams": "Keine Prüfungen zur Anzeige verfügbar.",
         "type": "Prüfungstyp",
+        "file": "Abgaben einsehen",
         "actions": "Aktionen",
         "deleteError": {
           "idMissing": "Fehler beim Löschen der Prüfung: ID fehlt",
@@ -39,6 +42,7 @@
       "addExam": {
         "button": "Prüfung Hinzufügen",
         "title": "Neue Prüfung anlegen",
+        "search": "Suche nach Titel, Modul oder Dozent...",
         "fields": {
           "title": "Titel",
           "moduleCode": "Modulcode",
@@ -76,6 +80,32 @@
         "title": "Prüfung bearbeiten",
         "success": "Prüfung erfolgreich bearbeitet!",
         "error": "Fehler beim Bearbeiten der Prüfung"
+      }
+    },
+    "submissions": {
+      "title": "Abgaben",
+      "search": "Suchen...",
+      "loading": "Lade Abgaben...",
+      "zeroFeedbacks": "Keine Abgaben gefunden.",
+      "saveChanges": "Speichern",
+      "close": "Schließen",
+      "accept": "Akzeptieren",
+      "reject": "Ablehnen",
+      "details": "Abgabe Details",
+      "footer": {
+        "itemsPerPage": "Einträge pro Seite",
+        "page": "Seite",
+        "of": "von"
+      },
+      "table": {
+        "student": "Student UUID",
+        "lecturer": "Dozent UUID",
+        "gradedAt": "Bewertet am",
+        "points": "Punkte",
+        "grade": "Note",
+        "status": "Status",
+        "comment": "Kommentar",
+        "files": "Dateien"
       }
     }
   }

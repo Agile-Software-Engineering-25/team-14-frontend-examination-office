@@ -64,6 +64,7 @@ const Exams = () => {
         setSnackbarColor('success');
         setSnackbarOpen(true);
         refreshExams();
+        return true;
       })
       .catch((err: unknown) => {
         let message = t('pages.exams.addExam.error');
@@ -81,6 +82,7 @@ const Exams = () => {
         setSnackbarMessage(message);
         setSnackbarColor('danger');
         setSnackbarOpen(true);
+        return false;
       });
   };
 
@@ -165,7 +167,9 @@ const Exams = () => {
           variant="soft"
           sx={{ width: '100%', borderRadius: 1, m: 0, py: 1, px: 2 }}
         >
-          {snackbarMessage}
+          <span style={{ textAlign: 'center', width: '100%' }}>
+            {snackbarMessage}
+          </span>
         </Alert>
       </Snackbar>
 

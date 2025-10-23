@@ -22,9 +22,12 @@
         "title": "Title",
         "module": "Module",
         "date": "Date",
-        "professor": "Professor",
+        "professor": "Lecturer",
+        "submissions": "Submissions",
         "type": "Exam Type",
+        "zeroExams": "No exams to display.",
         "actions": "Actions",
+        "file": "View Submissions",
         "deleteError": {
           "idMissing": "Error deleting exam: ID is missing",
           "unknown": "Error deleting exam: Unknown error"
@@ -39,6 +42,7 @@
       "addExam": {
         "button": "Add Exam",
         "title": "Add New Exam",
+        "search": "Search for Exam title, module or lecturer...",
         "fields": {
           "title": "Title",
           "moduleCode": "Module Code",
@@ -76,6 +80,32 @@
         "title": "Edit exam",
         "success": "Exam successfully edited!",
         "error": "Failed to edit exam"
+      }
+    },
+    "submissions": {
+      "title": "Submissions",
+      "search": "Search...",
+      "loading": "Loading submissions...",
+      "zeroFeedbacks": "No submissions found.",
+      "saveChanges": "Save",
+      "close": "Close",
+      "details": "Submission Details",
+      "accept": "Accept",
+      "reject": "Reject",
+      "footer": {
+        "itemsPerPage": "Items per page",
+        "page": "Page",
+        "of": "of"
+      },
+      "table": {
+        "student": "Student UUID",
+        "lecturer": "Lecturer UUID",
+        "gradedAt": "Graded At",
+        "points": "Points",
+        "grade": "Grade",
+        "status": "Status",
+        "comment": "Comment",
+        "files": "Files"
       }
     }
   }

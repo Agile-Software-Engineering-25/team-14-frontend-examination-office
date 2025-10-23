@@ -1,11 +1,13 @@
 import { Box, Button, Input, Table, Typography } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import FilePresentIcon from '@mui/icons-material/FilePresent';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
 import EditExamModal from '@components/Exam/EditExamModal';
 import AddExamModal from '@components/Exam/AddExamModal';
+import { useNavigate } from 'react-router';
 
 type ExamsOverviewProps = {
   exams: Exam[];
@@ -15,7 +17,7 @@ type ExamsOverviewProps = {
   onDelete?: (exam: Exam) => void;
 };
 
-const columns = 6;
+const columns = 7;
 
 const ExamsOverview = ({
   exams,
@@ -25,11 +27,13 @@ const ExamsOverview = ({
   onEdit,
 }: ExamsOverviewProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const [editModalExam, setEditModalExam] = useState<Exam | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
 
   // Filter + search
@@ -55,10 +59,9 @@ const ExamsOverview = ({
 
   return (
     <Box sx={{ width: '100%', p: 0, m: 0 }}>
-      {/* Search + Filter Controls */}
       <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
         <Input
-          placeholder="Suche nach Titel, Modul oder Professor..."
+          placeholder={t('pages.exams.addExam.search')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           sx={{ flex: 1, minWidth: 200, maxHeight: 40 }}
@@ -94,7 +97,10 @@ const ExamsOverview = ({
             <th style={{ width: '35%' }}>{t('pages.exams.table.title')}</th>
             <th style={{ width: '15%' }}>{t('pages.exams.table.module')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.date')}</th>
-            <th style={{ width: '20%' }}>{t('pages.exams.table.professor')}</th>
+            <th style={{ width: '10%' }}>{t('pages.exams.table.professor')}</th>
+            <th style={{ width: '10%' }}>
+              {t('pages.exams.table.submissions')}
+            </th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.type')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
@@ -123,10 +129,15 @@ const ExamsOverview = ({
                 <Typography level="body-sm">{exam.moduleCode}</Typography>
               </td>
               <td>
-                <Typography level="body-sm">{exam.examDate}</Typography>
+                <Typography level="body-sm">
+                  {new Date(exam.examDate).toLocaleString()}
+                </Typography>
               </td>
               <td>
-                <Typography level="body-sm">{exam.room}</Typography>
+                <Typography level="body-sm">-</Typography>
+              </td>
+              <td>
+                <Typography level="body-sm">{exam.submissions}</Typography>
               </td>
               <td>
                 <Typography level="body-sm">{exam.examType}</Typography>
@@ -150,6 +161,29 @@ const ExamsOverview = ({
                     sx={{ cursor: 'pointer', color: 'darkred' }}
                     titleAccess={t('pages.exams.table.delete')}
                   />
+                  <FilePresentIcon
+                    onClick={(e: React.MouseEvent<SVGSVGElement>) => {
+                      navigate(`/submissions${exam.id ? '/' + exam.id : ''}`);
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
+                    sx={{
+                      cursor: 'pointer',
+                      color:
+                        'var(--joy-palette-text-tertiary, var(--joy-palette-neutral-600, #555E68))',
+                    }}
+                    titleAccess={t('pages.exams.table.file')}
+                  />
+                  <EditExamModal
+                    open={editModalOpen}
+                    setOpen={setEditModalOpen}
+                    onSave={
+                      onEdit
+                        ? (updatedExam: Exam) => onEdit(updatedExam)
+                        : () => {}
+                    }
+                    exam={exam}
+                  />
                 </Box>
               </td>
             </tr>
@@ -159,7 +193,9 @@ const ExamsOverview = ({
             <tr>
               <td colSpan={columns}>
                 <Box sx={{ p: 2, textAlign: 'center', opacity: 0.7 }}>
-                  <Typography level="body-sm">No exams to display.</Typography>
+                  <Typography level="body-sm">
+                    {t('pages.exams.table.zeroExams')}
+                  </Typography>
                 </Box>
               </td>
             </tr>
