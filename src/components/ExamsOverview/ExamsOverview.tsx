@@ -9,7 +9,6 @@ import type { Exam } from '@custom-types/exam';
 import EditExamModal from '@components/Exam/EditExamModal';
 import AddExamModal from '@components/Exam/AddExamModal';
 import { useNavigate } from 'react-router';
-import AddStudentsModal from '@components/Students/AddStudentsModal';
 
 type ExamsOverviewProps = {
   exams: Exam[];
@@ -17,6 +16,7 @@ type ExamsOverviewProps = {
   onAdd?: (exam: Exam) => void;
   onEdit?: (exam: Exam) => void;
   onDelete?: (exam: Exam) => void;
+  onOpenAddStudents?: (exam: Exam) => void;
 };
 
 const columns = 7;
@@ -27,6 +27,7 @@ const ExamsOverview = ({
   onDelete,
   onAdd,
   onEdit,
+  onOpenAddStudents,
 }: ExamsOverviewProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -37,8 +38,6 @@ const ExamsOverview = ({
   const [editModalExam, setEditModalExam] = useState<Exam | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
-  const [addStudentsModalOpen, setAddStudentsModalOpen] = useState(false);
-  const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
 
   // Filter + search
   const filteredExams = exams.filter((exam) => {
@@ -192,10 +191,9 @@ const ExamsOverview = ({
                     onClick={(e: React.MouseEvent<SVGSVGElement>) => {
                       e.stopPropagation();
                       e.preventDefault();
-                      setSelectedExam(exam);
-                      setAddStudentsModalOpen(true);
+                      onOpenAddStudents?.(exam);
                     }}
-                    sx={{ cursor: 'pointer', color: 'success.main' }}
+                    sx={{ cursor: 'pointer', color: 'black' }}
                   />
                 </Box>
               </td>
@@ -277,12 +275,6 @@ const ExamsOverview = ({
           </tr>
         </tfoot>
       </Table>
-      <AddStudentsModal
-        open={addStudentsModalOpen}
-        setOpen={setAddStudentsModalOpen}
-        exam={selectedExam}
-      />
-
       {/* Edit Modal */}
       {editModalExam && (
         <EditExamModal

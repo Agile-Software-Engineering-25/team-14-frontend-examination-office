@@ -18,10 +18,15 @@ interface AddStudentsModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   exam?: Exam | null;
+  onSaved?: (success: boolean, message?: string) => void;
 }
 
-// eslint-disable-next-line max-lines-per-function,@typescript-eslint/naming-convention
-const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
+const AddStudentsModal = ({
+  open,
+  setOpen,
+  exam,
+  onSaved,
+}: AddStudentsModalProps) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>('all');
 
@@ -191,11 +196,21 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
       const results = await Promise.allSettled(tasks);
       const hasError = results.some((r) => r.status === 'rejected');
       if (hasError) {
+        const msg = t(
+          'pages.exams.addStudents.saveError',
+          'Fehler beim Speichern'
+        );
+        onSaved?.(false, msg);
         console.error('[AddStudentsModal] Fehler bei Speichern', {
           toAdd,
           results,
         });
       } else {
+        const msg = t(
+          'pages.exams.addStudents.saveSuccess',
+          'Studierende erfolgreich hinzugefügt'
+        );
+        onSaved?.(true, msg);
         console.log('[AddStudentsModal] Aktualisiert', { toAdd });
         console.log('[AddStudentsModal] Speichern erfolgreich abgeschlossen.');
       }
