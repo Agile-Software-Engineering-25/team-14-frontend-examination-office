@@ -20,6 +20,7 @@ interface AddStudentsModalProps {
   exam?: Exam | null;
 }
 
+// eslint-disable-next-line max-lines-per-function,@typescript-eslint/naming-convention
 const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>('all');
@@ -158,6 +159,61 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
   const getSelectedIds = () => Array.from(new Set(selectedIds));
   const addedToExamCount = initialSelectedIdsRef.current.size;
 
+  const handleSave = async () => {
+    const currentSet = new Set(getSelectedIds());
+    if (!exam?.id) return;
+    const latestEnrolled = await getStudentsByExamId(exam.id);
+    console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
+    const initialSet = new Set<string>(
+      (latestEnrolled ?? []).map((s: Student) => String(s.id))
+    );
+    console.log('[AddStudentsModal] initialSet IDs:', Array.from(initialSet));
+    console.log('[AddStudentsModal] currentSet IDs:', Array.from(currentSet));
+
+    const toAdd: string[] = [];
+    currentSet.forEach((id) => {
+      if (!initialSet.has(id)) toAdd.push(id);
+    });
+    console.log('[AddStudentsModal] toAdd (nach Vergleich):', toAdd);
+
+    try {
+      console.log('[AddStudentsModal] Starte Speichern...', {
+        toAdd,
+        examId: exam.id,
+      });
+      setSaving(true);
+      const tasks: Promise<unknown>[] = [];
+
+      toAdd.forEach((sid) =>
+        tasks.push(addStudentToExam(sid, String(exam.id)))
+      );
+
+      const results = await Promise.allSettled(tasks);
+      const hasError = results.some((r) => r.status === 'rejected');
+      if (hasError) {
+        console.error('[AddStudentsModal] Fehler bei Speichern', {
+          toAdd,
+          results,
+        });
+      } else {
+        console.log('[AddStudentsModal] Aktualisiert', { toAdd });
+        console.log('[AddStudentsModal] Speichern erfolgreich abgeschlossen.');
+      }
+      if (!hasError) {
+        initialSelectedIdsRef.current = new Set<string>([
+          ...Array.from(initialSet),
+          ...toAdd,
+        ]);
+      }
+    } catch (err) {
+      console.error('[AddStudentsModal] Speichern fehlgeschlagen', err);
+      console.log('[AddStudentsModal] Fehlerdetails:', err);
+    } finally {
+      setSaving(false);
+      setOpen(false);
+    }
+  };
+
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
       <ModalDialog
@@ -196,73 +252,7 @@ const AddStudentsModal = ({ open, setOpen, exam }: AddStudentsModalProps) => {
           </Typography>
           <Button
             variant="solid"
-            onClick={async () => {
-              const currentSet = new Set(getSelectedIds());
-              if (!exam?.id) return;
-              const latestEnrolled = await getStudentsByExamId(exam.id);
-              console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
-              const initialSet = new Set<string>(
-                (latestEnrolled ?? []).map((s: Student) => String(s.id))
-              );
-              console.log(
-                '[AddStudentsModal] initialSet IDs:',
-                Array.from(initialSet)
-              );
-              console.log(
-                '[AddStudentsModal] currentSet IDs:',
-                Array.from(currentSet)
-              );
-
-              const toAdd: string[] = [];
-              currentSet.forEach((id) => {
-                if (!initialSet.has(id)) toAdd.push(id);
-              });
-              console.log('[AddStudentsModal] toAdd (nach Vergleich):', toAdd);
-
-              try {
-                console.log('[AddStudentsModal] Starte Speichern...', {
-                  toAdd,
-                  examId: exam.id,
-                });
-                setSaving(true);
-                const tasks: Promise<unknown>[] = [];
-
-                toAdd.forEach((sid) =>
-                  tasks.push(addStudentToExam(sid, String(exam.id)))
-                );
-
-                const results = await Promise.allSettled(tasks);
-                const hasError = results.some((r) => r.status === 'rejected');
-                if (hasError) {
-                  console.error('[AddStudentsModal] Fehler bei Speichern', {
-                    toAdd,
-                    results,
-                  });
-                } else {
-                  console.log('[AddStudentsModal] Aktualisiert', {
-                    toAdd,
-                  });
-                  console.log(
-                    '[AddStudentsModal] Speichern erfolgreich abgeschlossen.'
-                  );
-                }
-                if (!hasError) {
-                  initialSelectedIdsRef.current = new Set<string>([
-                    ...Array.from(initialSet),
-                    ...toAdd,
-                  ]);
-                }
-              } catch (err) {
-                console.error(
-                  '[AddStudentsModal] Speichern fehlgeschlagen',
-                  err
-                );
-                console.log('[AddStudentsModal] Fehlerdetails:', err);
-              } finally {
-                setSaving(false);
-                setOpen(false);
-              }
-            }}
+            onClick={handleSave}
             disabled={
               saving ||
               !exam?.id ||
