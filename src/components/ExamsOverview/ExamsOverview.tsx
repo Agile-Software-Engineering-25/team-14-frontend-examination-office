@@ -1,8 +1,8 @@
 import { Box, Button, Input, Table, Typography } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
@@ -105,8 +105,8 @@ const ExamsOverview = ({
             <th style={{ width: '10%' }}>
               {t('pages.exams.table.submissions')}
             </th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.type')}</th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
+            <th style={{ width: '9%' }}>{t('pages.exams.table.type')}</th>
+            <th style={{ width: '11%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
         </thead>
 
@@ -188,7 +188,7 @@ const ExamsOverview = ({
                     }
                     exam={exam}
                   />
-                  <AddIcon
+                  <PeopleAltIcon
                     onClick={(e: React.MouseEvent<SVGSVGElement>) => {
                       e.stopPropagation();
                       e.preventDefault();
