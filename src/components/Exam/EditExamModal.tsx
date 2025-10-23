@@ -14,7 +14,7 @@ import {
   Chip,
 } from '@mui/joy';
 import { useState, useEffect } from 'react';
-import type { Exam } from '@custom-types/exam';
+import type { Exam, ExamType } from '@custom-types/exam';
 import { useTranslation } from 'react-i18next';
 
 interface EditExamModalProps {
@@ -70,13 +70,12 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   };
 
   const handleSave = async () => {
-    const updatedExam = {
+    const updatedExam: Exam = {
       ...exam,
       title,
       moduleCode,
       examDate,
       room,
-      examType,
       semester,
       ects,
       maxPoints,
@@ -84,6 +83,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       attemptNumber,
       fileUploadRequired,
       tools,
+      examType: examType as ExamType,
     };
 
     onSave(updatedExam);
