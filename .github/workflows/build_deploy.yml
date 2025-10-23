@@ -3,7 +3,7 @@ name: Build and Deploy to MinIO
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -19,8 +19,10 @@ jobs:
           node-version: "18"
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (work around Rollup issue)
+        run: |
+          npm install
+          npm install @rollup/rollup-linux-x64-gnu
 
       - name: Clear shared components dir
         run: |
@@ -34,7 +36,7 @@ jobs:
 
       - name: Setup MinIO Client
         run: |
-          curl https://dl.min.io/aistor/mc/release/linux-amd64/mc \
+          curl -sSL https://dl.min.io/aistor/mc/release/linux-amd64/mc \
             --create-dirs \
             -o $HOME/minio-binaries/mc
           chmod +x $HOME/minio-binaries/mc
@@ -67,5 +69,5 @@ jobs:
       - name: Deploy Summary
         run: |
           echo "🚀 Deployment completed successfully!"
-          echo "📦 Files uploaded from ./dist to minio/${{secrets.BUCKET_NAME}} bucket"
+          echo "📦 Files uploaded from ./dist to minio/${{ secrets.BUCKET_NAME }} bucket"
           echo "🌐 Application should be available at your MinIO endpoint"

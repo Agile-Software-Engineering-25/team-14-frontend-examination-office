@@ -2,14 +2,13 @@ name: Code Quality Checks
 
 on:
   push:
-    branches: ['**'] # Run on all branches
+    branches: ['**']
   pull_request:
-    branches: [main] # Run on PRs targeting main
+    branches: [main]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,15 +19,16 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (work around Rollup optional deps)
+        run: |
+          npm install
+          npm install @rollup/rollup-linux-x64-gnu
 
       - name: Run linting
         run: npm run lint
 
   test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,8 +39,10 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (work around Rollup optional deps)
+        run: |
+          npm install
+          npm install @rollup/rollup-linux-x64-gnu
 
       - name: Run tests
         run: npm run ci
