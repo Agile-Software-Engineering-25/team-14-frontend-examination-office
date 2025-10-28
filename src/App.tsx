@@ -53,7 +53,7 @@ function App(props: AppProps) {
             })}
           />
           <BrowserRouter basename={basename ?? '/'}>
-            <div style={{ display: 'flex', height: '100vh' }}>
+            <div style={{ display: 'flex', minHeight: '100vh' }}>
               <VerticalMenu />
               <div style={{ flex: 1 }}>
                 <RoutingComponent />
