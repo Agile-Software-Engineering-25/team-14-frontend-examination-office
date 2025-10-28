@@ -5,6 +5,7 @@ import type { Units } from '@custom-types/weather';
 import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
 import type { Exam } from '@custom-types/exam';
 import type { Feedback } from '@custom-types/feedback';
+import type { Student } from '@custom-types/student';
 
 const useApi = () => {
   const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
@@ -81,6 +82,49 @@ const useApi = () => {
     [axiosInstance]
   );
 
+  const getStudentsByStudyGroup = useCallback(
+    async (studyGroup: string) => {
+      const response = await axiosInstance.get(
+        `api/students/study-group/${encodeURIComponent(studyGroup)}`
+      );
+      return response.data as Student[];
+    },
+    [axiosInstance]
+  );
+
+  const addStudentToExam = useCallback(
+    async (studentId: string, examId: string) => {
+      const response = await axiosInstance.post(
+        `api/students/${studentId}/exams/${examId}`
+      );
+      return response.data as string;
+    },
+    [axiosInstance]
+  );
+
+  const removeStudentFromExam = useCallback(
+    async (studentId: string, examId: string) => {
+      const response = await axiosInstance.delete(
+        `api/students/${studentId}/exams/${examId}`
+      );
+      return response.data as string;
+    },
+    [axiosInstance]
+  );
+
+  const getStudentsByExamId = useCallback(
+    async (examId: string) => {
+      const response = await axiosInstance.get(`api/students/exam/${examId}`);
+      return response.data as Student[];
+    },
+    [axiosInstance]
+  );
+
+  const getAllStudents = useCallback(async () => {
+    const response = await axiosInstance.get('api/students');
+    return response.data as Student[];
+  }, [axiosInstance]);
+
   return {
     getCurrentWeather,
     getExams,
@@ -90,6 +134,11 @@ const useApi = () => {
     getFeedbacksForExam,
     acceptFeedbackForExamStudent,
     rejectFeedbackForExamStudent,
+    getStudentsByStudyGroup,
+    addStudentToExam,
+    removeStudentFromExam,
+    getStudentsByExamId,
+    getAllStudents,
   };
 };
 

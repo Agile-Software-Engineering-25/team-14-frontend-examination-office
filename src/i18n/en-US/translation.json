@@ -80,6 +80,21 @@
         "title": "Edit exam",
         "success": "Exam successfully edited!",
         "error": "Failed to edit exam"
+      },
+      "addStudents": {
+        "title": "Exam:",
+        "modalTitle": "Add Students",
+        "header": "Register students for the exam",
+        "loading": "Loading students…",
+        "noStudents": "No students available for this exam.",
+        "selectAll": "Select all",
+        "deselectAll": "Deselect all",
+        "alreadyEnrolled": " (already enrolled)",
+        "registeredCount": "Registered: {{count}}",
+        "save": "Save",
+        "saving": "Saving…",
+        "saveSuccess": "Students added successfully",
+        "saveError": "Error saving students"
       }
     },
     "submissions": {
