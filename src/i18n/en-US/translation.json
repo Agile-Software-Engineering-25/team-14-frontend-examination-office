@@ -56,7 +56,8 @@
           "attempt": "Attempt",
           "fileUploadRequired": "File Upload Required",
           "tools": "Tools",
-          "addTool": "New Tool"
+          "addTool": "New Tool",
+          "examWeight": "Exam weighting"
         },
         "examTypes": {
           "klausur": "Exam",
@@ -105,7 +106,9 @@
       "saveChanges": "Save",
       "close": "Close",
       "details": "Submission Details",
+      "onlyUnapproved": "Show only unapproved",
       "accept": "Accept",
+      "noFiles": "No attachments found.",
       "reject": "Reject",
       "footer": {
         "itemsPerPage": "Items per page",

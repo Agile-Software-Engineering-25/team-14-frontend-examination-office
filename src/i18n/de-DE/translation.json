@@ -56,7 +56,8 @@
           "attempt": "Versuch",
           "fileUploadRequired": "Datei-Upload erforderlich",
           "tools": "Hilfsmittel",
-          "addTool": "Neues Hilfsmittel"
+          "addTool": "Neues Hilfsmittel",
+          "examWeight": "Gewichtung"
         },
         "examTypes": {
           "klausur": "Klausur",
@@ -107,6 +108,8 @@
       "accept": "Akzeptieren",
       "reject": "Ablehnen",
       "details": "Abgabe Details",
+      "onlyUnapproved": "Nur unbewertete anzeigen",
+      "noFiles": "Keine Dateien gefunden.",
       "footer": {
         "itemsPerPage": "Einträge pro Seite",
         "page": "Seite",

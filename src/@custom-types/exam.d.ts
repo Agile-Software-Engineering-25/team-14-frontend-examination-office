@@ -13,6 +13,7 @@ export type Exam = {
   fileUploadRequired: boolean;
   tools: string[];
   submissions: number;
+  weightPerCent: number;
 };
 
 export enum ExamType {
