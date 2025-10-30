@@ -156,7 +156,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
           checked={onlyUnapproved}
           onChange={(e) => setOnlyUnapproved(e.target.checked)}
           color="neutral"
-          endDecorator={t('pages.submissions.showOnlyUnapproved', {
+          endDecorator={t('pages.submissions.onlyUnapproved', {
             defaultValue: 'Show only unapproved',
           })}
         />
@@ -295,29 +295,29 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                 Feedback Details
               </Typography>
               <Typography>
-                <strong>Student:</strong> {selectedFeedback.studentUuid}
+                <strong>{t('pages.submissions.table.student')}:</strong> {selectedFeedback.studentUuid}
               </Typography>
               <Typography>
-                <strong>Lecturer:</strong> {selectedFeedback.lecturerUuid}
+                <strong>{t('pages.submissions.table.lecturer')}:</strong> {selectedFeedback.lecturerUuid}
               </Typography>
               <Typography>
-                <strong>Graded At:</strong> {selectedFeedback.gradedAt}
+                <strong>{t('pages.submissions.table.gradedAt')}:</strong> {selectedFeedback.gradedAt}
               </Typography>
               <Typography>
-                <strong>Points:</strong> {selectedFeedback.points}
+                <strong>{t('pages.submissions.table.points')}:</strong> {selectedFeedback.points}
               </Typography>
               <Typography>
-                <strong>Grade:</strong> {selectedFeedback.grade}
+                <strong>{t('pages.submissions.table.grade')}:</strong> {selectedFeedback.grade}
               </Typography>
               <Typography mt={2}>
-                <strong>Comment:</strong>
+                <strong>{t('pages.submissions.table.comment')}:</strong>
               </Typography>
               <Typography mb={2}>
                 {selectedFeedback.comment || 'No comment'}
               </Typography>
 
               <Typography>
-                <strong>Files:</strong>
+                <strong>{t('pages.submissions.table.files')}:</strong>
               </Typography>
               {selectedFeedback.fileReference.length > 0 ? (
                 <List>
@@ -336,11 +336,11 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                   ))}
                 </List>
               ) : (
-                <Typography>No files attached.</Typography>
+                <Typography>{t('pages.submissions.noFiles')}.</Typography>
               )}
 
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                <Button onClick={() => setSelectedFeedback(null)}>Close</Button>
+                <Button onClick={() => setSelectedFeedback(null)}>{t('pages.submissions.close')}</Button>
               </Box>
             </>
           )}

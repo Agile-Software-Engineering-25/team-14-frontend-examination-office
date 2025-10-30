@@ -38,6 +38,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
   const [duration, setDuration] = useState(90);
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [fileUploadRequired, setFileUploadRequired] = useState(false);
+  const [examWeightPerCent, setExamWeightPerCent] = useState(100);
   const [tools, setTools] = useState<string[]>([]);
   const [currentTool, setCurrentTool] = useState('');
 
@@ -55,6 +56,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       setAttemptNumber(exam.attemptNumber ?? 1);
       setFileUploadRequired(exam.fileUploadRequired ?? false);
       setTools(exam.tools || []);
+      setExamWeightPerCent(exam.weightPerCent)
     }
   }, [exam]);
 
@@ -84,6 +86,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       fileUploadRequired,
       tools,
       examType: examType as ExamType,
+      weightPerCent: examWeightPerCent
     };
 
     onSave(updatedExam);
@@ -218,6 +221,15 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
                 <Option value={2}>{t('pages.exams.addExam.attempts.2')}</Option>
                 <Option value={3}>{t('pages.exams.addExam.attempts.3')}</Option>
               </Select>
+            </FormControl>
+            <FormControl sx={{ width: 120 }}>
+              <FormLabel>{t('pages.exams.addExam.fields.examWeight')}</FormLabel>
+              <Input
+                type="number"
+                value={examWeightPerCent}
+                endDecorator={<span>%</span>}
+                onChange={(e) => setExamWeightPerCent(Number(e.target.value))}
+              />
             </FormControl>
           </Box>
 

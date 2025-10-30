@@ -98,14 +98,14 @@ const ExamsOverview = ({
         <thead>
           <tr>
             <th style={{ width: '35%' }}>{t('pages.exams.table.title')}</th>
-            <th style={{ width: '15%' }}>{t('pages.exams.table.module')}</th>
+            <th style={{ width: '8%' }}>{t('pages.exams.table.module')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.date')}</th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.professor')}</th>
-            <th style={{ width: '10%' }}>
+            <th style={{ width: '10%' }}>{t('pages.exams.addExam.fields.examWeight')}</th>
+            <th style={{ width: '8%' }}>
               {t('pages.exams.table.submissions')}
             </th>
-            <th style={{ width: '9%' }}>{t('pages.exams.table.type')}</th>
-            <th style={{ width: '11%' }}>{t('pages.exams.table.actions')}</th>
+            <th style={{ width: '15%' }}>{t('pages.exams.table.type')}</th>
+            <th style={{ width: '15%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
         </thead>
 
@@ -137,7 +137,7 @@ const ExamsOverview = ({
                 </Typography>
               </td>
               <td>
-                <Typography level="body-sm">-</Typography>
+                <Typography level="body-sm">{exam.weightPerCent} %</Typography>
               </td>
               <td>
                 <Typography level="body-sm">{exam.submissions}</Typography>
