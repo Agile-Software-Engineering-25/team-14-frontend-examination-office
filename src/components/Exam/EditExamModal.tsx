@@ -56,7 +56,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       setAttemptNumber(exam.attemptNumber ?? 1);
       setFileUploadRequired(exam.fileUploadRequired ?? false);
       setTools(exam.tools || []);
-      setExamWeightPerCent(exam.weightPerCent)
+      setExamWeightPerCent(exam.weightPerCent);
     }
   }, [exam]);
 
@@ -86,7 +86,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       fileUploadRequired,
       tools,
       examType: examType as ExamType,
-      weightPerCent: examWeightPerCent
+      weightPerCent: examWeightPerCent,
     };
 
     onSave(updatedExam);
@@ -223,7 +223,9 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
               </Select>
             </FormControl>
             <FormControl sx={{ width: 120 }}>
-              <FormLabel>{t('pages.exams.addExam.fields.examWeight')}</FormLabel>
+              <FormLabel>
+                {t('pages.exams.addExam.fields.examWeight')}
+              </FormLabel>
               <Input
                 type="number"
                 value={examWeightPerCent}

@@ -295,19 +295,24 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                 Feedback Details
               </Typography>
               <Typography>
-                <strong>{t('pages.submissions.table.student')}:</strong> {selectedFeedback.studentUuid}
+                <strong>{t('pages.submissions.table.student')}:</strong>{' '}
+                {selectedFeedback.studentUuid}
               </Typography>
               <Typography>
-                <strong>{t('pages.submissions.table.lecturer')}:</strong> {selectedFeedback.lecturerUuid}
+                <strong>{t('pages.submissions.table.lecturer')}:</strong>{' '}
+                {selectedFeedback.lecturerUuid}
               </Typography>
               <Typography>
-                <strong>{t('pages.submissions.table.gradedAt')}:</strong> {selectedFeedback.gradedAt}
+                <strong>{t('pages.submissions.table.gradedAt')}:</strong>{' '}
+                {selectedFeedback.gradedAt}
               </Typography>
               <Typography>
-                <strong>{t('pages.submissions.table.points')}:</strong> {selectedFeedback.points}
+                <strong>{t('pages.submissions.table.points')}:</strong>{' '}
+                {selectedFeedback.points}
               </Typography>
               <Typography>
-                <strong>{t('pages.submissions.table.grade')}:</strong> {selectedFeedback.grade}
+                <strong>{t('pages.submissions.table.grade')}:</strong>{' '}
+                {selectedFeedback.grade}
               </Typography>
               <Typography mt={2}>
                 <strong>{t('pages.submissions.table.comment')}:</strong>
@@ -340,7 +345,9 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               )}
 
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                <Button onClick={() => setSelectedFeedback(null)}>{t('pages.submissions.close')}</Button>
+                <Button onClick={() => setSelectedFeedback(null)}>
+                  {t('pages.submissions.close')}
+                </Button>
               </Box>
             </>
           )}

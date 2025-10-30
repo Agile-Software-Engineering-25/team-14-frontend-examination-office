@@ -100,7 +100,9 @@ const ExamsOverview = ({
             <th style={{ width: '35%' }}>{t('pages.exams.table.title')}</th>
             <th style={{ width: '8%' }}>{t('pages.exams.table.module')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.date')}</th>
-            <th style={{ width: '10%' }}>{t('pages.exams.addExam.fields.examWeight')}</th>
+            <th style={{ width: '10%' }}>
+              {t('pages.exams.addExam.fields.examWeight')}
+            </th>
             <th style={{ width: '8%' }}>
               {t('pages.exams.table.submissions')}
             </th>

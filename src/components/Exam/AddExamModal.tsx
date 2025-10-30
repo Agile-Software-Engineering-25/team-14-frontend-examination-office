@@ -84,7 +84,7 @@ const AddExamModal = ({
       attemptNumber,
       fileUploadRequired,
       tools,
-      weightPerCent: examWeightPerCent
+      weightPerCent: examWeightPerCent,
     };
 
     if (onAdd(newExam)) {
@@ -219,7 +219,9 @@ const AddExamModal = ({
               </Select>
             </FormControl>
             <FormControl sx={{ width: 120 }}>
-              <FormLabel>{t('pages.exams.addExam.fields.examWeight')}</FormLabel>
+              <FormLabel>
+                {t('pages.exams.addExam.fields.examWeight')}
+              </FormLabel>
               <Input
                 type="number"
                 value={examWeightPerCent}
