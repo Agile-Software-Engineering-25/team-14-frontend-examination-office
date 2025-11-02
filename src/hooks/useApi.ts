@@ -6,11 +6,13 @@ import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
 import type { Exam } from '@custom-types/exam';
 import type { Feedback } from '@custom-types/feedback';
 import type { Student } from '@custom-types/student';
-import type {  Module } from '@/@custom-types/module';
+import type { Module } from '@/@custom-types/module';
 
 const useApi = () => {
   const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
-  const axiosInstance2 = useAxiosInstance("https://Sau-portal.de/api/masterdata/studies/courses/");
+  const axiosInstance2 = useAxiosInstance(
+    'https://Sau-portal.de/api/masterdata/studies/courses/'
+  );
 
   const getCurrentWeather = useCallback(
     async (latitude: number, longitude: number, units: Units) => {

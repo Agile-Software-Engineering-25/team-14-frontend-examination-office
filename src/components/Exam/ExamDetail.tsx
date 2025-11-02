@@ -69,6 +69,13 @@ const ExamDetail = ({ isVisible, setVisible, exam }: ExamDetailProps) => {
 
           <Box>
             <Typography level="title-sm">
+              {t('pages.exams.addExam.fields.examWeight')}:
+            </Typography>
+            <Typography level="body-sm">{exam?.weightPerCent}</Typography>
+          </Box>
+
+          <Box>
+            <Typography level="title-sm">
               {t('pages.exams.addExam.fields.maxPoints')}:
             </Typography>
             <Typography level="body-sm">{exam?.maxPoints}</Typography>

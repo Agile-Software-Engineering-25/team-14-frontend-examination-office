@@ -19,7 +19,6 @@ import { useTranslation } from 'react-i18next';
 import type { Module } from '@/@custom-types/module';
 import useApi from '@/hooks/useApi';
 
-
 const AddExamModal = ({
   open,
   setOpen,
@@ -68,7 +67,6 @@ const AddExamModal = ({
         console.error('Error fetching modules:', err);
       });
   }, []);
-
 
   const resetForm = () => {
     setTitle('');
@@ -143,20 +141,22 @@ const AddExamModal = ({
               <FormLabel>
                 {t('pages.exams.addExam.fields.moduleCode')}
               </FormLabel>
-             <Autocomplete<Module>
-  options={modules}
-getOptionLabel={(option) =>
-  `${option.template.name} (${option.template.code})`
-}
-  value={modules.find((m) => m.template.id === Number(moduleCode)) ?? null}
-  onChange={(_, newValue) =>
-    setModuleCode(newValue ? newValue.template.id.toString() : '')
-  }
-  isOptionEqualToValue={(option, value) =>
-    option.template.id === value.template.id
-  }
-/>
-
+              <Autocomplete<Module>
+                options={modules}
+                getOptionLabel={(option) =>
+                  `${option.template.name} (${option.template.code})`
+                }
+                value={
+                  modules.find((m) => m.template.id === Number(moduleCode)) ??
+                  null
+                }
+                onChange={(_, newValue) =>
+                  setModuleCode(newValue ? newValue.template.id.toString() : '')
+                }
+                isOptionEqualToValue={(option, value) =>
+                  option.template.id === value.template.id
+                }
+              />
             </FormControl>
           </Box>
 

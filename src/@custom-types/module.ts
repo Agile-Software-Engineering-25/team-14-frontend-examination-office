@@ -1,4 +1,4 @@
-export type Module =  {
+export type Module = {
   semester: number;
   exam_type: string;
   credit_points: number;
@@ -14,4 +14,4 @@ export type Module =  {
   };
   students: { external_id: string }[];
   teachers: { external_id: string }[];
-}
+};
