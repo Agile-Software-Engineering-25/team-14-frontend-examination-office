@@ -16,7 +16,6 @@ const ExamDetail = ({ isVisible, setVisible, exam }: ExamDetailProps) => {
       <ModalDialog variant="outlined" sx={{ minWidth: '46%', maxWidth: '90%' }}>
         <ModalClose />
         <Typography level="h4">{t('pages.exams.examDetail.title')}</Typography>
-
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
           <Box>
             <Typography level="title-sm">
@@ -24,77 +23,73 @@ const ExamDetail = ({ isVisible, setVisible, exam }: ExamDetailProps) => {
             </Typography>
             <Typography level="body-sm">{exam?.title}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.moduleCode')}:
             </Typography>
             <Typography level="body-sm">{exam?.moduleCode}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.examDate')}:
             </Typography>
-            <Typography level="body-sm">{exam?.examDate}</Typography>
+            <Typography level="body-sm">
+              {exam?.examDate
+                ? new Intl.DateTimeFormat('de-DE', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short',
+                  }).format(new Date(exam.examDate))
+                : '-'}
+            </Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.room')}:
             </Typography>
             <Typography level="body-sm">{exam?.room}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.examType')}:
             </Typography>
             <Typography level="body-sm">{exam?.examType}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.semester')}:
             </Typography>
             <Typography level="body-sm">{exam?.semester}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.ects')}:
             </Typography>
             <Typography level="body-sm">{exam?.ects}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.examWeight')}:
             </Typography>
             <Typography level="body-sm">{exam?.weightPerCent}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.maxPoints')}:
             </Typography>
             <Typography level="body-sm">{exam?.maxPoints}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.duration')}:
             </Typography>
             <Typography level="body-sm">{exam?.duration} minutes</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.attempt')}:
             </Typography>
             <Typography level="body-sm">{exam?.attemptNumber}</Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.fileUploadRequired')}:
@@ -103,7 +98,6 @@ const ExamDetail = ({ isVisible, setVisible, exam }: ExamDetailProps) => {
               {exam?.fileUploadRequired ? 'Yes' : 'No'}
             </Typography>
           </Box>
-
           <Box>
             <Typography level="title-sm">
               {t('pages.exams.addExam.fields.tools')}:
