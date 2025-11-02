@@ -12,9 +12,13 @@ import {
   FormLabel,
   Checkbox,
   Chip,
+  Autocomplete,
 } from '@mui/joy';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { Module } from '@/@custom-types/module';
+import useApi from '@/hooks/useApi';
+
 
 const AddExamModal = ({
   open,
@@ -40,6 +44,8 @@ const AddExamModal = ({
   const [fileUploadRequired, setFileUploadRequired] = useState(false);
   const [tools, setTools] = useState<string[]>([]);
   const [currentTool, setCurrentTool] = useState('');
+  const [modules, setModules] = useState<Module[]>([]);
+  const { getModules } = useApi();
 
   const handleAddTool = () => {
     if (currentTool.trim() && !tools.includes(currentTool.trim())) {
@@ -51,6 +57,17 @@ const AddExamModal = ({
   const handleRemoveTool = (tool: string) => {
     setTools(tools.filter((t) => t !== tool));
   };
+
+  useEffect(() => {
+    getModules()
+      .then((data) => {
+        setModules(data);
+      })
+      .catch((err) => {
+        console.error('Error fetching modules:', err);
+      });
+  }, []);
+
 
   const resetForm = () => {
     setTitle('');
@@ -123,10 +140,20 @@ const AddExamModal = ({
               <FormLabel>
                 {t('pages.exams.addExam.fields.moduleCode')}
               </FormLabel>
-              <Input
-                value={moduleCode}
-                onChange={(e) => setModuleCode(e.target.value)}
-              />
+             <Autocomplete<Module>
+  options={modules}
+getOptionLabel={(option) =>
+  `${option.template.name} (${option.template.code})`
+}
+  value={modules.find((m) => m.template.id === Number(moduleCode)) ?? null}
+  onChange={(_, newValue) =>
+    setModuleCode(newValue ? newValue.template.id.toString() : '')
+  }
+  isOptionEqualToValue={(option, value) =>
+    option.template.id === value.template.id
+  }
+/>
+
             </FormControl>
           </Box>
 
