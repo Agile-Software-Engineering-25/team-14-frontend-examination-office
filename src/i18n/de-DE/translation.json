@@ -107,6 +107,27 @@
         "comment": "Kommentar",
         "files": "Dateien"
       }
+    },
+    "certificates": {
+      "title": "Abschlusszeugnisse",
+      "single": {
+        "title": "Einzelstudent",
+        "placeholder": "Student auswählen...",
+        "generate": "Zeugnis erzeugen"
+      },
+      "group": {
+        "title": "Studiengruppe",
+        "placeholder": "Studiengruppe auswählen...",
+        "generate": "Zeugnisse für Gruppe erzeugen"
+      },
+      "success": {
+        "download": "Zeugnis heruntergeladen",
+        "downloadGroup": "ZIP mit Zeugnissen heruntergeladen"
+      },
+      "error": {
+        "student": "Fehler beim Generieren des Zeugnisses",
+        "group": "Fehler beim Generieren der Zeugnisse"
+      }
     }
   }
 }

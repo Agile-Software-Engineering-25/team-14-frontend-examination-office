@@ -61,6 +61,39 @@ const useApi = () => {
     [axiosInstance]
   );
 
+  const getStudentByStudentId = useCallback(
+    async (studentId: string) => {
+      const response = await axiosInstance.get(`api/students/studentId/${studentId}`);
+      return response.data;
+    },
+    [axiosInstance]
+  );
+
+  const getAllStudents = useCallback(async () => {
+    const response = await axiosInstance.get('api/students');
+    return response.data;
+  }, [axiosInstance]);
+
+  const generateCertificateForStudent = useCallback(
+    async (studentUuid: string) => {
+      const response = await axiosInstance.get(`api/students/${studentUuid}/certificate`, {
+        responseType: 'arraybuffer',
+      });
+      return response.data as ArrayBuffer;
+    },
+    [axiosInstance]
+  );
+
+  const generateCertificatesForStudyGroup = useCallback(
+    async (studyGroup: string) => {
+      const response = await axiosInstance.get(`api/students/${studyGroup}/certificates`, {
+        responseType: 'arraybuffer',
+      });
+      return response.data as ArrayBuffer;
+    },
+    [axiosInstance]
+  );
+
   const acceptFeedbackForExamStudent = useCallback(
     async (examUuid: string, studentUuid: string) => {
       const response = await axiosInstance.put(
@@ -90,6 +123,10 @@ const useApi = () => {
     getFeedbacksForExam,
     acceptFeedbackForExamStudent,
     rejectFeedbackForExamStudent,
+    getStudentByStudentId,
+  getAllStudents,
+    generateCertificateForStudent,
+    generateCertificatesForStudyGroup,
   };
 };
 
