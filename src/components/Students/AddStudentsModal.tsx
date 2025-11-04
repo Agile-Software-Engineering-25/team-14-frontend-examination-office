@@ -6,6 +6,7 @@ import {
   Button,
   Checkbox,
   Box,
+  Autocomplete,
 } from '@mui/joy';
 import { Accordion } from '@agile-software/shared-components';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +31,13 @@ const AddStudentsModal = ({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>('all');
 
-  const { addStudentToExam, getStudentsByExamId, getAllStudents } = useApi();
+  const {
+    addStudentToExam,
+    getStudentsByExamId,
+    getAllStudents,
+    getExternalGroupNames,
+  } = useApi();
+  const [groupNames, setGroupNames] = useState<string[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,6 +57,17 @@ const AddStudentsModal = ({
       }
     })();
   }, [open, exam?.id, getStudentsByExamId]);
+
+  useEffect(() => {
+    if (!open) return;
+    getExternalGroupNames()
+      .then((names) => {
+        setGroupNames(Array.isArray(names) ? names : []);
+      })
+      .catch((err) => {
+        console.error('[AddStudentsModal] getExternalGroupNames failed', err);
+      });
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -90,7 +108,11 @@ const AddStudentsModal = ({
       return Array.from(set);
     });
   };
-
+  //console.log(groupNames);
+  console.log(
+    '[AddStudentsModal] already enrolled:',
+    initialSelectedIdsRef.current
+  );
   const accordionItems = [
     {
       id: 'all',
@@ -110,7 +132,13 @@ const AddStudentsModal = ({
           )}
           {!loading && !error && students.length ? (
             <>
-              <Box sx={{ mb: 1, display: 'flex', gap: 1 }}>
+              <Box
+                sx={{ mb: 1, display: 'flex', gap: 1, flexDirection: 'column' }}
+              >
+                <Autocomplete
+                  placeholder="Nach Studi Gruppe suchen…"
+                  options={groupNames}
+                />
                 <Button size="sm" onClick={toggleSelectAll}>
                   {areAllSelected()
                     ? t('pages.exams.addStudents.deselectAll', 'Alle abwählen')
@@ -143,7 +171,7 @@ const AddStudentsModal = ({
                       <Checkbox
                         checked={selected}
                         onChange={() => toggleStudent(String(s.id))}
-                        label={`${s.firstName} ${s.lastName}${s.studentId ? ` — ${s.studentId}` : ''}
+                        label={`${s.firstName} ${s.lastName}${s.matriculationId ? ` — ${s.matriculationId}` : ''}
                         ${alreadyEnrolled ? t('pages.exams.addStudents.alreadyEnrolled', ' (bereits eingeschrieben)') : ''}`}
                       />
                     </li>

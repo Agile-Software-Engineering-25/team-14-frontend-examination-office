@@ -125,6 +125,11 @@ const useApi = () => {
     return response.data as Student[];
   }, [axiosInstance]);
 
+  const getExternalGroupNames = useCallback(async () => {
+    const response = await axiosInstance.get('api/students/external/groups');
+    return response.data as string[];
+  }, [axiosInstance]);
+
   return {
     getCurrentWeather,
     getExams,
@@ -139,6 +144,7 @@ const useApi = () => {
     removeStudentFromExam,
     getStudentsByExamId,
     getAllStudents,
+    getExternalGroupNames,
   };
 };
 

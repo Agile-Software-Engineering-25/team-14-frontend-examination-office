@@ -195,7 +195,7 @@ const ExamsOverview = ({
                       e.preventDefault();
                       onOpenAddStudents?.(exam);
                     }}
-                    sx={{ cursor: 'pointer', color: 'black' }}
+                    sx={{ cursor: 'pointer', color: 'primary.main' }}
                   />
                 </Box>
               </td>
