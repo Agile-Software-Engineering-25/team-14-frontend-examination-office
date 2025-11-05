@@ -121,18 +121,22 @@ const useApi = () => {
     [axiosInstance]
   );
 
-  const getExternalGroups = useCallback(async (examUuid?: string) => {
-    if (examUuid) {
-      const response = await axiosInstance.get('/api/students/groups', {params: {
-        examUuid
-      }});
-      return response.data as StudentGroup[];
-    } 
-    else {
-      const response = await axiosInstance.get('api/students/groups');
-      return response.data as StudentGroup[];
-    }
-  }, [axiosInstance]);
+  const getExternalGroups = useCallback(
+    async (examUuid?: string) => {
+      if (examUuid) {
+        const response = await axiosInstance.get('/api/students/groups', {
+          params: {
+            examUuid,
+          },
+        });
+        return response.data as StudentGroup[];
+      } else {
+        const response = await axiosInstance.get('api/students/groups');
+        return response.data as StudentGroup[];
+      }
+    },
+    [axiosInstance]
+  );
 
   return {
     getCurrentWeather,

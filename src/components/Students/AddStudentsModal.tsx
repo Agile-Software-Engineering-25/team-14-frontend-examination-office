@@ -32,11 +32,7 @@ const AddStudentsModal = ({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>('all');
 
-  const {
-    addStudentToExam,
-    getStudentsByExamId,
-    getExternalGroups
-  } = useApi();
+  const { addStudentToExam, getStudentsByExamId, getExternalGroups } = useApi();
   const [groups, setGroups] = useState<StudentGroup[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,21 +63,22 @@ const AddStudentsModal = ({
       })
       .catch((err) => {
         console.error('[AddStudentsModal] getExternalGroupNames failed', err);
+        setError('Failed to fetch Student Groups.');
       });
   }, [open]);
 
   useEffect(() => {
     if (!open) return;
 
-    const arr = groups.flatMap(g => g.students);
+    const arr = groups.flatMap((g) => g.students);
     arr.sort((a, b) =>
       `${a.lastName ?? ''} ${a.firstName ?? ''}`.localeCompare(
         `${b.lastName ?? ''} ${b.firstName ?? ''}`
       )
     );
     setStudents(arr);
-    setSelectedIds(arr.filter(s => s.enlisted).map(s => s.uuid));
-    setLoading(false)
+    setSelectedIds(arr.filter((s) => s.enlisted).map((s) => s.uuid));
+    setLoading(false);
   }, [groups]);
 
   const areAllSelected = () =>
@@ -129,7 +126,7 @@ const AddStudentsModal = ({
               >
                 <Autocomplete
                   placeholder="Nach Studi Gruppe suchen…"
-                  options={groups.map(g=>g.name)}
+                  options={groups.map((g) => g.name)}
                 />
                 <Button size="sm" onClick={toggleSelectAll}>
                   {areAllSelected()

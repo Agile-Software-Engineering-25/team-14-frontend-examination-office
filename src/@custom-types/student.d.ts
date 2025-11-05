@@ -1,6 +1,6 @@
 export enum StudyStatus {
-  ENROLLED
-};
+  ENROLLED,
+}
 
 export type Student = {
   uuid: string;
@@ -18,4 +18,4 @@ export type Student = {
   dateOfBirth: string;
 
   enlisted?: boolean;
-}
+};
