@@ -185,7 +185,7 @@ const ExamsOverview = ({
                     onSave={
                       onEdit
                         ? (updatedExam: Exam) => onEdit(updatedExam)
-                        : () => { }
+                        : () => {}
                     }
                     exam={exam}
                   />
@@ -260,7 +260,7 @@ const ExamsOverview = ({
                     disabled={currentPage <= 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                   >
-                    {t('pages.exams.footer.previous', {defaultValue: '←'})}
+                    {t('pages.exams.footer.previous', { defaultValue: '←' })}
                   </Button>
 
                   <Input
@@ -289,7 +289,7 @@ const ExamsOverview = ({
                     disabled={currentPage >= totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   >
-                    {t('pages.exams.footer.next', {defaultValue: '→'})}
+                    {t('pages.exams.footer.next', { defaultValue: '→' })}
                   </Button>
                 </Box>
               </Box>

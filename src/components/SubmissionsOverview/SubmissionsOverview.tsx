@@ -348,9 +348,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                     size="sm"
                     variant="outlined"
                     disabled={currentPage >= totalPages}
-                    onClick={() =>
-                      setPage((p) => Math.min(totalPages, p + 1))
-                    }
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   >
                     {t('pages.exams.footer.next', { defaultValue: '→' })}
                   </Button>
