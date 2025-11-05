@@ -2,6 +2,7 @@ import { Box, Button, Input, Table, Typography } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Exam } from '@custom-types/exam';
@@ -15,6 +16,7 @@ type ExamsOverviewProps = {
   onAdd?: (exam: Exam) => void;
   onEdit?: (exam: Exam) => void;
   onDelete?: (exam: Exam) => void;
+  onOpenAddStudents?: (exam: Exam) => void;
 };
 
 const columns = 7;
@@ -25,6 +27,7 @@ const ExamsOverview = ({
   onDelete,
   onAdd,
   onEdit,
+  onOpenAddStudents,
 }: ExamsOverviewProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -95,14 +98,16 @@ const ExamsOverview = ({
         <thead>
           <tr>
             <th style={{ width: '35%' }}>{t('pages.exams.table.title')}</th>
-            <th style={{ width: '15%' }}>{t('pages.exams.table.module')}</th>
+            <th style={{ width: '8%' }}>{t('pages.exams.table.module')}</th>
             <th style={{ width: '10%' }}>{t('pages.exams.table.date')}</th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.professor')}</th>
             <th style={{ width: '10%' }}>
+              {t('pages.exams.addExam.fields.examWeight')}
+            </th>
+            <th style={{ width: '8%' }}>
               {t('pages.exams.table.submissions')}
             </th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.type')}</th>
-            <th style={{ width: '10%' }}>{t('pages.exams.table.actions')}</th>
+            <th style={{ width: '15%' }}>{t('pages.exams.table.type')}</th>
+            <th style={{ width: '15%' }}>{t('pages.exams.table.actions')}</th>
           </tr>
         </thead>
 
@@ -134,7 +139,7 @@ const ExamsOverview = ({
                 </Typography>
               </td>
               <td>
-                <Typography level="body-sm">-</Typography>
+                <Typography level="body-sm">{exam.weightPerCent} %</Typography>
               </td>
               <td>
                 <Typography level="body-sm">{exam.submissions}</Typography>
@@ -183,6 +188,14 @@ const ExamsOverview = ({
                         : () => {}
                     }
                     exam={exam}
+                  />
+                  <PeopleAltIcon
+                    onClick={(e: React.MouseEvent<SVGSVGElement>) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onOpenAddStudents?.(exam);
+                    }}
+                    sx={{ cursor: 'pointer', color: 'black' }}
                   />
                 </Box>
               </td>
@@ -264,7 +277,6 @@ const ExamsOverview = ({
           </tr>
         </tfoot>
       </Table>
-
       {/* Edit Modal */}
       {editModalExam && (
         <EditExamModal

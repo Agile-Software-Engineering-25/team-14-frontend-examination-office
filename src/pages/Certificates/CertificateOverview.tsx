@@ -2,6 +2,8 @@ import { Alert, Box, Button, Snackbar, Typography } from '@mui/joy';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import useApi from '@hooks/useApi';
+import LanguageSelectorComponent from '@components/LanguageSelectorComponent/LanguageSelectorComponent';
+import TmpThemeSelectorComponent from '@components/TmpThemeSelectorComponent/TmpThemeSelectorComponent';
 import SearchSelect from '@components/SearchSelect/SearchSelect';
 
 const CertificateOverview = () => {
@@ -192,6 +194,11 @@ const CertificateOverview = () => {
 					</span>
 				</Alert>
 			</Snackbar>
+		{/* Language & Theme Toggles - fixed bottom right */}
+		<Box sx={{ position: 'fixed', right: 16, bottom: 16, display: 'flex', flexDirection: 'column', gap: 1, zIndex: 1300 }}>
+			<LanguageSelectorComponent />
+			<TmpThemeSelectorComponent />
+		</Box>
 		</Box>
 	);
 };

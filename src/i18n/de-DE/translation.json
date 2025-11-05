@@ -56,7 +56,8 @@
           "attempt": "Versuch",
           "fileUploadRequired": "Datei-Upload erforderlich",
           "tools": "Hilfsmittel",
-          "addTool": "Neues Hilfsmittel"
+          "addTool": "Neues Hilfsmittel",
+          "examWeight": "Gewichtung"
         },
         "examTypes": {
           "klausur": "Klausur",
@@ -80,6 +81,21 @@
         "title": "Prüfung bearbeiten",
         "success": "Prüfung erfolgreich bearbeitet!",
         "error": "Fehler beim Bearbeiten der Prüfung"
+      },
+      "addStudents": {
+        "title": "Prüfung:",
+        "modalTitle": "Studierende hinzufügen",
+        "header": "Studierende zur Prüfung anmelden",
+        "loading": "Lade Studierende…",
+        "noStudents": "Keine Studierenden für diese Prüfung vorhanden.",
+        "selectAll": "Alle auswählen",
+        "deselectAll": "Alle abwählen",
+        "alreadyEnrolled": " (bereits eingeschrieben)",
+        "registeredCount": "Angemeldet: {{count}}",
+        "save": "Speichern",
+        "saving": "Speichert…",
+        "saveSuccess": "Studierende erfolgreich hinzugefügt",
+        "saveError": "Fehler beim Speichern"
       }
     },
     "submissions": {
@@ -92,6 +108,8 @@
       "accept": "Akzeptieren",
       "reject": "Ablehnen",
       "details": "Abgabe Details",
+      "onlyUnapproved": "Nur unbewertete anzeigen",
+      "noFiles": "Keine Dateien gefunden.",
       "footer": {
         "itemsPerPage": "Einträge pro Seite",
         "page": "Seite",
