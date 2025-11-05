@@ -1,8 +1,19 @@
-export interface Student {
-  id: number;
-  firstName: string;
-  lastName: string;
+export enum StudyStatus {
+  ENROLLED
+};
+
+export type Student = {
+  uuid: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
   email?: string;
-  matriculationId?: string;
-  studyGroup?: string;
+  matriculationNumber: string;
+  degreeProgram: string;
+  semester: number;
+  studyStatus: StudyStatus;
+  cohort: string;
+  address: string;
+  phoneNumber: string;
+  dateOfBirth: string;
 }

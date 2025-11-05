@@ -14,6 +14,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { Exam } from '@custom-types/exam';
 import useApi from '@hooks/useApi';
 import type { Student } from '@custom-types/student';
+import type { StudentGroup } from '@/@custom-types/studentgroup';
 
 interface AddStudentsModalProps {
   open: boolean;
@@ -34,22 +35,22 @@ const AddStudentsModal = ({
   const {
     addStudentToExam,
     getStudentsByExamId,
-    getAllStudents,
-    getExternalGroupNames,
+    getExternalGroups
   } = useApi();
-  const [groupNames, setGroupNames] = useState<string[]>([]);
+  const [groups, setGroups] = useState<StudentGroup[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const initialSelectedIdsRef = useRef<Set<string>>(new Set());
+
   useEffect(() => {
     if (!open || !exam?.id) return;
     (async () => {
       try {
         const enrolled = await getStudentsByExamId(exam.id);
-        const ids = (enrolled || []).map((s: Student) => String(s.id));
+        const ids = (enrolled || []).map((s: Student) => s.uuid);
         initialSelectedIdsRef.current = new Set(ids);
         setSelectedIds([]);
       } catch (e) {
@@ -60,9 +61,9 @@ const AddStudentsModal = ({
 
   useEffect(() => {
     if (!open) return;
-    getExternalGroupNames()
-      .then((names) => {
-        setGroupNames(Array.isArray(names) ? names : []);
+    getExternalGroups()
+      .then((g) => {
+        setGroups(g);
       })
       .catch((err) => {
         console.error('[AddStudentsModal] getExternalGroupNames failed', err);
@@ -71,33 +72,23 @@ const AddStudentsModal = ({
 
   useEffect(() => {
     if (!open) return;
-    setLoading(true);
-    setError(null);
-    getAllStudents()
-      .then((list) => {
-        const arr = Array.isArray(list) ? (list as Student[]) : [];
-        arr.sort((a, b) =>
-          `${a.lastName ?? ''} ${a.firstName ?? ''}`.localeCompare(
-            `${b.lastName ?? ''} ${b.firstName ?? ''}`
-          )
-        );
-        setStudents(arr);
-      })
-      .catch((err: unknown) => {
-        console.error('[AddStudentsModal] load all students failed', err);
-        const message =
-          err instanceof Error ? err.message : 'Fehler beim Laden';
-        setError(message);
-      })
-      .finally(() => setLoading(false));
-  }, [open, getAllStudents]);
+
+    const arr = groups.flatMap(g => g.students);
+    arr.sort((a, b) =>
+      `${a.lastName ?? ''} ${a.firstName ?? ''}`.localeCompare(
+        `${b.lastName ?? ''} ${b.firstName ?? ''}`
+      )
+    );
+    setStudents(arr);
+    setLoading(false)
+  }, [groups]);
 
   const areAllSelected = () =>
     students.length > 0 && selectedIds.length === students.length;
 
   const toggleSelectAll = () => {
     if (areAllSelected()) setSelectedIds([]);
-    else setSelectedIds(students.map((s) => String(s.id)));
+    else setSelectedIds(students.map((s) => s.uuid));
   };
 
   const toggleStudent = (sid: string) => {
@@ -137,7 +128,7 @@ const AddStudentsModal = ({
               >
                 <Autocomplete
                   placeholder="Nach Studi Gruppe suchen…"
-                  options={groupNames}
+                  options={groups.map(g=>g.name)}
                 />
                 <Button size="sm" onClick={toggleSelectAll}>
                   {areAllSelected()
@@ -147,13 +138,13 @@ const AddStudentsModal = ({
               </Box>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {students.map((s) => {
-                  const selected = selectedIds.includes(String(s.id));
+                  const selected = selectedIds.includes(s.uuid);
                   const alreadyEnrolled = initialSelectedIdsRef.current.has(
-                    String(s.id)
+                    s.uuid
                   );
                   return (
                     <li
-                      key={String(s.id)}
+                      key={s.uuid}
                       style={{
                         padding: '6px 8px',
                         borderRadius: 6,
@@ -170,8 +161,8 @@ const AddStudentsModal = ({
                     >
                       <Checkbox
                         checked={selected}
-                        onChange={() => toggleStudent(String(s.id))}
-                        label={`${s.firstName} ${s.lastName}${s.matriculationId ? ` — ${s.matriculationId}` : ''}
+                        onChange={() => toggleStudent(s.uuid)}
+                        label={`${s.firstName} ${s.lastName}${s.matriculationNumber ? ` — ${s.matriculationNumber}` : ''}
                         ${alreadyEnrolled ? t('pages.exams.addStudents.alreadyEnrolled', ' (bereits eingeschrieben)') : ''}`}
                       />
                     </li>
@@ -198,7 +189,7 @@ const AddStudentsModal = ({
     const latestEnrolled = await getStudentsByExamId(exam.id);
     console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
     const initialSet = new Set<string>(
-      (latestEnrolled ?? []).map((s: Student) => String(s.id))
+      (latestEnrolled ?? []).map((s: Student) => s.uuid)
     );
     console.log('[AddStudentsModal] initialSet IDs:', Array.from(initialSet));
     console.log('[AddStudentsModal] currentSet IDs:', Array.from(currentSet));
