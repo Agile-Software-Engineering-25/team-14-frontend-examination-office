@@ -16,4 +16,6 @@ export type Student = {
   address: string;
   phoneNumber: string;
   dateOfBirth: string;
+
+  enlisted?: boolean;
 }

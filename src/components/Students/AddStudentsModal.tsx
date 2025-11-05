@@ -61,7 +61,7 @@ const AddStudentsModal = ({
 
   useEffect(() => {
     if (!open) return;
-    getExternalGroups()
+    getExternalGroups(exam?.id)
       .then((g) => {
         setGroups(g);
       })
@@ -80,6 +80,7 @@ const AddStudentsModal = ({
       )
     );
     setStudents(arr);
+    setSelectedIds(arr.filter(s => s.enlisted).map(s => s.uuid));
     setLoading(false)
   }, [groups]);
 
