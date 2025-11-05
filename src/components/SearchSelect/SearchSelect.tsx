@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type JSX, type ReactNode } from 'react';
 import { Box, useColorScheme } from '@mui/joy';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
