@@ -116,7 +116,7 @@ const useApi = () => {
   const getStudentsByExamId = useCallback(
     async (examId: string) => {
       const response = await axiosInstance.get(`api/students/exam/${examId}`);
-      return response.data as Student[];
+      return response.data as string[];
     },
     [axiosInstance]
   );

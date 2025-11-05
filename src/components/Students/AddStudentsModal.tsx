@@ -32,7 +32,14 @@ const AddStudentsModal = ({
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>('all');
 
-  const { addStudentToExam, getStudentsByExamId, getExternalGroups } = useApi();
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+
+  const {
+    addStudentToExam,
+    getStudentsByExamId,
+    getExternalGroups,
+    removeStudentFromExam,
+  } = useApi();
   const [groups, setGroups] = useState<StudentGroup[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,13 +48,15 @@ const AddStudentsModal = ({
   const [saving, setSaving] = useState(false);
   const initialSelectedIdsRef = useRef<Set<string>>(new Set());
 
+  const [page, setPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
   useEffect(() => {
     if (!open || !exam?.id) return;
     (async () => {
       try {
         const enrolled = await getStudentsByExamId(exam.id);
-        const ids = (enrolled || []).map((s: Student) => s.uuid);
-        initialSelectedIdsRef.current = new Set(ids);
+        initialSelectedIdsRef.current = new Set(enrolled);
         setSelectedIds([]);
       } catch (e) {
         console.error('[AddStudentsModal] getStudentsByExamId failed', e);
@@ -81,6 +90,10 @@ const AddStudentsModal = ({
     setLoading(false);
   }, [groups]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [selectedGroup, rowsPerPage]);
+
   const areAllSelected = () =>
     students.length > 0 && selectedIds.length === students.length;
 
@@ -102,6 +115,17 @@ const AddStudentsModal = ({
     '[AddStudentsModal] already enrolled:',
     initialSelectedIdsRef.current
   );
+
+  const filteredStudents = selectedGroup
+    ? students.filter((s) => s.cohort === selectedGroup)
+    : students;
+  const total = filteredStudents.length;
+  const totalPages =
+    total === 0 ? 0 : Math.ceil(total / Math.max(1, rowsPerPage));
+  const start = totalPages === 0 ? 0 : (page - 1) * rowsPerPage;
+  const end = totalPages === 0 ? 0 : Math.min(start + rowsPerPage, total);
+  const paginatedStudents = filteredStudents.slice(start, end);
+
   const accordionItems = [
     {
       id: 'all',
@@ -125,8 +149,14 @@ const AddStudentsModal = ({
                 sx={{ mb: 1, display: 'flex', gap: 1, flexDirection: 'column' }}
               >
                 <Autocomplete
-                  placeholder="Nach Studi Gruppe suchen…"
+                  placeholder={t(
+                    'pages.exams.addStudents.selectGroup',
+                    'Gruppe auswählen…'
+                  )}
                   options={groups.map((g) => g.name)}
+                  value={selectedGroup}
+                  onChange={(_, newValue) => setSelectedGroup(newValue)}
+                  sx={{ mb: 2 }}
                 />
                 <Button size="sm" onClick={toggleSelectAll}>
                   {areAllSelected()
@@ -135,7 +165,7 @@ const AddStudentsModal = ({
                 </Button>
               </Box>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {students.map((s) => {
+                {paginatedStudents.map((s) => {
                   const selected = selectedIds.includes(s.uuid);
                   const alreadyEnrolled = initialSelectedIdsRef.current.has(
                     s.uuid
@@ -159,17 +189,78 @@ const AddStudentsModal = ({
                     >
                       <Checkbox
                         checked={selected}
-                        onChange={() => toggleStudent(s.uuid)}
-                        label={`${s.firstName} ${s.lastName}${s.matriculationNumber ? ` — ${s.matriculationNumber}` : ''}
-                        ${alreadyEnrolled ? t('pages.exams.addStudents.alreadyEnrolled', ' (bereits eingeschrieben)') : ''}`}
+                        onChange={() => {
+                          console.log(
+                            '[AddStudentsModal] student JSON:',
+                            JSON.stringify(s, null, 2)
+                          );
+                          toggleStudent(s.uuid);
+                        }}
+                        label={`${s.firstName} ${s.lastName}${s.matriculationNumber ? ` — ${s.matriculationNumber}` : ''}${alreadyEnrolled ? t('pages.exams.addStudents.alreadyEnrolled', ' (bereits eingeschrieben)') : ''}`}
                       />
                     </li>
                   );
                 })}
               </ul>
+              {totalPages > 1 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: 1,
+                    mt: 1,
+                  }}
+                >
+                  <Button
+                    size="sm"
+                    variant="plain"
+                    disabled={page === 1}
+                    onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                  >
+                    Zurück
+                  </Button>
+                  <Typography level="body-sm">
+                    Seite {page} von {totalPages}
+                  </Typography>
+                  <Button
+                    size="sm"
+                    variant="plain"
+                    disabled={page === totalPages}
+                    onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                  >
+                    Weiter
+                  </Button>
+                  <Typography level="body-sm">Pro Seite:</Typography>
+                  <input
+                    type="number"
+                    min={1}
+                    value={rowsPerPage}
+                    onChange={(e) => {
+                      const value = parseInt(e.target.value);
+                      if (!isNaN(value) && value > 0) {
+                        setRowsPerPage(value);
+                        setPage(1);
+                      }
+                    }}
+                    style={{
+                      width: '60px',
+                      textAlign: 'center',
+                      borderRadius: 4,
+                      border: '1px solid #ccc',
+                      padding: '2px 4px',
+                    }}
+                  />
+                </Box>
+              )}
             </>
           ) : (
-            <p>Keine Studierenden für diese Prüfung vorhanden.</p>
+            <p>
+              {t(
+                'pages.exams.addStudents.noStudents',
+                'Keine Studierenden für diese Prüfung vorhanden.'
+              )}
+            </p>
           )}
         </div>
       ),
@@ -186,9 +277,7 @@ const AddStudentsModal = ({
     if (!exam?.id) return;
     const latestEnrolled = await getStudentsByExamId(exam.id);
     console.log('[AddStudentsModal] latestEnrolled:', latestEnrolled);
-    const initialSet = new Set<string>(
-      (latestEnrolled ?? []).map((s: Student) => s.uuid)
-    );
+    const initialSet = new Set<string>(latestEnrolled ?? []);
     console.log('[AddStudentsModal] initialSet IDs:', Array.from(initialSet));
     console.log('[AddStudentsModal] currentSet IDs:', Array.from(currentSet));
 
@@ -198,16 +287,28 @@ const AddStudentsModal = ({
     });
     console.log('[AddStudentsModal] toAdd (nach Vergleich):', toAdd);
 
+    const toRemove: string[] = [];
+    initialSet.forEach((id) => {
+      if (!currentSet.has(id)) toRemove.push(id);
+    });
+    console.log('[AddStudentsModal] toRemove:', toRemove);
+
     try {
       console.log('[AddStudentsModal] Starte Speichern...', {
         toAdd,
+        toRemove,
         examId: exam.id,
       });
       setSaving(true);
       const tasks: Promise<unknown>[] = [];
+      console.log('toAdd:', toAdd);
+      console.log('toRemove:', toRemove);
 
       toAdd.forEach((sid) =>
         tasks.push(addStudentToExam(sid, String(exam.id)))
+      );
+      toRemove.forEach((sid) =>
+        tasks.push(removeStudentFromExam(sid, String(exam.id)))
       );
 
       const results = await Promise.allSettled(tasks);
@@ -220,22 +321,22 @@ const AddStudentsModal = ({
         onSaved?.(false, msg);
         console.error('[AddStudentsModal] Fehler bei Speichern', {
           toAdd,
+          toRemove,
           results,
         });
       } else {
         const msg = t(
           'pages.exams.addStudents.saveSuccess',
-          'Studierende erfolgreich hinzugefügt'
+          'Studierende erfolgreich hinzugefügt/entfernt'
         );
         onSaved?.(true, msg);
-        console.log('[AddStudentsModal] Aktualisiert', { toAdd });
+        console.log('[AddStudentsModal] Aktualisiert', { toAdd, toRemove });
         console.log('[AddStudentsModal] Speichern erfolgreich abgeschlossen.');
       }
       if (!hasError) {
-        initialSelectedIdsRef.current = new Set<string>([
-          ...Array.from(initialSet),
-          ...toAdd,
-        ]);
+        const updated = new Set<string>([...Array.from(initialSet), ...toAdd]);
+        toRemove.forEach((id) => updated.delete(id));
+        initialSelectedIdsRef.current = updated;
       }
     } catch (err) {
       console.error('[AddStudentsModal] Speichern fehlgeschlagen', err);
@@ -288,10 +389,10 @@ const AddStudentsModal = ({
             disabled={
               saving ||
               !exam?.id ||
-              (function () {
+              (() => {
                 const selected = new Set(getSelectedIds());
                 const initial = initialSelectedIdsRef.current;
-                if (selected.size === 0) return true;
+                if (selected.size !== initial.size) return false;
                 for (const id of selected) {
                   if (!initial.has(id)) return false;
                 }
