@@ -94,8 +94,9 @@
         "registeredCount": "Angemeldet: {{count}}",
         "save": "Speichern",
         "saving": "Speichert…",
-        "saveSuccess": "Studierende erfolgreich hinzugefügt",
-        "saveError": "Fehler beim Speichern"
+        "saveSuccess": "Studierende erfolgreich hinzugefügt/entfernt",
+        "saveError": "Fehler beim Speichern",
+        "selectGroup": "Gruppe auswählen…"
       }
     },
     "submissions": {
