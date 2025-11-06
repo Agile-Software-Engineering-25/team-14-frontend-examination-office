@@ -28,5 +28,3 @@ dist-ssr
 /cypress/videos/*
 
 shared-components/*
-
-package-lock.json
