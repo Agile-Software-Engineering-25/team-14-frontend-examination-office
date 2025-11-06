@@ -64,7 +64,9 @@ const useApi = () => {
 
   const getStudentByStudentId = useCallback(
     async (studentId: string) => {
-      const response = await axiosInstance.get(`api/students/studentId/${studentId}`);
+      const response = await axiosInstance.get(
+        `api/students/studentId/${studentId}`
+      );
       return response.data;
     },
     [axiosInstance]
@@ -77,9 +79,12 @@ const useApi = () => {
 
   const generateCertificateForStudent = useCallback(
     async (studentUuid: string) => {
-      const response = await axiosInstance.get(`api/students/${studentUuid}/certificate`, {
-        responseType: 'arraybuffer',
-      });
+      const response = await axiosInstance.get(
+        `api/students/${studentUuid}/certificate`,
+        {
+          responseType: 'arraybuffer',
+        }
+      );
       return response.data as ArrayBuffer;
     },
     [axiosInstance]
@@ -87,9 +92,12 @@ const useApi = () => {
 
   const generateCertificatesForStudyGroup = useCallback(
     async (studyGroup: string) => {
-      const response = await axiosInstance.get(`api/students/${studyGroup}/certificates`, {
-        responseType: 'arraybuffer',
-      });
+      const response = await axiosInstance.get(
+        `api/students/${studyGroup}/certificates`,
+        {
+          responseType: 'arraybuffer',
+        }
+      );
       return response.data as ArrayBuffer;
     },
     [axiosInstance]

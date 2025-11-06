@@ -1,4 +1,3 @@
-
 import { Route, Routes } from 'react-router';
 import Exams from '@pages/Exams/ExamsOverview.tsx';
 import Certificates from '@pages/Certificates/CertificateOverview.tsx';

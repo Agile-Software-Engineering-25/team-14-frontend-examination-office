@@ -4,6 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Search as SearchIcon } from '@mui/icons-material';
 import type { SxProps } from '@mui/joy/styles/types';
+import type { AutocompleteRenderOptionState } from '@mui/material/Autocomplete';
 
 export type SearchSelectSize = 'sm' | 'md' | 'lg';
 
@@ -23,7 +24,11 @@ export interface SearchSelectProps<T> {
   error?: boolean;
   multiple?: boolean;
   disableClearable?: boolean;
-  renderOption?: (props: any, option: T) => ReactNode;
+  renderOption?: (
+    props: React.HTMLAttributes<HTMLLIElement>,
+    option: T,
+    state: AutocompleteRenderOptionState
+  ) => ReactNode;
   startDecorator?: ReactNode;
   endDecorator?: ReactNode;
   inputSX?: SxProps;
@@ -74,8 +79,6 @@ function SearchSelect<T>({
   readOnly = false,
   required = false,
   error = false,
-  multiple = false,
-  disableClearable = false,
   renderOption,
   startDecorator,
   endDecorator,
@@ -99,23 +102,16 @@ function SearchSelect<T>({
 
   return (
     <Box sx={{ width: fullWidth ? '100%' : 'auto', ...containerSX }}>
-      <Autocomplete
+      <Autocomplete<T, false, false, false>
         options={options}
         value={value ?? null}
         onChange={(_, newValue) => {
-          if (multiple) {
-            // For multiple mode, newValue is T[], we need to handle it differently
-            onChange?.(newValue as T | null);
-          } else {
-            onChange?.(newValue as T | null);
-          }
+          onChange?.(newValue);
         }}
         getOptionLabel={getOptionLabel}
         isOptionEqualToValue={isOptionEqualToValue}
         disabled={disabled}
         readOnly={readOnly}
-        multiple={multiple as any}
-        disableClearable={disableClearable}
         renderOption={renderOption}
         slotProps={{
           paper: {
@@ -174,15 +170,16 @@ function SearchSelect<T>({
             sx={{
               '& .MuiInputBase-root': {
                 // Light mode: rgba(0, 0, 0, 0.08), Dark mode: rgba(255, 255, 255, 0.12)
-                bgcolor: isDark 
-                  ? 'rgba(255, 255, 255, 0.12)' 
+                bgcolor: isDark
+                  ? 'rgba(255, 255, 255, 0.12)'
                   : 'rgba(0, 0, 0, 0.08)',
                 color: isDark
                   ? 'rgba(255, 255, 255, 0.92)' // High contrast text in dark mode
                   : 'rgba(0, 0, 0, 0.87)',
                 borderRadius: '8px',
                 transition: 'all 0.2s ease-in-out',
-                paddingLeft: startDecorator || defaultStartDecorator ? '8px' : undefined,
+                paddingLeft:
+                  startDecorator || defaultStartDecorator ? '8px' : undefined,
                 height: 40,
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: '14px',
@@ -228,6 +225,7 @@ function SearchSelect<T>({
                   ? 'rgba(255, 255, 255, 0.7)'
                   : 'rgba(0, 0, 0, 0.54)',
               },
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ...(inputSX as any),
             }}
             InputProps={{

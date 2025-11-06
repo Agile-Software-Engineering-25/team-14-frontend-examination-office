@@ -174,7 +174,14 @@ const Exams = () => {
       </Box>
 
       {/* Language & Theme Toggles */}
-      <Box sx={{ alignSelf: 'flex-end', display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Box
+        sx={{
+          alignSelf: 'flex-end',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+        }}
+      >
         <LanguageSelectorComponent />
         <TmpThemeSelectorComponent />
       </Box>
