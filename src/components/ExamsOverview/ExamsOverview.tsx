@@ -195,7 +195,7 @@ const ExamsOverview = ({
                       e.preventDefault();
                       onOpenAddStudents?.(exam);
                     }}
-                    sx={{ cursor: 'pointer', color: 'black' }}
+                    sx={{ cursor: 'pointer', color: 'primary.main' }}
                   />
                 </Box>
               </td>
@@ -253,6 +253,16 @@ const ExamsOverview = ({
                   <Typography level="body-sm">
                     {t('pages.exams.footer.page')}:
                   </Typography>
+
+                  <Button
+                    size="sm"
+                    variant="outlined"
+                    disabled={currentPage <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    {t('pages.exams.footer.previous', { defaultValue: '←' })}
+                  </Button>
+
                   <Input
                     size="sm"
                     type="number"
@@ -266,11 +276,21 @@ const ExamsOverview = ({
                       if (!Number.isFinite(n)) return;
                       setPage(Math.floor(n));
                     }}
-                    sx={{ width: 50 }}
+                    sx={{ width: 50, textAlign: 'center' }}
                   />
+
                   <Typography level="body-sm">
                     {t('pages.exams.footer.of')} {totalPages}
                   </Typography>
+
+                  <Button
+                    size="sm"
+                    variant="outlined"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  >
+                    {t('pages.exams.footer.next', { defaultValue: '→' })}
+                  </Button>
                 </Box>
               </Box>
             </td>

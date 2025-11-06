@@ -94,8 +94,9 @@
         "registeredCount": "Registered: {{count}}",
         "save": "Save",
         "saving": "Saving…",
-        "saveSuccess": "Students added successfully",
-        "saveError": "Error saving students"
+        "saveSuccess": "Students added successfully/removed",
+        "saveError": "Error saving students",
+        "selectGroup": "Select group…"
       }
     },
     "submissions": {
