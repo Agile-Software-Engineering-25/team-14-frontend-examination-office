@@ -1,30 +1,20 @@
-import { useState, useEffect } from 'react';
-import { User } from 'oidc-client-ts';
 import { jwtDecode } from 'jwt-decode';
+import { useAuthContext } from '@/context/AuthContext';
 
-// Global user state
-let globalUser: User | null = null;
-let subscribers: Array<(user: User | null) => void> = [];
-
-// Function to set user data (called from singleSpa.tsx)
-export const setGlobalUser = (user: User | null) => {
-  globalUser = user;
-  subscribers.forEach((callback) => callback(user));
+// Minimal typings for the parts of the JWT we access
+type KeycloakRealmAccess = {
+  roles?: string[];
 };
 
-// Custom hook to access user data
-export const useUser = () => {
-  const [user, setUser] = useState<User | null>(globalUser);
+type DecodedToken = {
+  realm_access?: KeycloakRealmAccess;
+  resource_access?: Record<string, KeycloakRealmAccess>;
+  // Allow unknown extra fields without using `any`
+  [key: string]: unknown;
+};
 
-  useEffect(() => {
-    const unsubscribe = (newUser: User | null) => {
-      setUser(newUser);
-    };
-    subscribers.push(unsubscribe);
-    return () => {
-      subscribers = subscribers.filter((callback) => callback !== unsubscribe);
-    };
-  }, []);
+export const useUser = () => {
+  const { user } = useAuthContext();
 
   const getUserId = (): string => {
     return user?.profile.sub ?? '';
@@ -56,9 +46,8 @@ export const useUser = () => {
     if (!token) return false;
 
     // Decode JWT to extract roles
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const decoded: any = jwtDecode(token);
-    const roles: string[] = decoded?.realm_access?.roles || [];
+    const decoded = jwtDecode<DecodedToken>(token);
+    const roles: string[] = decoded?.realm_access?.roles ?? [];
 
     if (!Array.isArray(roles) || roles.length === 0) return false;
     return roles.includes(role);

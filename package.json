@@ -15,7 +15,7 @@
     "ci": "start-server-and-test dev http://localhost:5173 cy:run"
   },
   "dependencies": {
-    "@agile-software/shared-components": "^2.3.0",
+    "@agile-software/shared-components": "^2.3.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.2",
