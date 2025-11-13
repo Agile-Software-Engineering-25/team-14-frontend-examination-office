@@ -5,6 +5,7 @@ import useApi from '@hooks/useApi';
 import { useCallback, useEffect, useState } from 'react';
 import type { Exam } from '@custom-types/exam';
 import LanguageSelectorComponent from '@components/LanguageSelectorComponent/LanguageSelectorComponent';
+import TmpThemeSelectorComponent from '@components/TmpThemeSelectorComponent/TmpThemeSelectorComponent';
 import { isAxiosError } from 'axios';
 import ExamDetail from '@components/Exam/ExamDetail';
 import AddStudentsModal from '@components/Students/AddStudentsModal';
@@ -172,9 +173,17 @@ const Exams = () => {
         )}
       </Box>
 
-      {/* Language Selector */}
-      <Box sx={{ alignSelf: 'flex-end' }}>
+      {/* Language & Theme Toggles */}
+      <Box
+        sx={{
+          alignSelf: 'flex-end',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+        }}
+      >
         <LanguageSelectorComponent />
+        <TmpThemeSelectorComponent />
       </Box>
 
       <Snackbar

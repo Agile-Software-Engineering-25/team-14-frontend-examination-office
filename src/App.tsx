@@ -13,7 +13,6 @@ import { CssVarsProvider as JoyCssVarsProvider, GlobalStyles } from '@mui/joy';
 import './i18n';
 import { Provider } from 'react-redux';
 import store from '@stores/index.ts';
-import VerticalMenu from './Menu.tsx';
 
 const joyTheme = createCustomJoyTheme();
 const muiTheme = createCustomMuiTheme();
@@ -53,11 +52,8 @@ function App(props: AppProps) {
             })}
           />
           <BrowserRouter basename={basename ?? '/'}>
-            <div style={{ display: 'flex', minHeight: '100vh' }}>
-              <VerticalMenu />
-              <div style={{ flex: 1 }}>
-                <RoutingComponent />
-              </div>
+            <div style={{ height: '100vh' }}>
+              <RoutingComponent />
             </div>
           </BrowserRouter>
         </JoyCssVarsProvider>

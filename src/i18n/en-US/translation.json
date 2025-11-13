@@ -94,8 +94,9 @@
         "registeredCount": "Registered: {{count}}",
         "save": "Save",
         "saving": "Saving…",
-        "saveSuccess": "Students added successfully",
-        "saveError": "Error saving students"
+        "saveSuccess": "Students added successfully/removed",
+        "saveError": "Error saving students",
+        "selectGroup": "Select group…"
       }
     },
     "submissions": {
@@ -124,6 +125,27 @@
         "status": "Status",
         "comment": "Comment",
         "files": "Files"
+      }
+    },
+    "certificates": {
+      "title": "Certificates",
+      "single": {
+        "title": "Single Student",
+        "placeholder": "Select student...",
+        "generate": "Generate Certificate"
+      },
+      "group": {
+        "title": "Study Group",
+        "placeholder": "Select study group...",
+        "generate": "Generate Group Certificates"
+      },
+      "success": {
+        "download": "Certificate downloaded",
+        "downloadGroup": "ZIP with certificates downloaded"
+      },
+      "error": {
+        "student": "Error generating certificate",
+        "group": "Error generating group certificates"
       }
     }
   }

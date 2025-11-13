@@ -6,6 +6,7 @@ import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
 import type { Exam } from '@custom-types/exam';
 import type { Feedback } from '@custom-types/feedback';
 import type { Student } from '@custom-types/student';
+import type { StudentGroup } from '@/@custom-types/studentgroup';
 
 const useApi = () => {
   const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
@@ -58,6 +59,47 @@ const useApi = () => {
         `api/feedback/exam/${examUuid}`
       );
       return response.data;
+    },
+    [axiosInstance]
+  );
+
+  const getStudentByStudentId = useCallback(
+    async (studentId: string) => {
+      const response = await axiosInstance.get(
+        `api/students/studentId/${studentId}`
+      );
+      return response.data;
+    },
+    [axiosInstance]
+  );
+
+  const getAllStudents = useCallback(async () => {
+    const response = await axiosInstance.get('api/students');
+    return response.data;
+  }, [axiosInstance]);
+
+  const generateCertificateForStudent = useCallback(
+    async (studentUuid: string) => {
+      const response = await axiosInstance.get(
+        `api/students/${studentUuid}/certificate`,
+        {
+          responseType: 'arraybuffer',
+        }
+      );
+      return response.data as ArrayBuffer;
+    },
+    [axiosInstance]
+  );
+
+  const generateCertificatesForStudyGroup = useCallback(
+    async (studyGroup: string) => {
+      const response = await axiosInstance.get(
+        `api/students/${studyGroup}/certificates`,
+        {
+          responseType: 'arraybuffer',
+        }
+      );
+      return response.data as ArrayBuffer;
     },
     [axiosInstance]
   );
@@ -115,15 +157,27 @@ const useApi = () => {
   const getStudentsByExamId = useCallback(
     async (examId: string) => {
       const response = await axiosInstance.get(`api/students/exam/${examId}`);
-      return response.data as Student[];
+      return response.data as string[];
     },
     [axiosInstance]
   );
 
-  const getAllStudents = useCallback(async () => {
-    const response = await axiosInstance.get('api/students');
-    return response.data as Student[];
-  }, [axiosInstance]);
+  const getExternalGroups = useCallback(
+    async (examUuid?: string) => {
+      if (examUuid) {
+        const response = await axiosInstance.get('/api/students/groups', {
+          params: {
+            examUuid,
+          },
+        });
+        return response.data as StudentGroup[];
+      } else {
+        const response = await axiosInstance.get('api/students/groups');
+        return response.data as StudentGroup[];
+      }
+    },
+    [axiosInstance]
+  );
 
   return {
     getCurrentWeather,
@@ -138,7 +192,11 @@ const useApi = () => {
     addStudentToExam,
     removeStudentFromExam,
     getStudentsByExamId,
+    getStudentByStudentId,
     getAllStudents,
+    generateCertificateForStudent,
+    generateCertificatesForStudyGroup,
+    getExternalGroups,
   };
 };
 

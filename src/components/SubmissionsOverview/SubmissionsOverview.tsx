@@ -21,6 +21,8 @@ type SubmissionOverviewProps = {
   examUuid: string;
 };
 
+const columns = 7;
+
 const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
   const { t } = useTranslation();
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
@@ -30,8 +32,8 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
   const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({});
   const [changesMade, setChangesMade] = useState(false);
   const [onlyUnapproved, setOnlyUnapproved] = useState(false);
-  const [rowsPerPage] = useState<number>(10);
-  const [page] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState('');
 
   const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(
@@ -127,6 +129,11 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
       )
       .filter((fb) => !onlyUnapproved || fb.examState === 'EXAM_GRADED');
   }, [feedbacks, search, onlyUnapproved]);
+
+  // 🩹 Reset page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [search, onlyUnapproved, rowsPerPage]);
 
   const total = filteredFeedbacks.length;
   const totalPages = Math.max(1, Math.ceil(total / Math.max(1, rowsPerPage)));
@@ -268,6 +275,88 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
             })
           )}
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={columns}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 2,
+                  p: 0.5,
+                  width: '100%',
+                }}
+              >
+                {/* Rows per page */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                  <Typography level="body-sm">
+                    {t('pages.exams.footer.itemsPerPage')}:
+                  </Typography>
+                  <Input
+                    size="sm"
+                    type="number"
+                    slotProps={{ input: { min: 1 } }}
+                    value={rowsPerPage}
+                    onChange={(e) => {
+                      const n = Number(e.target.value);
+                      setRowsPerPage(
+                        Number.isFinite(n) && n > 0 ? Math.floor(n) : 1
+                      );
+                      setPage(1); // ✅ reset page when rowsPerPage changes
+                    }}
+                    sx={{ width: 50 }}
+                  />
+                </Box>
+
+                {/* Pagination */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography level="body-sm">
+                    {t('pages.exams.footer.page')}:
+                  </Typography>
+
+                  <Button
+                    size="sm"
+                    variant="outlined"
+                    disabled={currentPage <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    {t('pages.exams.footer.previous', { defaultValue: '←' })}
+                  </Button>
+
+                  <Input
+                    size="sm"
+                    type="number"
+                    slotProps={{
+                      input: { min: 1, max: Math.max(1, totalPages) },
+                    }}
+                    value={currentPage}
+                    disabled={totalPages === 0}
+                    onChange={(e) => {
+                      const n = Number(e.target.value);
+                      if (!Number.isFinite(n)) return;
+                      setPage(Math.floor(n));
+                    }}
+                    sx={{ width: 50, textAlign: 'center' }}
+                  />
+
+                  <Typography level="body-sm">
+                    {t('pages.exams.footer.of')} {totalPages}
+                  </Typography>
+
+                  <Button
+                    size="sm"
+                    variant="outlined"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  >
+                    {t('pages.exams.footer.next', { defaultValue: '→' })}
+                  </Button>
+                </Box>
+              </Box>
+            </td>
+          </tr>
+        </tfoot>
       </Table>
 
       <Modal
