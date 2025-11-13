@@ -6,29 +6,23 @@ This project contains example use cases for all technologies listed below. (It i
 
 Execute the following commands when you clone the project for the first time:
 
-Make sure to execute this inside a bash environment (GitBash on windows)
-```bash
-npm run init
-```
-and then this (no matter where):
 ```bash
 npm i
 ```
 
 # Commands
 
-- `npm run dev` - to run a local dev server with hot reload  
-- `npm run build` - package the application  
-- `npm run cy:open` - open the UI of Cypress for testing  
-- `npm run cy:run` - run all tests with a headless browser  
-- `npm run updateSharedComponents [branch]` - update the shared-components library to the newest version.  
-  - By default, the script updates to the `main` branch.  
-  - You can specify another branch as an argument, e.g.  
+- `npm run dev` - to run a local dev server with hot reload
+- `npm run build` - package the application
+- `npm run cy:open` - open the UI of Cypress for testing
+- `npm run cy:run` - run all tests with a headless browser
+- `npm run updateSharedComponents [branch]` - update the shared-components library to the newest version.
+  - By default, the script updates to the `main` branch.
+  - You can specify another branch as an argument, e.g.
     ```bash
     npm run updateSharedComponents feature/my-branch
     ```
-  - ⚠️ Note: While you *can* change the branch by editing the `.gitmodules` file or manually in the submodule, this script is the recommended way to switch and update.
-
+  - ⚠️ Note: While you _can_ change the branch by editing the `.gitmodules` file or manually in the submodule, this script is the recommended way to switch and update.
 
 # Technologies
 
