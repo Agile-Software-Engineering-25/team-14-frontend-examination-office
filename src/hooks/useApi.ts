@@ -6,10 +6,14 @@ import type { getCurrentWeatherReturn } from '@custom-types/brighsky';
 import type { Exam } from '@custom-types/exam';
 import type { Feedback } from '@custom-types/feedback';
 import type { Student } from '@custom-types/student';
+import type { Module } from '@/@custom-types/module';
 import type { StudentGroup } from '@/@custom-types/studentgroup';
 
 const useApi = () => {
   const axiosInstance = useAxiosInstance(BACKEND_BASE_URL);
+  const axiosInstance2 = useAxiosInstance(
+    'https://Sau-portal.de/api/masterdata/studies/courses/'
+  );
 
   const getCurrentWeather = useCallback(
     async (latitude: number, longitude: number, units: Units) => {
@@ -33,6 +37,11 @@ const useApi = () => {
     },
     [axiosInstance]
   );
+
+  const getModules = useCallback(async () => {
+    const response = await axiosInstance2.get('');
+    return response.data as Module[];
+  }, [axiosInstance2]);
 
   const updateExam = useCallback(
     async (updatedExam: Exam) => {
@@ -194,6 +203,7 @@ const useApi = () => {
     getStudentsByExamId,
     getStudentByStudentId,
     getAllStudents,
+    getModules,
     generateCertificateForStudent,
     generateCertificatesForStudyGroup,
     getExternalGroups,
