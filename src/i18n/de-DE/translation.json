@@ -117,8 +117,8 @@
         "of": "von"
       },
       "table": {
-        "student": "Student UUID",
-        "lecturer": "Dozent UUID",
+        "student": "Student",
+        "lecturer": "Dozent",
         "gradedAt": "Bewertet am",
         "points": "Punkte",
         "grade": "Note",
