@@ -227,8 +227,8 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                   style={{ cursor: 'pointer' }}
                 >
                   <td></td>
-                  <td>{fb.studentUuid}</td>
-                  <td>{fb.lecturerUuid}</td>
+                  <td>{fb.studentName ? fb.studentName : fb.studentUuid}</td>
+                  <td>{fb?.lecturerName ? fb.lecturerName : fb.lecturerUuid}</td>
                   <td>{fb.gradedAt}</td>
                   <td>{fb.points}</td>
                   <td>{fb.grade}</td>
@@ -385,11 +385,11 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               </Typography>
               <Typography>
                 <strong>{t('pages.submissions.table.student')}:</strong>{' '}
-                {selectedFeedback.studentUuid}
+                {selectedFeedback.studentName ? selectedFeedback.studentName : selectedFeedback.studentUuid}
               </Typography>
               <Typography>
                 <strong>{t('pages.submissions.table.lecturer')}:</strong>{' '}
-                {selectedFeedback.lecturerUuid}
+                {selectedFeedback.lecturerName ? selectedFeedback.lecturerName : selectedFeedback.lecturerUuid}
               </Typography>
               <Typography>
                 <strong>{t('pages.submissions.table.gradedAt')}:</strong>{' '}
@@ -413,7 +413,7 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               <Typography>
                 <strong>{t('pages.submissions.table.files')}:</strong>
               </Typography>
-              {selectedFeedback.fileReference.length > 0 ? (
+              {selectedFeedback.fileReference ? selectedFeedback.fileReference.length > 0 ? (
                 <List>
                   {selectedFeedback.fileReference.map((file) => (
                     <ListItem key={file.fileUuid}>
@@ -429,6 +429,8 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                     </ListItem>
                   ))}
                 </List>
+              ) : (
+                <Typography>{t('pages.submissions.noFiles')}.</Typography>
               ) : (
                 <Typography>{t('pages.submissions.noFiles')}.</Typography>
               )}
