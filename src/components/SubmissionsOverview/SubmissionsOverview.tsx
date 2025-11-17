@@ -228,7 +228,9 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
                 >
                   <td></td>
                   <td>{fb.studentName ? fb.studentName : fb.studentUuid}</td>
-                  <td>{fb?.lecturerName ? fb.lecturerName : fb.lecturerUuid}</td>
+                  <td>
+                    {fb?.lecturerName ? fb.lecturerName : fb.lecturerUuid}
+                  </td>
                   <td>{fb.gradedAt}</td>
                   <td>{fb.points}</td>
                   <td>{fb.grade}</td>
@@ -385,11 +387,15 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               </Typography>
               <Typography>
                 <strong>{t('pages.submissions.table.student')}:</strong>{' '}
-                {selectedFeedback.studentName ? selectedFeedback.studentName : selectedFeedback.studentUuid}
+                {selectedFeedback.studentName
+                  ? selectedFeedback.studentName
+                  : selectedFeedback.studentUuid}
               </Typography>
               <Typography>
                 <strong>{t('pages.submissions.table.lecturer')}:</strong>{' '}
-                {selectedFeedback.lecturerName ? selectedFeedback.lecturerName : selectedFeedback.lecturerUuid}
+                {selectedFeedback.lecturerName
+                  ? selectedFeedback.lecturerName
+                  : selectedFeedback.lecturerUuid}
               </Typography>
               <Typography>
                 <strong>{t('pages.submissions.table.gradedAt')}:</strong>{' '}
@@ -413,24 +419,26 @@ const SubmissionOverview = ({ examUuid }: SubmissionOverviewProps) => {
               <Typography>
                 <strong>{t('pages.submissions.table.files')}:</strong>
               </Typography>
-              {selectedFeedback.fileReference ? selectedFeedback.fileReference.length > 0 ? (
-                <List>
-                  {selectedFeedback.fileReference.map((file) => (
-                    <ListItem key={file.fileUuid}>
-                      <ListItemButton
-                        component="a"
-                        href={file.downloadLink ?? '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        disabled={!file.downloadLink}
-                      >
-                        <ListItemText primary={file.filename} />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              ) : (
-                <Typography>{t('pages.submissions.noFiles')}.</Typography>
+              {selectedFeedback.fileReference ? (
+                selectedFeedback.fileReference.length > 0 ? (
+                  <List>
+                    {selectedFeedback.fileReference.map((file) => (
+                      <ListItem key={file.fileUuid}>
+                        <ListItemButton
+                          component="a"
+                          href={file.downloadLink ?? '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          disabled={!file.downloadLink}
+                        >
+                          <ListItemText primary={file.filename} />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <Typography>{t('pages.submissions.noFiles')}.</Typography>
+                )
               ) : (
                 <Typography>{t('pages.submissions.noFiles')}.</Typography>
               )}
