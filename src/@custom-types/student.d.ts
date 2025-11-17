@@ -3,7 +3,7 @@ export enum StudyStatus {
 }
 
 export type Student = {
-  uuid: string;
+  id: string;
   firstName?: string;
   lastName?: string;
   username?: string;

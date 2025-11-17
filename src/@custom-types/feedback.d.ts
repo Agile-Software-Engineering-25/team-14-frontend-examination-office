@@ -10,9 +10,11 @@ export type Feedback = {
   examState: ExamState;
   lecturerUuid: string;
   studentUuid: string;
+  lecturerName?: string;
+  studentName?: string;
   submissionUuid: string;
   comment: string;
-  fileReference: FileReference[];
+  fileReference?: FileReference[];
   points: number;
   grade: number;
 };

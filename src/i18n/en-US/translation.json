@@ -117,8 +117,8 @@
         "of": "of"
       },
       "table": {
-        "student": "Student UUID",
-        "lecturer": "Lecturer UUID",
+        "student": "Student",
+        "lecturer": "Lecturer",
         "gradedAt": "Graded At",
         "points": "Points",
         "grade": "Grade",
