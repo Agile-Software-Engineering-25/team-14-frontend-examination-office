@@ -107,7 +107,7 @@ const EditExamModal = ({ open, exam, onSave, setOpen }: EditExamModalProps) => {
       >
         <ModalClose />
         <Typography level="h4">{t('pages.exams.editExam.title')}</Typography>
-
+TEST
         <Box
           component="form"
           sx={{
