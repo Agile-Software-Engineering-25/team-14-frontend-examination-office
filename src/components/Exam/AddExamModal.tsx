@@ -147,11 +147,11 @@ const AddExamModal = ({
                   `${option.template.name} (${option.template.code})`
                 }
                 value={
-                  modules.find((m) => m.template.id === Number(moduleCode)) ??
+                  modules.find((m) => m.template.code === moduleCode) ??
                   null
                 }
                 onChange={(_, newValue) =>
-                  setModuleCode(newValue ? newValue.template.id.toString() : '')
+                  setModuleCode(newValue ? newValue.template.code : '')
                 }
                 isOptionEqualToValue={(option, value) =>
                   option.template.id === value.template.id
