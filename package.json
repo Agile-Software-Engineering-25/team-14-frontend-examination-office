@@ -29,7 +29,7 @@
     "react-dom": "^18 || ^19",
     "react-i18next": "^15.6.1",
     "react-redux": "^9.2.0",
-    "react-router": "^6 || ^7",
+    "react-router": "^7",
     "single-spa": "^6.0.2",
     "single-spa-react": "^6.0.1",
     "tslib": "^2.8.1",
@@ -75,6 +75,6 @@
   "peerDependencies": {
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19",
-    "react-router": "^6 || ^7"
+    "react-router": "^7"
   }
 }
